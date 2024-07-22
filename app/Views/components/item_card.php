@@ -1,7 +1,3 @@
-<?php
- dd($data)
-?>
-
 <div id="menuCard" class="container mx-auto py-6 z-0">
   <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
     <div class="relative mb-2 flex w-full max-w-xs flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-md">
