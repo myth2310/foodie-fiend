@@ -1,0 +1,8 @@
+vendor/
+labs/
+node_modules/
+writable/session/
+writable/debugbar/*
+writable/logs/*.log
+writable/session/*
+.env

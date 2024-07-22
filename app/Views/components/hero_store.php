@@ -1,0 +1,2 @@
+<section id="heroBanner" class="h-screen bg-center bg-cover bg-no-repeat bg-[url('https://images.squarespace-cdn.com/content/v1/61709486e77e1d27c181981c/a9eb540d-aff8-4360-8354-1d35c856a561/0223_UrbanSpace_ZeroIrving_LizClayman_160.png')] bg-gray-500 bg-blend-multiply">
+</section>

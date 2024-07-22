@@ -1,0 +1,37 @@
+version: '3'
+
+services:
+  core:
+    image: webdevops/php-nginx:8.2
+    container_name: skyfall-core
+    restart: always
+    networks:
+      medusa_net:
+        ipv4_address: 172.21.0.2
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+
+  db:
+    image: mariadb:10.4.21
+    container_name: spmi_db
+    restart: always
+    networks:
+      medusa_net:
+        ipv4_address: 172.21.0.3
+    environment:
+      MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: 0
+      MARIADB_ROOT_PASSWORD: ${DB_PASSWORD}
+      MARIADB_DATABASE: ${DB_NAME}
+    volumes:
+      - ./database.sql:/docker-entrypoint-initdb.d/init.sql
+
+networks:
+  medusa_net:
+    name: skyfall-net
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.21.0.0/16
