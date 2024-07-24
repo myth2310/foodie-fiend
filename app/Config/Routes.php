@@ -26,7 +26,7 @@ $routes->group('/dashboard', function($routes) {
 });
 
 $routes->group('/data', function($routes) {
-    $routes->get('category', 'CategoryController::get');
+    $routes->get('category/(:any)', 'CategoryController::get/$1');
     $routes->post('category', 'CategoryController::add');
     $routes->post('category/delete/(:any)', 'CategoryController::delete/$1');
     $routes->post('menu', 'MenuController::create');

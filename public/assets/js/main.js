@@ -176,7 +176,7 @@ $(document).ready(function() {
 
           response.data.forEach(function(item) {
             if (url.includes('category') && targetId === '#categoryOption') {
-              dataList.append(`<option>${item.name}</option>`);
+              dataList.append(`<option class="dark:text-white">${item.name}</option>`);
             }
 
             if (url.includes('category')) {

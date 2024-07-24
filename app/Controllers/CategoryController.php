@@ -36,10 +36,17 @@ class CategoryController extends BaseController
         return $this->response->setJSON(['status' => 'success']);
     }
 
+    // public function get($store_id)
+    // {
+    //     $categoryModel = new CategoryModel();
+    //     return $categoryModel->where('store_id', $store_id)->findAll();
+    // }
+
     public function get($store_id)
     {
         $categoryModel = new CategoryModel();
-        return $categoryModel->where('store_id', $store_id)->findAll();
+        $data = $categoryModel->where('store_id', $store_id)->findAll();
+        return $this->response->setJSON(['data' => $data]);
     }
 
     public function delete($id)

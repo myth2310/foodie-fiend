@@ -20,11 +20,10 @@
     <!-- JQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Main Styling -->
-    <!-- <link href="<?= base_url('assets/css/argon-dashboard-tailwind.css?v=1.0.1') ?>" rel="stylesheet" /> -->
     <link href="<?= base_url('assets/css/styles.css') ?>" rel="stylesheet" />
   </head>
 
-  <body>
+  <body class="dark:bg-slate-900">
     <?= $this->renderSection('modal', true) ?>
     <div class="m-0 font-sans text-base antialiased font-normal dark:bg-slate-900 leading-default bg-gray-50 text-slate-500">
       <div class="absolute w-full bg-orange-500 dark:hidden min-h-72"></div>

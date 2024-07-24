@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Controllers;
+use App\Models\StoreModel;
 use App\Models\UserModel;
 
 class AuthController extends BaseController
@@ -19,6 +20,7 @@ class AuthController extends BaseController
     {
         $session = session();
         $model = new UserModel();
+        $storeModel = new StoreModel();
         $email = $this->request->getPost('email');
         $password = $this->request->getPost('password');
 
@@ -37,6 +39,12 @@ class AuthController extends BaseController
                     'profile' => $data->profile,
                     'logged_in' => TRUE,
                 ];
+
+                if ($data->role == 'store') {
+                    $store_id = $storeModel->select('id')->where('user_id', $data->id)->first();
+                    $session_data['store_id'] = $store_id;
+                }
+
                 $session->set($session_data);
                 $session->setFlashdata('messages', ['Sukses login']);
 
