@@ -78,7 +78,7 @@ $(document).ready(function() {
                 </div>
                 <div class="mb-5">
                   <label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Deskripsi</label>
-                  <input type="text" id="description" name="menu_description" placeholder="Deskripsi menu" class="shadow-sm border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light" required />
+                  <textarea type="text" id="description" name="menu_description" rows="4" placeholder="Deskripsi menu" class="shadow-sm border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light" required></textarea>
                 </div>
                 <div class="mb-5">
                   <label for="category" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Pilih kategori</label>

@@ -10,20 +10,16 @@ class CreateReviewsTable extends Migration
     {
         $this->forge->addField([
             'id' => [
-                'type' => 'INT',
-                'constraint' => 11,
-                'unsigned' => true,
-                'auto_increment' => true,
+                'type' => 'CHAR',
+                'constraint' => 36,
             ],
             'user_id' => [
-                'type' => 'INT',
-                'constraint' => 11,
-                'unsigned' => true,
+                'type' => 'CHAR',
+                'constraint' => 36,
             ],
             'menu_id' => [
-                'type' => 'INT',
-                'constraint' => 11,
-                'unsigned' => true,
+                'type' => 'CHAR',
+                'constraint' => 36,
             ],
             'review' => [
                 'type' => 'TEXT',

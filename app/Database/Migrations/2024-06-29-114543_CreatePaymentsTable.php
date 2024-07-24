@@ -10,15 +10,12 @@ class CreatePaymentsTable extends Migration
     {
         $this->forge->addField([
             'id' => [
-                'type' => 'INT',
-                'constraint' => 11,
-                'unsigned' => true,
-                'auto_increment' => true,
+                'type' => 'CHAR',
+                'constraint' => 36,
             ],
             'order_id' => [
-                'type' => 'INT',
-                'constraint' => 11,
-                'unsigned' => true,
+                'type' => 'CHAR',
+                'constraint' => 36,
             ],
             'account_number' => [
                 'type' => 'VARCHAR',

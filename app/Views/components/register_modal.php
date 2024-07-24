@@ -25,10 +25,6 @@
           <input name="password" placeholder="Password" type="password" class="w-full p-2 border-2 text-center border-gray-300 dark:border-gray-700 rounded mt-1 dark:bg-gray-500 dark:text-white">
         </div>
         <button type="submit" class="bg-yellow-500 hover:bg-yellow-600 ease-in-out duration-150 text-white font-semibold px-4 py-2 rounded w-full mt-2 mb-6">Register</button>
-        <div class="mb-4 flex items-center">
-          <input type="checkbox" id="terms" class="mr-2">
-          <label for="terms" class="text-gray-700 dark:text-gray-200">I agree with the <a href="#" class="text-blue-500">terms and conditions</a></label>
-        </div>
       </form>
       <p class="dark:text-gray-300 font-normal">Sudah punya akun?
         <button onclick="openAndCloseModal('loginModal', 'registerModal');" class="font-semibold text-yellow-600 dark:text-gray-100 hover:text-yellow-400 dark:hover:text-yellow-500 duration-150 ease-in-out">Masuk</button>

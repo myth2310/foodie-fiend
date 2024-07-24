@@ -24,6 +24,15 @@ class MenuController extends BaseController
         return $data;
     }
 
+    public function detail($menu_id)
+    {
+        $menuModel = new MenuModel();
+        // $menu = $menuModel->find($menu_id);
+        $menu = $menuModel->getMenuWithStore($menu_id);
+
+        return view('pages/menu_detail', ['data' => $menu]);
+    }
+
     public function create()
     {
         $menuModel = new MenuModel();
@@ -60,9 +69,9 @@ class MenuController extends BaseController
         return redirect()->back();
     }
 
-    public function getAll()
+    public function getAll($store_id)
     {
         $menuModel = new MenuModel();
-        return $menuModel->findAll();
+        return $menuModel->where('store_id', $store_id)->findAll();
     }
 }

@@ -55,7 +55,19 @@ class UserController extends BaseController
             return redirect()->back()->withInput()->with('errors', $userModel->errors());
         }
 
-        return redirect()->to('/')->with('message', 'Pengguna berhasil dibuat');
+        $data = $userModel->where('email', $user->email)->first();
+        $session_data = [
+            'id' => $data->id,
+            'name' => $data->name,
+            'email' => $data->email,
+            'phone' => $data->phone,
+            'role' => $data->role,
+            'profile' => $data->profile,
+            'logged_in' => TRUE,
+        ];
+        session()->set($session_data);
+
+        return redirect()->to('/')->with('messages', ['Pengguna berhasil dibuat']);
     }
 
     // Fungsi untuk menampilkan halaman edit user

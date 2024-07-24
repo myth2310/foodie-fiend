@@ -3,7 +3,7 @@
 namespace App\Controllers;
 use App\Models\UserModel;
 
-class Auth extends BaseController
+class AuthController extends BaseController
 {
     public function register(): string
     {
@@ -32,12 +32,13 @@ class Auth extends BaseController
                     'id' => $data->id,
                     'name' => $data->name,
                     'email' => $data->email,
+                    'phone' => $data->phone,
                     'role' => $data->role,
                     'profile' => $data->profile,
                     'logged_in' => TRUE,
                 ];
                 $session->set($session_data);
-                $session->setFlashdata('message', ['Sukses login']);
+                $session->setFlashdata('messages', ['Sukses login']);
 
                 if ($data->role == 'store' || $data->role == 'admin') {
                     return redirect()->route('dashboard');

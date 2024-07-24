@@ -13,6 +13,8 @@ $routes->group('/recommendation', function($routes) {
     $routes->get('rating/(:num)', 'RecommendationController::rating/$1');
 });
 
+$routes->get('/orders', 'OrderController::index');
+
 $routes->get('/test', 'Home::spiner');
 
 $routes->group('/dashboard', function($routes) {
@@ -31,10 +33,10 @@ $routes->group('/data', function($routes) {
 });
 
 // Auth route
-$routes->get('/signup', 'Auth::register');
-$routes->get('/login', 'Auth::login');
-$routes->post('/login', 'Auth::authenticate');
-$routes->get('/logout', 'Auth::logout');
+$routes->get('/signup', 'AuthController::register');
+$routes->get('/login', 'AuthController::login');
+$routes->post('/login', 'AuthController::authenticate');
+$routes->get('/logout', 'AuthController::logout');
 
 // User group
 $routes->group('/users', function($routes) {
@@ -58,7 +60,7 @@ $routes->group('/orders', function($routes) {
 // Menu group
 $routes->group('/menus', function($routes) {
     $routes->get('', 'MenuController::index');
-    $routes->get('/(:num)', 'MenuController::detail/$1');
+    $routes->get('(:any)', 'MenuController::detail/$1');
     $routes->post('', 'MenuController::store');
 });
 
@@ -73,3 +75,5 @@ $routes->get('/store/dashboard', 'UserController::merchant');
 // Payment route
 $routes->get('payment', 'PaymentController::index');
 $routes->post('payment/notification', 'PaymentController::notification');
+
+$routes->post('checkout', 'OrderController::checkout');

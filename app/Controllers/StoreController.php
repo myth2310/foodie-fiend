@@ -37,19 +37,21 @@ class StoreController extends BaseController
     public function detail($id)
     {
         $storeModel = new StoreModel();
-        $store = $storeModel->find($id);
         $menuController = new MenuController();
-        $dataMenu = $menuController->getAll();
+        $categoryController = new CategoryController();
+
+        $store = $storeModel->find($id);
+        $dataMenu = $menuController->getAll($id);
+        $categories = $categoryController->get($id);
 
         if (!$store) {
             session()->setFlashdata('errors', ['Toko tidak ditemukan']);
             return redirect()->to('/');
         }
 
-        // return json_encode($store);
-        // dd($store);
         return view('pages/store', [
-            'stores' => $dataMenu,
+            'menus' => $dataMenu,
+            'categories' => $categories,
             'hero_img' => $store->image_url,
             'use_hero_text' => false,
         ]);
@@ -109,7 +111,7 @@ class StoreController extends BaseController
 
                 return redirect()->back()->withInput()->with('errors', $errors);
             }
-            return redirect()->to('/dashboard')->with('message', 'Pengguna berhasil dibuat');
+            return redirect()->to('/dashboard')->with('messages', ['Pengguna berhasil dibuat']);
             
         } catch (Exception $err) {
             $db->transRollback();

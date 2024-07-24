@@ -17,3 +17,10 @@ Sayur
 Sate
 Pecel
 Lainnya
+
+
+Ketika register toko seharusnya langsung menyimpan session login
+Toko tidak dapat memesan menu dari toko lain dan toko tidak memiliki shoping chart.
+
+Data gambar "Bakso Putri Solo" tidak ditemukan
+Data gambar "Pondok Bakso Bang Yanto" tidak ditemukan

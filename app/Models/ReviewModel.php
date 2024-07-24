@@ -4,16 +4,17 @@ namespace App\Models;
 
 use App\Entities\ReviewEntity;
 use CodeIgniter\Model;
+use Ramsey\Uuid\Uuid;
 
 class ReviewModel extends Model
 {
     protected $table            = 'reviews';
     protected $primaryKey       = 'id';
-    protected $useAutoIncrement = true;
+    protected $useAutoIncrement = false;
     protected $returnType       = ReviewEntity::class;
     protected $useSoftDeletes   = true;
     protected $protectFields    = true;
-    protected $allowedFields    = ['user_id', 'menu_id', 'review', 'rating'];
+    protected $allowedFields    = ['id', 'user_id', 'menu_id', 'review', 'rating'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -54,7 +55,7 @@ class ReviewModel extends Model
 
     // Callbacks
     protected $allowCallbacks = true;
-    protected $beforeInsert   = [];
+    protected $beforeInsert   = ['generateUUID'];
     protected $afterInsert    = [];
     protected $beforeUpdate   = [];
     protected $afterUpdate    = [];
@@ -62,4 +63,10 @@ class ReviewModel extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
+
+    protected function generateUUID(array $data)
+    {
+        $data['data']['id'] = Uuid::uuid7()->toString();
+        return $data;
+    }
 }

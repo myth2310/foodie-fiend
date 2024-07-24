@@ -25,8 +25,8 @@ class AuthMiddleware implements FilterInterface
      */
     public function before(RequestInterface $request, $arguments = null)
     {
-        // dd(session());
         if (!session()->get('logged_in') && !session()->get('role')) {
+            session()->setFlashdata('errors', ['Silahkan untuk login terlebih dahulu']);
             return redirect()->to('/');
         }
     }

@@ -10,10 +10,12 @@ class CreateCategoriesTable extends Migration
     {
         $this->forge->addField([
             'id' => [
-                'type' => 'INT',
-                'constraint' => 11,
-                'unsigned' => true,
-                'auto_increment' => true,
+                'type' => 'CHAR',
+                'constraint' => 36,
+            ],
+            'store_id' => [
+                'type' => 'CHAR',
+                'constraint' => 36,
             ],
             'name' => [
                 'type' => 'VARCHAR',
@@ -36,6 +38,7 @@ class CreateCategoriesTable extends Migration
             ],
         ]);
         $this->forge->addKey('id', true);
+        $this->forge->addForeignKey('store_id', 'stores', 'id');
         $this->forge->createTable('categories', true);
     }
 
