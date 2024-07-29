@@ -126,7 +126,7 @@ class StoreController extends BaseController
 
                 return redirect()->back()->withInput()->with('errors', $errors);
             }
-            return redirect()->to('/dashboard')->with('messages', ['Pengguna berhasil dibuat']);
+            return redirect()->to('/')->with('messages', ['Pengguna berhasil dibuat']);
             
         } catch (Exception $err) {
             $db->transRollback();

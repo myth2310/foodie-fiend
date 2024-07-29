@@ -1,10 +1,10 @@
 import smtplib
 
 sender = "Foodie Fiend <mailtrap@microsaas.my.id>"
-receiver = "A Test User <adepriyantowidies@gmail.com>"
+receiver = "A Test User <rezaayuningtias642@gmail.com>"
 
 message = f"""\
-Subject: Hi Mailtrap
+Subject: Hi Foodie Fiend with Mailtrap
 To: {receiver}
 From: {sender}
 
