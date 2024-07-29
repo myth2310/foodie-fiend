@@ -45,16 +45,14 @@ class UserController extends BaseController
     {
         $user_id = session()->get('user_id');
         $data = $this->chartModel->getAllChartWithMenu($user_id);
-        $price = $data[0]->menu_price;
-        $rupiah = "Rp " . number_format($price + 0, 0, ',', '.');
         return view('pages/user/my_chart', ['data' => $data]);
     }
 
     public function orders()
     {
         $orderStatus = $this->request->getGet('status');
-
-        return view('pages/user/my_order');
+        $data = $this->orderModel->where('status', $orderStatus)->findAll();
+        return view('pages/user/my_order', ['data' => $data]);
     }
 
     public function settings()
