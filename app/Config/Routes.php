@@ -20,7 +20,10 @@ $routes->get('/test', 'Home::spiner');
 
 $routes->group('/dashboard', function($routes) {
     $routes->get('', 'DashboardController::index', ['as' => 'dashboard']);
-    $routes->get('menu', 'DashboardController::menu', ['as' => 'menu']);
+    $routes->group('menu', function($routes) {
+        $routes->get('', 'DashboardController::menu', ['as' => 'menu']);
+        $routes->get('edit/(:any)', 'MenuController::edit/$1');
+    });
     $routes->group('category', function($routes) {
         $routes->get('', 'DashboardController::category', ['as' => 'category']);
         $routes->get('edit/(:any)', 'CategoryController::edit/$1');
@@ -30,6 +33,10 @@ $routes->group('/dashboard', function($routes) {
 });
 
 $routes->group('/data', function($routes) {
+    $routes->group('menu', function($routes) {
+        $routes->post('delete/(:any)', 'MenuController::delete/$1');
+        $routes->post('update/(:any)', 'MenuController::update/$1');
+    });
     $routes->group('category', function($routes) {
         $routes->post('', 'CategoryController::add');
         $routes->get('', 'CategoryController::get');

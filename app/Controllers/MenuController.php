@@ -65,9 +65,7 @@ class MenuController extends BaseController
 
     public function create()
     {
-        $user_id = session()->get("id");
-        $store = $this->storeModel->where('user_id', $user_id)->first();
-        $this->menu->store_id = session()->get('store_id');
+        $this->menu->store_id = session()->get('store_id')->id;
         $this->menu->name = $this->request->getPost('menu_name');
         $this->menu->price = $this->request->getPost('menu_price');
         $this->menu->category = $this->request->getPost('menu_category');
@@ -80,17 +78,86 @@ class MenuController extends BaseController
 
             // Upload file ke Cloudinary
              $uploadResult = $this->uploadHelper->upload($filePath);
-            // $uploadResult = (new UploadApi())->upload($filePath);
+
             // Mendapatkan URL file yang diupload
             $this->menu->image_url = $uploadResult['secure_url'];
         }
             
         if (!$this->menuModel->save($this->menu)) {
                 session()->setFlashdata('errors', $this->menuModel->errors());
-                return redirect()->back();
+                return redirect()->back()->withInput();
         }
 
         session()->setFlashdata('messages', ['Sukses tambah data']);
+        return redirect()->back();
+    }
+
+    public function edit($menu_id)
+    {
+        $categoryController = new CategoryController();
+
+        $categories = $categoryController->getAllByStoreId(session()->get('store_id')->id);
+        $data = $this->menuModel->find($menu_id);
+
+        return view('pages/menu_edit', [
+            'data' => [
+                'menu' => $data,
+                'category' => $categories,
+            ]
+        ]);
+    }
+
+    public function update($menu_id)
+    {
+        $this->menu->name = $this->request->getPost('menu_name');
+        $this->menu->price = $this->request->getPost('menu_price');
+        $this->menu->category = $this->request->getPost('menu_category');
+        $this->menu->description = $this->request->getPost('menu_description');
+
+        // TODO: Update the image
+
+        $file = $this->request->getFile('file');
+
+        if ($file->isValid() && !$file->hasMoved()) {
+            // Path sementara file
+            $filePath = $file->getTempName();
+
+            // Upload file ke Cloudinary
+             $uploadResult = $this->uploadHelper->upload($filePath);
+
+            // Mendapatkan URL file yang diupload
+            $this->menu->image_url = $uploadResult['secure_url'];
+        }
+            
+        if (!$this->menuModel->update($menu_id, $this->menu )) {
+                session()->setFlashdata('errors', $this->menuModel->errors());
+                return redirect()->back()->withInput();
+        }
+
+        session()->setFlashdata('messages', ['Berhasil perbarui data']);
+        return redirect()->back();
+    }
+
+    public function delete($menu_id)
+    {
+        $session = session();
+
+        if (!$this->menuModel->find($menu_id)) {
+            $session->setFlashdata('errors', [
+                'Gagal menghapus menu',
+                'Menu tidak ditemukan',
+            ]);
+            return redirect()->back();
+        }
+
+        if (!$this->menuModel->delete($menu_id)) {
+            $session->setFlashdata('errors', [
+                'Gagal menghapus menu',
+            ]);
+            return redirect()->back();
+        }
+
+        $session->setFlashdata('messages', ['Berhasil menghapus menu']);
         return redirect()->back();
     }
 

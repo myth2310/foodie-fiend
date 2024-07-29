@@ -53,6 +53,7 @@ class CategoryController extends BaseController
     {
         $this->category->name = $this->request->getPost('name');
         $this->category->description = $this->request->getPost('description');
+        $this->category->store_id = session()->get('store_id')->id;
 
         if (!$this->categoryModel->save($this->category)) {
             return redirect()->back()->withInput()->with('errors', $this->categoryModel->errors());
