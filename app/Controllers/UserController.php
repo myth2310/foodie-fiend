@@ -4,27 +4,62 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 use App\Entities\UserEntity;
+use App\Models\ChartModel;
+use App\Models\OrderModel;
 use App\Models\UserModel;
 use CodeIgniter\HTTP\ResponseInterface;
 
 class UserController extends BaseController
 {
+    protected $user;
+    protected $userModel;
+    protected $chartModel;
+
+    protected $orderModel;
+
+    public function __construct()
+    {
+        $this->user = new UserEntity();
+        $this->userModel = new UserModel();
+        $this->chartModel = new ChartModel();
+        $this->orderModel = new OrderModel();
+    }
+
     // Fungsi menampilkan semua user
     public function index()
     {
-        $model = new UserModel();
-        $data['users'] = $model->findAll();
+        $data['users'] = $this->userModel->findAll();
 
         return view('users/index', $data);
     }
 
-    public function test()
+    public function dashboard()
     {
         if(session()->get('role') != 'user') {
             return redirect()->to('/');
         }
+        return view('pages/user/index');
+    }
 
-        return view('pages/user_dashboard');
+    public function charts()
+    {
+        $user_id = session()->get('user_id');
+        $data = $this->chartModel->getAllChartWithMenu($user_id);
+        $price = $data[0]->menu_price;
+        $rupiah = "Rp " . number_format($price + 0, 0, ',', '.');
+        return view('pages/user/my_chart', ['data' => $data]);
+    }
+
+    public function orders()
+    {
+        $orderStatus = $this->request->getGet('status');
+
+        return view('pages/user/my_order');
+    }
+
+    public function settings()
+    {
+        return view('pages/user/my_setting');
     }
 
     public function merchant()
@@ -41,21 +76,18 @@ class UserController extends BaseController
     // Fungsi untuk menyimpan data user ke Database
     public function store()
     {
-        $userModel = new UserModel();
-        $user = new UserEntity();
-
-        $user->name = $this->request->getPost('name');
-        $user->email = $this->request->getPost('email');
-        $user->phone = $this->request->getPost('phone');
-        $user->profile = 'https://res.cloudinary.com/beta7x/image/upload/v1720840088/610-6104451_image-placeholder-png-user-profile-placeholder-image-png-removebg-preview_bccniu.png';
-        $user->setPassword($this->request->getPost('password'));
-
-        $storeUser = $userModel->insert($user);
+        $this->user->name = $this->request->getPost('name');
+        $this->user->email = $this->request->getPost('email');
+        $this->user->phone = $this->request->getPost('phone');
+        $this->user->profile = 'https://res.cloudinary.com/beta7x/image/upload/v1720840088/610-6104451_image-placeholder-png-user-profile-placeholder-image-png-removebg-preview_bccniu.png';
+        $this->user->setPassword($this->request->getPost('password'));
+        
+        $storeUser = $this->userModel->insert($this->user);
         if (!$storeUser) {
-            return redirect()->back()->withInput()->with('errors', $userModel->errors());
+            return redirect()->back()->withInput()->with('errors', $this->userModel->errors());
         }
-
-        $data = $userModel->where('email', $user->email)->first();
+        
+        $data = $this->userModel->where('email', $this->user->email)->first();
         $session_data = [
             'id' => $data->id,
             'name' => $data->name,
@@ -66,8 +98,23 @@ class UserController extends BaseController
             'logged_in' => TRUE,
         ];
         session()->set($session_data);
+        
+        $messages = ['Pengguna berhasil dibuat'];
+        
+        // $email = \Config\Services::email();
+        // $email->setFrom('no-reply@microsaas.my.id', 'Foodie Fiend');
+        // $email->setTo($this->user->email);
+        // $email->setSubject('Testing mailtrap');
+        // $email->setMessage('This is a test verification email using mailtrap in Codeigniter 4');
 
-        return redirect()->to('/')->with('messages', ['Pengguna berhasil dibuat']);
+        // if ($email->send()) {
+        //     array_push($messages, 'Email verifikasi terkirim');
+        // } else {
+        //     $this->logger->error($email->printDebugger(['headers']));
+        //     array_push($messages, $email->printDebugger(['headers']));
+        // }
+        
+        return redirect()->to('/')->with('messages', $messages);
     }
 
     // Fungsi untuk menampilkan halaman edit user
@@ -87,8 +134,7 @@ class UserController extends BaseController
     // Fungsi untuk update data user di database
     public function update($id)
     {
-        $userModel = new UserModel();
-        $user = $userModel->find($id);
+        $user = $this->userModel->find($id);
         
         if (!$user) {
             return redirect()->back()->with('errors', ['Pengguna tidak ditemukan']);
@@ -108,8 +154,8 @@ class UserController extends BaseController
         }
 
         // Validasi dan update
-        if (!$userModel->save($userEntity)) {
-            return redirect()->back()->withInput()->with('errors', $userModel->errors());
+        if (!$this->userModel->save($userEntity)) {
+            return redirect()->back()->withInput()->with('errors', $this->userModel->errors());
         }
 
         return redirect()->to('/users')->with('message', 'Pengguna berhasil diperbarui');

@@ -39,8 +39,8 @@
           <p class="leading-relaxed"><?= $data->description ?></p>
           <div class="flex mt-6 items-center pb-5 border-b-2 border-gray-700 mb-5">
 
-            <form id="formOrder" class="max-w-xs mx-auto" method="post">
-              <input type="text" name="menu_id" value="<?= $menu_id ?? 1 ?>" class="hidden">
+            <form id="formOrder" class="max-w-xs mx-auto" method="post" action="<?php echo '/chart/add/' . $data->id ?>">
+              <input type="text" name="menu_id" value="<?= $data->id ?>" class="hidden">
               <input type="text" name="price" value="<?= $data->price ?>" class="hidden" >
               <input type="text" name="menu_name" value="<?= $data->name ?>" class="hidden">
               <input type="text" name="menu_description" value="<?= $data->description ?>" class="hidden">

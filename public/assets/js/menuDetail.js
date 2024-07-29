@@ -25,6 +25,5 @@ document.getElementById('checkoutSubmit').addEventListener('click', function() {
 });
 
 document.getElementById('addToChartSubmit').addEventListener('click', function() {
-    formOrder.setAttribute('action', '/chart');
     document.getElementById('hiddenSubmit').click();
 });

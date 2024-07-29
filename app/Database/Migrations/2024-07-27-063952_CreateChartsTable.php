@@ -4,7 +4,7 @@ namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
-class CreateOrdersTable extends Migration
+class CreateChartsTable extends Migration
 {
     public function up()
     {
@@ -21,29 +21,15 @@ class CreateOrdersTable extends Migration
                 'type' => 'CHAR',
                 'constraint' => 36,
             ],
+            'store_id' => [
+                'type' => 'CHAR',
+                'constraint' => 36,
+            ],
             'quantity' => [
                 'type' => 'INT',
                 'constraint' => 3,
                 'unsigned' => true,
                 'default' => 1,
-            ],
-            'price' => [
-                'type' => 'DECIMAL',
-                'constraint' => '10,2',
-            ],
-            'total_price' => [
-                'type' => 'DECIMAL',
-                'constraint' => '10,2',
-            ],
-            'status' => [
-                'type' => 'ENUM',
-                'constraint' => ['pending', 'done', 'reject'],
-                'default' => 'pending',
-            ],
-            'is_delete' => [
-                'type' => 'TINYINT',
-                'constraint' => 1,
-                'default' => 0,
             ],
             'created_at' => [
                 'type' => 'DATETIME',
@@ -58,15 +44,14 @@ class CreateOrdersTable extends Migration
                 'null' => true,
             ],
         ]);
-
         $this->forge->addPrimaryKey('id');
         $this->forge->addForeignKey('user_id', 'users', 'id');
         $this->forge->addForeignKey('menu_id', 'menus', 'id');
-        $this->forge->createTable('orders', true);
+        $this->forge->createTable('charts', true);
     }
 
     public function down()
     {
-        $this->forge->dropTable('orders', true);
+        $this->forge->dropTable('charts', true);
     }
 }

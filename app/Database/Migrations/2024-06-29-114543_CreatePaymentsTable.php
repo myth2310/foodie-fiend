@@ -17,14 +17,10 @@ class CreatePaymentsTable extends Migration
                 'type' => 'CHAR',
                 'constraint' => 36,
             ],
-            'account_number' => [
-                'type' => 'VARCHAR',
-                'constraint' => '100',
-                'null' => true,
-            ],
-            'transaction_evidence' => [
-                'type' => 'TEXT',
-                'default' => null,
+            'status' => [
+                'type' => 'ENUM',
+                'constraint' => ['pending', 'success', 'reject'],
+                'default' => 'pending',
             ],
             'is_delete' => [
                 'type' => 'TINYINT',
@@ -48,9 +44,6 @@ class CreatePaymentsTable extends Migration
         $this->forge->addPrimaryKey('id');
         $this->forge->addForeignKey('order_id', 'orders', 'id');
         $this->forge->createTable('payments', true);
-
-        // Menambah kolom 'method' untuk metode pembayaran dengan type ENUM menggunakan query manual
-        $this->db->query("ALTER TABLE `payments` ADD `method` ENUM('cod', 'transfer') NOT NULL DEFAULT 'cod'");
     }
 
     public function down()

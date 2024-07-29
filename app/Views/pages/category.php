@@ -46,10 +46,10 @@
                     <p class="mb-0 text-sm leading-tight dark:text-white dark:opacity-80 text-slate-400"><?= $category->description ?></p>
                   </td>
                   <td class="p-2 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent space-x-4 items-center">
-                    <a href="javascript:;" class="font-semibold leading-tight dark:text-white dark:opacity-80 text-white bg-blue-600 px-3.5 py-1.5 rounded-md"> Edit </a>
+                    <a href="<?php echo '/dashboard/category/edit/' . $category->id ?>" class="leading-tight dark:text-white dark:opacity-80 text-white bg-blue-600 px-3.5 py-1.5 rounded-md"> Edit </a>
                     <form action="<?php echo '/data/category/delete/' . $category->id ?>" method="post" style="display:inline;">
                       <input type="hidden" name="<?= csrf_token() ?>" value="<?= csrf_hash() ?>" />
-                      <button class="font-semibold text-white bg-red-600 px-2 py-1 rounded-md"
+                      <button class="text-white bg-red-600 px-2 py-1 rounded-md"
                         type="submit" onclick="return confirm('Anda yakin akan menghapus kategori <?= $category->name ?>?');">Delete</button>
                     </form>
                   </td>
@@ -91,10 +91,11 @@
 
 <?= $this->section('scripts') ?>
   <!-- plugin for scrollbar  -->
+  <script src="<?= base_url('assets/js/utils.js') ?>"></script>
+  <script src="<?= base_url('assets/js/category.js') ?>" async></script>
   <script src="<?= base_url('assets/js/plugins/perfect-scrollbar.min.js') ?>" async></script>
   <!-- main script file  -->
   <script src="<?= base_url('assets/js/argon-dashboard-tailwind.js?v=1.0.1') ?>" async></script>
   <!-- plugin for charts  -->
   <script src="<?= base_url('assets/js/plugins/chartjs.min.js') ?>" async></script>
-  <script src="<?= base_url('assets/js/main.js') ?>" async></script>
 <?= $this->endSection() ?>

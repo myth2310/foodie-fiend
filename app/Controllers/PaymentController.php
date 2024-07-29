@@ -21,7 +21,7 @@ class PaymentController extends BaseController
             'order_id' => rand(),
             'gross_amount' => 10000, // Amount in IDR
         ];
-        $cutomer_detail = [
+        $customer_detail = [
             'first_name' => 'Widies Ade',
             'last_name' => 'Priyanto',
             'email' => 'adepriyantowidies@gmail.com',
@@ -29,7 +29,7 @@ class PaymentController extends BaseController
         ];
         $transaction_data = [
             'transaction_details' => $transaction_detail,
-            'customer_details' => $cutomer_detail,
+            'customer_details' => $customer_detail,
         ];
 
         $data['snapToken'] = $this->midtrans->getSnapToken($transaction_data);
@@ -40,7 +40,7 @@ class PaymentController extends BaseController
     {
         $notif = $this->midtrans->handleNotification();
 
-        $transaction = $notif->tranaction_status;
+        $transaction = $notif->transaction_status;
         $type = $notif->payment_type;
         $oreder_id = $notif->order_id;
         $fraud = $notif->fraud_status;

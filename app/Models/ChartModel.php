@@ -2,19 +2,19 @@
 
 namespace App\Models;
 
-use App\Entities\OrderEntity;
+use App\Entities\ChartEntity;
 use CodeIgniter\Model;
 use Ramsey\Uuid\Uuid;
 
-class OrderModel extends Model
+class ChartModel extends Model
 {
-    protected $table            = 'orders';
+    protected $table            = 'charts';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = false;
-    protected $returnType       = OrderEntity::class;
+    protected $returnType       = ChartEntity::class;
     protected $useSoftDeletes   = true;
     protected $protectFields    = true;
-    protected $allowedFields    = ['id', 'user_id', 'menu_id', 'quantity', 'price', 'total_price', 'status'];
+    protected $allowedFields    = ['id', 'user_id', 'menu_id', 'store_id', 'quantity'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -31,23 +31,27 @@ class OrderModel extends Model
 
     // Validation
     protected $validationRules      = [
-        'user_id' => 'required',
-        'menu_id' => 'required',
-        'quantity' => 'required',
-        'total_price' => 'required',
+        'user_id' => 'required|max_length[36]',
+        'menu_id' => 'required|max_length[36]',
+        'store_id' => 'required|max_length[36]',
+        'quantity' => 'required|max_length[3]',
     ];
     protected $validationMessages   = [
         'user_id' => [
-            'required' => 'Id user tidak boleh kosong.',
+            'required' => 'ID pengguna harus diisi',
+            'max_length' => 'ID pengguna tidak valid',
         ],
         'menu_id' => [
-            'required' => 'Id menu tidak boleh kosong.',
+            'required' => 'ID menu harus diisi',
+            'max_length' => 'ID menu tidak valid',
+        ],
+        'store_id' => [
+            'required' => 'ID toko harus diisi',
+            'max_length' => 'ID toko tidak valid',
         ],
         'quantity' => [
-            'required' => 'Jumlah pesanan tidak boleh kosong.',
-        ],
-        'total_price' => [
-            'required' => 'Total harga tidak boleh kosong.',
+            'required' => 'Jumlah item minimal 1',
+            'quantity' => 'Jumlah item terlalu banyak'
         ],
     ];
     protected $skipValidation       = false;
@@ -68,5 +72,13 @@ class OrderModel extends Model
     {
         $data['data']['id'] = Uuid::uuid7()->toString();
         return $data;
+    }
+
+    public function getAllChartWithMenu($user_id)
+    {
+        return $this->select('charts.*, menus.name as menu_name, menus.image_url as menu_img, menus.price as menu_price, stores.name as store_name')
+            ->join('menus', 'menus.id = charts.menu_id')
+            ->join('stores', 'stores.id = charts.store_id')
+            ->findAll();
     }
 }

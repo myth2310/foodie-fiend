@@ -24,7 +24,6 @@ class CreateMenusTable extends Migration
             'price' => [
                 'type' => 'DECIMAL',
                 'constraint' => '10,2',
-
             ],
             'description' => [
                 'type' => 'TEXT',

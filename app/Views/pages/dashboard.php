@@ -1,3 +1,10 @@
+<?php
+  $menus = $data['menus'];
+  $categories = $data['categories'];
+  $totalMenu = $data['menus']['totalMenu'];
+  $totalCategory = $data['categories']['totalCategory'];
+  // dd($totalCategory);
+?>
 <?= $this->extend('layouts/dashboard') ?>
 
 <?= $this->section('sidebar') ?>
@@ -89,22 +96,23 @@
           <div class="overflow-x-auto">
             <table class="items-center w-full mb-4 align-top border-collapse border-gray-200 dark:border-white/40">
               <tbody>
+                <?php foreach($menus['menus'] as $menu): ?>
                 <tr>
                   <td class="p-2 align-middle bg-transparent border-b w-3/10 whitespace-nowrap dark:border-white/40">
                     <div class="flex items-center px-2 py-1">
                       <div>
-                        <img src="./assets/img/icons/flags/US.png" alt="Country flag" />
+                        <img class="h-8 w-8 bg-cover rounded-lg" src="<?= $menu->image_url ?>" alt="Country flag" />
                       </div>
                       <div class="ml-6">
-                        <p class="mb-0 text-xs font-semibold leading-tight dark:text-white dark:opacity-60">Country:</p>
-                        <h6 class="mb-0 text-sm leading-normal dark:text-white">United States</h6>
+                        <p class="mb-0 text-xs font-semibold leading-tight dark:text-white dark:opacity-60"><?= $menu->name ?></p>
+                        <h6 class="mb-0 text-sm leading-normal dark:text-white"><?= $menu->description ?></h6>
                       </div>
                     </div>
                   </td>
                   <td class="p-2 align-middle bg-transparent border-b whitespace-nowrap dark:border-white/40">
                     <div class="text-center">
-                      <p class="mb-0 text-xs font-semibold leading-tight dark:text-white dark:opacity-60">Sales:</p>
-                      <h6 class="mb-0 text-sm leading-normal dark:text-white">2500</h6>
+                      <p class="mb-0 text-xs font-semibold leading-tight dark:text-white dark:opacity-60">Harga:</p>
+                      <h6 class="mb-0 text-sm leading-normal dark:text-white"><?= $menu->price ?></h6>
                     </div>
                   </td>
                   <td class="p-2 align-middle bg-transparent border-b whitespace-nowrap dark:border-white/40">
@@ -120,99 +128,7 @@
                     </div>
                   </td>
                 </tr>
-                <tr>
-                  <td class="p-2 align-middle bg-transparent border-b w-3/10 whitespace-nowrap dark:border-white/40">
-                    <div class="flex items-center px-2 py-1">
-                      <div>
-                        <img src="./assets/img/icons/flags/DE.png" alt="Country flag" />
-                      </div>
-                      <div class="ml-6">
-                        <p class="mb-0 text-xs font-semibold leading-tight dark:text-white dark:opacity-60">Country:</p>
-                        <h6 class="mb-0 text-sm leading-normal dark:text-white">Germany</h6>
-                      </div>
-                    </div>
-                  </td>
-                  <td class="p-2 align-middle bg-transparent border-b whitespace-nowrap dark:border-white/40">
-                    <div class="text-center">
-                      <p class="mb-0 text-xs font-semibold leading-tight dark:text-white dark:opacity-60">Sales:</p>
-                      <h6 class="mb-0 text-sm leading-normal dark:text-white">3.900</h6>
-                    </div>
-                  </td>
-                  <td class="p-2 align-middle bg-transparent border-b whitespace-nowrap dark:border-white/40">
-                    <div class="text-center">
-                      <p class="mb-0 text-xs font-semibold leading-tight dark:text-white dark:opacity-60">Value:</p>
-                      <h6 class="mb-0 text-sm leading-normal dark:text-white">$440,000</h6>
-                    </div>
-                  </td>
-                  <td class="p-2 text-sm leading-normal align-middle bg-transparent border-b whitespace-nowrap dark:border-white/40">
-                    <div class="flex-1 text-center">
-                      <p class="mb-0 text-xs font-semibold leading-tight dark:text-white dark:opacity-60">Bounce:</p>
-                      <h6 class="mb-0 text-sm leading-normal dark:text-white">40.22%</h6>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td class="p-2 align-middle bg-transparent border-b w-3/10 whitespace-nowrap dark:border-white/40">
-                    <div class="flex items-center px-2 py-1">
-                      <div>
-                        <img src="./assets/img/icons/flags/GB.png" alt="Country flag" />
-                      </div>
-                      <div class="ml-6">
-                        <p class="mb-0 text-xs font-semibold leading-tight dark:text-white dark:opacity-60">Country:</p>
-                        <h6 class="mb-0 text-sm leading-normal dark:text-white">Great Britain</h6>
-                      </div>
-                    </div>
-                  </td>
-                  <td class="p-2 align-middle bg-transparent border-b whitespace-nowrap dark:border-white/40">
-                    <div class="text-center">
-                      <p class="mb-0 text-xs font-semibold leading-tight dark:text-white dark:opacity-60">Sales:</p>
-                      <h6 class="mb-0 text-sm leading-normal dark:text-white">1.400</h6>
-                    </div>
-                  </td>
-                  <td class="p-2 align-middle bg-transparent border-b whitespace-nowrap dark:border-white/40">
-                    <div class="text-center">
-                      <p class="mb-0 text-xs font-semibold leading-tight dark:text-white dark:opacity-60">Value:</p>
-                      <h6 class="mb-0 text-sm leading-normal dark:text-white">$190,700</h6>
-                    </div>
-                  </td>
-                  <td class="p-2 text-sm leading-normal align-middle bg-transparent border-b whitespace-nowrap dark:border-white/40">
-                    <div class="flex-1 text-center">
-                      <p class="mb-0 text-xs font-semibold leading-tight dark:text-white dark:opacity-60">Bounce:</p>
-                      <h6 class="mb-0 text-sm leading-normal dark:text-white">23.44%</h6>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td class="p-2 align-middle bg-transparent border-0 w-3/10 whitespace-nowrap">
-                    <div class="flex items-center px-2 py-1">
-                      <div>
-                        <img src="./assets/img/icons/flags/BR.png" alt="Country flag" />
-                      </div>
-                      <div class="ml-6">
-                        <p class="mb-0 text-xs font-semibold leading-tight dark:text-white dark:opacity-60">Country:</p>
-                        <h6 class="mb-0 text-sm leading-normal dark:text-white">Brasil</h6>
-                      </div>
-                    </div>
-                  </td>
-                  <td class="p-2 align-middle bg-transparent border-0 whitespace-nowrap">
-                    <div class="text-center">
-                      <p class="mb-0 text-xs font-semibold leading-tight dark:text-white dark:opacity-60">Sales:</p>
-                      <h6 class="mb-0 text-sm leading-normal dark:text-white">562</h6>
-                    </div>
-                  </td>
-                  <td class="p-2 align-middle bg-transparent border-0 whitespace-nowrap">
-                    <div class="text-center">
-                      <p class="mb-0 text-xs font-semibold leading-tight dark:text-white dark:opacity-60">Value:</p>
-                      <h6 class="mb-0 text-sm leading-normal dark:text-white">$143,960</h6>
-                    </div>
-                  </td>
-                  <td class="p-2 text-sm leading-normal align-middle bg-transparent border-0 whitespace-nowrap">
-                    <div class="flex-1 text-center">
-                      <p class="mb-0 text-xs font-semibold leading-tight dark:text-white dark:opacity-60">Bounce:</p>
-                      <h6 class="mb-0 text-sm leading-normal dark:text-white">32.14%</h6>
-                    </div>
-                  </td>
-                </tr>
+                <?php endforeach ?>
               </tbody>
             </table>
           </div>
@@ -228,10 +144,11 @@
               <p class="text-center">Kategori kosong</p>
             <?php else: ?>
               <ul class="flex flex-col pl-0 mb-0 rounded-lg">
-                <?php foreach ($categories as $category): ?>
+                <?php foreach ($categories['categories'] as $category): ?>
                   <li class="relative flex justify-between py-2 pr-4 mb-2 border-0 rounded-t-lg rounded-xl text-inherit">
                     <div class="flex items-center">
-                      <div class="inline-block w-8 h-8 mr-4 text-center text-black bg-center shadow-sm fill-current stroke-none bg-gradient-to-tl from-zinc-800 to-zinc-700 dark:bg-gradient-to-tl dark:from-slate-750 dark:to-gray-850 rounded-xl">
+                      <div class="items-center justify-center flex w-8 h-8 mr-4 text-center text-black bg-center shadow-sm fill-current stroke-none bg-gradient-to-tl from-red-500 to-orange-400 dark:bg-gradient-to-tl dark:from-slate-750 dark:to-gray-850 rounded-xl">
+                        <i class="ni leading-none ni-paper-diploma text-lg relative text-white"></i>
                       </div>
                       <div class="flex flex-col">
                         <h6 class="mb-1 text-sm leading-normal text-slate-700 dark:text-white"><?= $category->name ?></h6>

@@ -22,7 +22,7 @@ class RecommendationController extends BaseController
 
     public function rating($ratting)
     {
-        return view('pages/recommendation_ratting', ['data' => []]);
+        return view('pages/recommendation_rating', ['data' => []]);
     }
 
     private function getCategories($menus)
@@ -66,5 +66,14 @@ class RecommendationController extends BaseController
 
         foreach ($nearestMenus as $menuId) {
         }
+    }
+
+    public function invokePython()
+    {
+        $pythonPath = getenv("PYTHON_PATH");
+        $command = escapeshellcmd("{$pythonPath} scripts/recommendation.py");
+        $output = shell_exec($command);
+
+        return view('pages/recommendation_rating', ['output' => $output]);
     }
 }

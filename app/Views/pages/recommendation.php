@@ -12,10 +12,10 @@
   <section>
     <div class="w-full p-10">
       <div class="flex flex-wrap">
-        <!-- Ratin Card 1 -->
+        <!-- Card Rating 1 -->
         <div class="w-full max-w-full px-3 mb-6 sm:w-1/2 sm:flex-none xl:mb-0 xl:w-1/4">
-          <a href="#">
-            <div class="relative flex flex-col min-w-0 break-words bg-white shadow-xl dark:bg-slate-850 dark:shadow-dark-xl rounded-2xl bg-clip-border">
+          <a href="<?= base_url('recommendation/rating/4') ?>">
+            <div class="relative flex flex-col min-w-0 break-words bg-white shadow-xl dark:shadow-dark-xl rounded-2xl bg-clip-border">
               <img src="https://images.squarespace-cdn.com/content/v1/61709486e77e1d27c181981c/1695741276685-XWI9NVDGPAOSWY1U4C3Q/Urbanspace+Pearl_Sweets+and+Savory.jpg" alt="foto kumpulan menu" class="rounded-t-2xl">
               <div class="flex-auto p-4">
                 <div class="flex flex-row -mx-3">
@@ -39,22 +39,16 @@
                       </div>
                     </div>
                   </div>
-                  <!-- <div class="px-3 text-right basis-1/3">
-                    <div class="inline-block w-12 h-12 text-center rounded-full bg-gradient-to-tl from-green-500 to-yellow-500">
-                      <i class="ni leading-none ni-money-coins text-lg relative top-3.5 text-white"></i>
-                      <p>4</p>
-                    </div>
-                  </div> -->
                 </div>
               </div>
             </div>
           </a>
         </div>
 
-        <!-- Rating Card 2 -->
+        <!-- Card Rating 2 -->
         <div class="w-full max-w-full px-3 mb-6 sm:w-1/2 sm:flex-none xl:mb-0 xl:w-1/4">
-          <a href="#">
-            <div class="relative flex flex-col min-w-0 break-words bg-white shadow-xl dark:bg-slate-850 dark:shadow-dark-xl rounded-2xl bg-clip-border">
+          <a href="<?= base_url('recommendation/rating/3') ?>">
+            <div class="relative flex flex-col min-w-0 break-words bg-white shadow-xl dark:shadow-dark-xl rounded-2xl bg-clip-border">
               <img src="https://images.squarespace-cdn.com/content/v1/61709486e77e1d27c181981c/1695741249747-UZPHLNZ0W1P7ZY52V2Y5/0223_UrbanSpace_ZeroIrving_LizClayman_160.png" alt="foto kumpulan menu" class="rounded-t-2xl">
               <div class="flex-auto p-4">
                 <div class="flex flex-row -mx-3">
@@ -75,21 +69,16 @@
                         </div>
                     </div>
                   </div>
-                  <!-- <div class="px-3 text-right basis-1/3">
-                    <div class="inline-block w-12 h-12 text-center rounded-full bg-gradient-to-tl from-blue-500 to-violet-500">
-                      <i class="ni leading-none ni-money-coins text-lg relative top-3.5 text-white"></i>
-                    </div>
-                  </div> -->
                 </div>
               </div>
             </div>
           </a>
         </div>
 
-        <!-- Rating Card 3 -->
+        <!-- Card Rating 3 -->
         <div class="w-full max-w-full px-3 mb-6 sm:w-1/2 sm:flex-none xl:mb-0 xl:w-1/4">
-          <a href="#">
-            <div class="relative flex flex-col min-w-0 break-words bg-white shadow-xl dark:bg-slate-850 dark:shadow-dark-xl rounded-2xl bg-clip-border">
+          <a href="<?= base_url('recommendation/rating/2') ?>">
+            <div class="relative flex flex-col min-w-0 break-words bg-white shadow-xl dark:shadow-dark-xl rounded-2xl bg-clip-border">
               <img src="https://images.squarespace-cdn.com/content/v1/61709486e77e1d27c181981c/1695741294706-TCZXFWU0USDYHRWLWI1W/UrbanSpaceFiDi_0622_LizClayman_0315.jpg" alt="foto kumpulan menu" class="rounded-t-2xl">
               <div class="flex-auto p-4">
                 <div class="flex flex-row -mx-3">
@@ -107,21 +96,16 @@
                         </div>
                     </div>
                   </div>
-                  <!-- <div class="px-3 text-right basis-1/3">
-                    <div class="inline-block w-12 h-12 text-center rounded-full bg-gradient-to-tl from-blue-500 to-violet-500">
-                      <i class="ni leading-none ni-money-coins text-lg relative top-3.5 text-white"></i>
-                    </div>
-                  </div> -->
                 </div>
               </div>
             </div>
           </a>
         </div>
 
-        <!-- Rating Card 4 -->
+        <!-- Card Rating 4 -->
         <div class="w-full max-w-full px-3 mb-6 sm:w-1/2 sm:flex-none xl:mb-0 xl:w-1/4">
-          <a href="#">
-            <div class="relative flex flex-col min-w-0 break-words bg-white shadow-xl dark:bg-slate-850 dark:shadow-dark-xl rounded-2xl bg-clip-border">
+          <a href="<?= base_url('recommendation/rating/1') ?>">
+            <div class="relative flex flex-col min-w-0 break-words bg-white shadow-xl dark:shadow-dark-xl rounded-2xl bg-clip-border">
               <img src="https://images.squarespace-cdn.com/content/v1/61709486e77e1d27c181981c/1695741277156-OMOA8F2CO65CT0X4IGZG/Urbanspace+Pearl_Savory+Selection+2.jpeg" alt="foto kumpulan menu" class="rounded-t-2xl">
               <div class="flex-auto p-4">
                 <div class="flex flex-row -mx-3">
@@ -136,23 +120,12 @@
                         </div>
                     </div>
                   </div>
-                  <!-- <div class="px-3 text-right basis-1/3">
-                    <div class="inline-block w-12 h-12 text-center rounded-full bg-gradient-to-tl from-blue-500 to-violet-500">
-                    <i class="fa-solid fa-utensils text-lg relative top-3.5 text-white"></i>
-                    </div>
-                  </div> -->
                 </div>
               </div>
             </div>
           </a>
         </div>
 
-        <!-- Rekomendasi untuk kamu Start -->
-        <div class="mt-8 px-3">
-          <h2 class="text-xl font-semibold text-gray-700">Rekomendasi untuk kamu</h2>
-          <?= $this->include('components/item_card') ?>
-        </div>
-        <!-- Rekomendasi untuk kamu End -->
       </div>
     </div>
   </section>

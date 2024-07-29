@@ -10,7 +10,7 @@
         </button>
       </div>
       <h2 class="text-2xl font-bold mb-4 dark:text-white">Buat Akun</h2>
-      <form action="/users/store" class="mb-2" method="post">
+      <form action="/register" class="mb-2" method="post">
         <?= csrf_field() ?>
         <div class="mb-4">
           <input name="name" placeholder="Nama Lengkap" type="text" class="w-full p-2 border-2 text-center border-gray-300 dark:border-gray-700 dark:focus:ring-yellow-300 rounded mt-1 dark:bg-gray-500 dark:text-white">

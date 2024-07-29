@@ -6,16 +6,6 @@ use App\Models\UserModel;
 
 class AuthController extends BaseController
 {
-    public function register(): string
-    {
-        return view('pages/signup');
-    }
-
-    public function login(): string
-    {
-        $data = ['title' => 'Halaman Daftar'];
-        return view('pages/login', $data);
-    }
     public function authenticate()
     {
         $session = session();
@@ -31,7 +21,7 @@ class AuthController extends BaseController
 
             if ($authenticatePassword) {
                 $session_data = [
-                    'id' => $data->id,
+                    'user_id' => $data->id,
                     'name' => $data->name,
                     'email' => $data->email,
                     'phone' => $data->phone,

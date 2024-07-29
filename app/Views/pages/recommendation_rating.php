@@ -15,6 +15,9 @@
 <?= $this->endSection() ?>
 
 <?= $this->section('scripts') ?>
+    <script>
+        console.log("Output: <?= $output ?>");
+    </script>
     <script src="<?= base_url('assets/js/recommendation.js') ?>"></script>
     <script src="<?= base_url('assets/js/chartDropDown.js') ?>"></script>
     <script src="<?= base_url('assets/js/modalAuthForm.js') ?>"></script>

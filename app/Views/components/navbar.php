@@ -61,7 +61,7 @@
           <a href="/" id="homeMenuBtn" class="block py-2 px-3 text-yellow-500 text-lg md:text-lg hover:text-yellow-500 dark:text-white transition-all ease-in-out duration-150 rounded md:bg-transparent md:p-0 font-semibold focus:ring-4 focus:outline-none focus:ring-yellow-300 focus:text-yellow-500" aria-current="page">Beranda</a>
         </li>
         <li>
-          <a href="/recommendation" id="recommendationMenuBtn" class="block py-2 px-3 text-gray-900 hover:text-yellow-500 rounded hover:bg-gray-100 md:hover:bg-transparent md:p-0 dark:text-white dark:hover:bg-gray-700 md:dark:hover:bg-transparent dark:border-gray-700 font-semibold transition-all duration-150 ease-in-out focus:ring-4 focus:outline-none focus:ring-yellow-300 focus:text-yellow-500">Rekomendasi Kuliner</a>
+          <a href="/recommendations" id="recommendationMenuBtn" class="block py-2 px-3 text-gray-900 hover:text-yellow-500 rounded hover:bg-gray-100 md:hover:bg-transparent md:p-0 dark:text-white dark:hover:bg-gray-700 md:dark:hover:bg-transparent dark:border-gray-700 font-semibold transition-all duration-150 ease-in-out focus:ring-4 focus:outline-none focus:ring-yellow-300 focus:text-yellow-500">Rekomendasi Kuliner</a>
         </li>
         <li>
           <a href="/orders" id="myOrderMenuBtn" class="block py-2 px-3 text-gray-900 hover:text-yellow-500 transition-all duration-150 rounded hover:bg-gray-100 md:hover:bg-transparent md:p-0 dark:text-white dark:hover:bg-gray-700 md:dark:hover:bg-transparent dark:border-gray-700 font-semibold ease-in-out focus:ring-4 focus:outline-none focus:ring-yellow-300 focus:text-yellow-500">Pesanan Saya</a>

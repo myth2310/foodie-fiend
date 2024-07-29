@@ -6,6 +6,7 @@ use App\Controllers\BaseController;
 use App\Entities\StoreEntity;
 use App\Entities\UserEntity;
 use App\Helpers\CloudinaryHelper;
+use App\Models\ChartModel;
 use App\Models\StoreModel;
 use App\Models\UserModel;
 use CodeIgniter\HTTP\ResponseInterface;
@@ -13,10 +14,20 @@ use Exception;
 
 class StoreController extends BaseController
 {
+    protected $chartModel;
+
+    public function __construct()
+    {
+        $this->chartModel = new ChartModel();
+    }
+
     // Fungsi untuk menampilkan halaman toko
     public function index()
     {
-        $data = ['hero_img' => 'https://images.squarespace-cdn.com/content/v1/61709486e77e1d27c181981c/1695741249747-UZPHLNZ0W1P7ZY52V2Y5/0223_UrbanSpace_ZeroIrving_LizClayman_160.png'];
+        $data = [
+            'hero_img' => 'https://images.squarespace-cdn.com/content/v1/61709486e77e1d27c181981c/1695741249747-UZPHLNZ0W1P7ZY52V2Y5/0223_UrbanSpace_ZeroIrving_LizClayman_160.png',
+        ];
+
         return view('pages/detail_shop', $data);
     }
 
@@ -39,10 +50,12 @@ class StoreController extends BaseController
         $storeModel = new StoreModel();
         $menuController = new MenuController();
         $categoryController = new CategoryController();
+        $user_id = session()->get('user_id');
+        $charts = $this->chartModel->getAllChartWithMenu($user_id);
 
         $store = $storeModel->find($id);
         $dataMenu = $menuController->getAll($id);
-        $categories = $categoryController->get($id);
+        $categories = $categoryController->getByStoreId($id);
 
         if (!$store) {
             session()->setFlashdata('errors', ['Toko tidak ditemukan']);
@@ -53,6 +66,8 @@ class StoreController extends BaseController
             'menus' => $dataMenu,
             'categories' => $categories,
             'hero_img' => $store->image_url,
+            'charts' => $charts,
+            'title' => $store->name,
             'use_hero_text' => false,
         ]);
     }
