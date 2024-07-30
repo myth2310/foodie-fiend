@@ -16,7 +16,7 @@
         </a>
         <div class="mt-4 px-5 pb-5 space-y-3">
           <h5 class="text-lg font-semibold tracking-tight text-slate-900"><?= $store->name ?? "" ?></h5>
-          <a href="<?= base_url('stores/' . $store->id) ?>" class="flex items-center justify-center rounded-md bg-slate-900 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-blue-300">
+          <a href="<?= base_url('stores/' . $store->id) ?>" class="flex items-center justify-center rounded-md bg-yellow-500 px-5 py-2.5 text-center font-medium text-white transition-all duration-150 ease-in-out hover:bg-yellow-700 focus:outline-none focus:ring-4 focus:ring-blue-300">
             Lihat
           </a>
         </div>

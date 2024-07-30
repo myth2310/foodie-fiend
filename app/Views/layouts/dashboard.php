@@ -23,10 +23,10 @@
     <link href="<?= base_url('assets/css/styles.css') ?>" rel="stylesheet" />
   </head>
 
-  <body class="dark:bg-slate-900">
+  <body>
     <?= $this->renderSection('modal', true) ?>
-    <div class="m-0 font-sans text-base antialiased font-normal dark:bg-slate-900 leading-default bg-gray-50 text-slate-500">
-      <div class="absolute w-full bg-orange-500 dark:hidden min-h-72"></div>
+    <div class="m-0 font-sans text-base antialiased font-normal leading-default bg-gray-50 text-slate-500">
+      <div class="absolute w-full bg-orange-500 min-h-72"></div>
 
       <!-- Sidebar Section -->
       <?= $this->renderSection('sidebar', true) ?>
