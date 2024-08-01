@@ -48,8 +48,15 @@ $routes->group('/data', function($routes) {
 
 // Auth route
 $routes->post('/register', 'UserController::store');
-$routes->post('/login', 'AuthController::authenticate');
+$routes->group('/login', function($routes) {
+    $routes->post('', 'AuthController::authenticate');
+    $routes->get('otp', 'AuthController::otpLogin');
+});
 $routes->get('/logout', 'AuthController::logout');
+$routes->group('/verification', function($routes) {
+    $routes->get('user/(:any)', 'UserController::verificate/$1');
+    $routes->post('otp', 'AuthController::verifyOTP');
+});
 
 // User group
 $routes->group('/user', function($routes) {
@@ -99,3 +106,6 @@ $routes->group('chart', function($routes) {
     $routes->post('add/(:any)', 'ChartController::addToChart/$1');
     $routes->post('remove/(:any)', 'ChartController::removeFromChart/$1');
 });
+
+// Test email invoke
+$routes->post('email/invoke', 'EmailController::sendVerification');

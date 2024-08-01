@@ -43,7 +43,7 @@
                   </a>
                   <div class="mt-2 mb-1 flex items-center justify-between">
                     <p>
-                      <span class="text-md font-bold text-slate-900">Rp. <?= $menu->price?></span>
+                      <span class="text-md font-bold text-slate-900">Rp. <?php echo "" . number_format($menu->price + 0, 0, ',', '.') ?></span>
                     </p>
                   </div>
                   <div class="flex justify-end items-center mb-4">

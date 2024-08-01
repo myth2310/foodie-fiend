@@ -14,7 +14,7 @@ class UserModel extends Model
     protected $returnType       = UserEntity::class;
     protected $useSoftDeletes   = true;
     protected $protectFields    = true;
-    protected $allowedFields    = ['id', 'name', 'email', 'phone', 'password', 'profile', 'role'];
+    protected $allowedFields    = ['id', 'name', 'email', 'phone', 'password', 'profile', 'role', 'is_verif', 'verification_token'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;

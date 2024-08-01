@@ -6,6 +6,7 @@ use App\Controllers\BaseController;
 use App\Entities\UserEntity;
 use App\Models\ChartModel;
 use App\Models\OrderModel;
+use App\Models\StoreModel;
 use App\Models\UserModel;
 use CodeIgniter\HTTP\ResponseInterface;
 
@@ -14,8 +15,9 @@ class UserController extends BaseController
     protected $user;
     protected $userModel;
     protected $chartModel;
-
     protected $orderModel;
+    protected $storeModel;
+    protected $emailController;
 
     public function __construct()
     {
@@ -23,6 +25,8 @@ class UserController extends BaseController
         $this->userModel = new UserModel();
         $this->chartModel = new ChartModel();
         $this->orderModel = new OrderModel();
+        $this->storeModel = new StoreModel();
+        $this->emailController = new EmailController();
     }
 
     // Fungsi menampilkan semua user
@@ -80,38 +84,32 @@ class UserController extends BaseController
         $this->user->profile = 'https://res.cloudinary.com/beta7x/image/upload/v1720840088/610-6104451_image-placeholder-png-user-profile-placeholder-image-png-removebg-preview_bccniu.png';
         $this->user->setPassword($this->request->getPost('password'));
         
+        // Buat token untuk verifikasi pengguna
+        $token = bin2hex(random_bytes(16));
+        $this->user->verification_token = $token;
+
         $storeUser = $this->userModel->insert($this->user);
         if (!$storeUser) {
             return redirect()->back()->withInput()->with('errors', $this->userModel->errors());
         }
         
         $data = $this->userModel->where('email', $this->user->email)->first();
-        $session_data = [
-            'id' => $data->id,
-            'name' => $data->name,
-            'email' => $data->email,
-            'phone' => $data->phone,
-            'role' => $data->role,
-            'profile' => $data->profile,
-            'logged_in' => TRUE,
-        ];
-        session()->set($session_data);
+        switch ($data->role) {
+            case 'store':
+                $this->setSession($data, true);
+                break;
+            default:
+                $this->setSession($data);
+                break;
+        }
         
         $messages = ['Pengguna berhasil dibuat'];
         
-        // $email = \Config\Services::email();
-        // $email->setFrom('no-reply@microsaas.my.id', 'Foodie Fiend');
-        // $email->setTo($this->user->email);
-        // $email->setSubject('Testing mailtrap');
-        // $email->setMessage('This is a test verification email using mailtrap in Codeigniter 4');
+        if (!$this->emailController->sendVerification($data->email, $data->name, $token)) {
+            return redirect()->to('/')->with('errors', ['Gagal mengirim email verifikasi']);
+        }
 
-        // if ($email->send()) {
-        //     array_push($messages, 'Email verifikasi terkirim');
-        // } else {
-        //     $this->logger->error($email->printDebugger(['headers']));
-        //     array_push($messages, $email->printDebugger(['headers']));
-        // }
-        
+        array_push($messages, 'Email verifikasi berhasil terkirim');
         return redirect()->to('/')->with('messages', $messages);
     }
 
@@ -157,5 +155,51 @@ class UserController extends BaseController
         }
 
         return redirect()->to('/users')->with('message', 'Pengguna berhasil diperbarui');
+    }
+
+    // Fungsi verifikasi email pengguna
+    public function verificate($token)
+    {
+        $user = $this->userModel->where('verification_token', $token)->first();
+
+        if ($user) {
+            $this->userModel->update($user->id, [
+                'is_verif' => 1,
+                'verification_token' => null,
+            ]);
+
+            switch ($user->role) {
+                case 'store':
+                    $this->setSession($user, true);
+                    break;
+                default:
+                    $this->setSession($user);
+                    break;
+            }
+
+            return redirect()->to('/')->with('messages', ['Berhasil verifikasi email pengguna']);
+        } else {
+            return redirect()->to('/')->with('errors', ['Gagal verifikasi email pengguna']);
+        }
+    }
+
+    // Fungsi untuk setting session pengguna
+    public function setSession($data, $with_storeId = false)
+    {
+        $session_data = [
+            'user_id' => $data->id,
+            'name' => $data->name,
+            'email' => $data->email,
+            'phone' => $data->phone,
+            'role' => $data->role,
+            'profile' => $data->profile,
+            'logged_in' => TRUE,
+        ];
+        if ($with_storeId) {
+            $store_id = $this->storeModel->where('user_id', $data->id)->first();
+            $session_data['store_id'] = $store_id->id;
+        }
+
+        session()->set($session_data);
     }
 }

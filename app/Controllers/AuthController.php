@@ -6,36 +6,56 @@ use App\Models\UserModel;
 
 class AuthController extends BaseController
 {
+    protected $userModel;
+    protected $storeModel;
+    protected $userController;
+    protected $otpController;
+
+    public function __construct()
+    {
+        $this->userModel = new UserModel();
+        $this->storeModel = new StoreModel();
+        $this->userController = new UserController();
+        $this->otpController = new OTPController();
+    }
+
+    public function otpLogin()
+    {
+        return view('pages/otp_login');
+    }
+
+    public function verifyOTP() {
+        $secret = getenv('OTP_SECRET_KEY');
+        $otp_code = $this->request->getPost('otp_code');
+
+        if (!$this->otpController->validateOTP($secret, $otp_code)) {
+            return redirect()->back()->with('errors', ['Gagal verifikasi kode OTP']);
+        }
+
+        return redirect()->to('/')->with('messages', ['Berhasil verifikasi kode OTP']);
+    }
+
     public function authenticate()
     {
         $session = session();
-        $model = new UserModel();
-        $storeModel = new StoreModel();
         $email = $this->request->getPost('email');
         $password = $this->request->getPost('password');
 
-        $data = $model->where('email', $email)->first();
+        $data = $this->userModel->where('email', $email)->first();
         if ($data) {
             $passwordHash = $data->password;
             $authenticatePassword = password_verify($password, $passwordHash);
 
             if ($authenticatePassword) {
-                $session_data = [
-                    'user_id' => $data->id,
-                    'name' => $data->name,
-                    'email' => $data->email,
-                    'phone' => $data->phone,
-                    'role' => $data->role,
-                    'profile' => $data->profile,
-                    'logged_in' => TRUE,
-                ];
-
-                if ($data->role == 'store') {
-                    $store_id = $storeModel->select('id')->where('user_id', $data->id)->first();
-                    $session_data['store_id'] = $store_id;
+                switch ($data->role) {
+                    case 'store':
+                        $this->userController->setSession($data, true);
+                        break;
+                    default:
+                        $this->userController->setSession($data);
+                        break;
                 }
 
-                $session->set($session_data);
                 $session->setFlashdata('messages', ['Sukses login']);
 
                 if ($data->role == 'store' || $data->role == 'admin') {

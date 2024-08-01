@@ -63,7 +63,7 @@
 
           </div>
           <div class="flex">
-            <span class="title-font font-medium text-2xl text-gray-800 dark:text-white">Rp <?= $data->price ?></span>
+            <span class="title-font font-medium text-2xl text-gray-800 dark:text-white">Rp <?php echo "" . number_format($data->price + 0, 0, ',', '.') ?></span>
             <button id="checkoutSubmit" type="button" class="flex ml-auto text-white bg-yellow-500 border-0 py-2 px-6 focus:outline-none transition-all duration-150 ease-in-out hover:bg-yellow-600 rounded-lg">Pesan sekarang</button>
             <button id="addToChartSubmit" class="pl-2 item-center rounded-full w-10 h-10 bg-yellow-500 p-0 transition-all duration-150 ease-in-out hover:bg-yellow-600 outline-2 outline-yellow-700 border-0 inline-flex items-center justify-center text-white ml-4">
               <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -81,7 +81,7 @@
   <section class="px-20 pb-24 dark:bg-gray-800">
     <div class="container px-10 mx-auto bg-white dark:bg-gray-700 rounded-lg">
       <div class="flex items-center pt-8">
-       <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Ulasan semua pembeli</h2>
+       <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Semua ulasan</h2>
       </div>
       <div class="py-8">
         <ul id="listReview">
