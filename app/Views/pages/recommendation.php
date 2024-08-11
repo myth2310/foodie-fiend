@@ -1,4 +1,3 @@
-<?php dd($menus) ?>
 <?= $this->extend('layouts/base') ?>
 <?= $this->section('content') ?>
   <?= $this->include('partial/preloader') ?>
