@@ -24,7 +24,7 @@ class CreateUsersTable extends Migration
             ],
             'phone' => [
                 'type' => 'VARCHAR',
-                'constraint' => '15',
+                'constraint' => '20',
                 'unique' => true,
             ],
             'password' => [
