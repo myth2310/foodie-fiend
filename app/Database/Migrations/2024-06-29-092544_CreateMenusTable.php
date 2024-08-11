@@ -27,6 +27,7 @@ class CreateMenusTable extends Migration
             ],
             'description' => [
                 'type' => 'TEXT',
+                'default' => '',
             ],
             'category' => [
                 'type' => 'VARCHAR',
