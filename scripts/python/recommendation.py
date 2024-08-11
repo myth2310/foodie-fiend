@@ -9,7 +9,9 @@ config = {
     'user': 'foodies',
     'password': 'foodies13245768',
     'host': '127.0.0.1',
-    'database': 'foodie_fiend_test'
+    'database': 'foodie_fiend_test',
+    'charset': 'utf8mb4',
+    'collation':'utf8mb4_unicode_ci',
 }
 
 # fungsi untuk mengambil data ulasan di database
