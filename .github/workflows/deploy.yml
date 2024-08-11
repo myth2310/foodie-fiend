@@ -3,11 +3,14 @@ name: CI/CD Pipeline
 on:
   push:
     brances:
+      - main
       - development
 
 jobs:
-  deployment:
+  deployment-production:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+
     steps:
     # Deploy start
       - name: Deployment
@@ -19,6 +22,28 @@ jobs:
           port: 22
           script: |
             cd /var/www/html/foodie-fiend
+            git stash
+            git pull origin main
+            git status
+            git stash pop
+            exec bash
+            composer update
+
+  deployment-development:
+    if: github.ref == 'refs/head/develoment'
+    runs-on: ubuntu-latest
+
+    steps:
+    # Deploy start
+      - name: Deployment
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            cd /var/www/html/dev-foodie
             git stash
             git pull origin development
             git status

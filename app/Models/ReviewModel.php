@@ -69,4 +69,28 @@ class ReviewModel extends Model
         $data['data']['id'] = Uuid::uuid7()->toString();
         return $data;
     }
+
+    public function getReviewWithUser($menu_id)
+    {
+        return $this->select('reviews.*, users.name as user_name, users.profile as user_profile')
+                    ->join('users', 'reviews.user_id = users.id')
+                    ->where('reviews.menu_id', $menu_id)
+                    ->findAll();
+    }
+
+    public function countMenusWithRating()
+    {
+        $rating_1 = $this->select('menu_id')->groupBy('menu_id')->having('AVG(rating)', 1)->countAllResults();
+        $rating_2 = $this->select('menu_id')->groupBy('menu_id')->having('AVG(rating)', 2)->countAllResults();
+        $rating_3 = $this->select('menu_id')->groupBy('menu_id')->having('AVG(rating)', 3)->countAllResults();
+        $rating_4 = $this->select('menu_id')->groupBy('menu_id')->having('AVG(rating)', 4)->countAllResults();
+        $ratings = [
+            'rating_1' => $rating_1,
+            'rating_2' => $rating_2,
+            'rating_3' => $rating_3,
+            'rating_4' => $rating_4,
+        ];
+
+        return $ratings;
+    }
 }

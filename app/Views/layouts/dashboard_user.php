@@ -60,6 +60,28 @@
     <!-- Main Content End -->
   </div>
   <?= $this->renderSection('scripts') ?>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+  <script>
+      <?php if (session()->has('messages')): ?>
+          <?php $messages = session('messages') ?>
+          <?php foreach ($messages as $key => $message): ?>
+              toastr.success('<?php echo $message ?>');
+          <?php endforeach ?>
+      <?php endif; ?>
+      <?php if (session()->has('errors')): ?>
+          <?php $errors = session('errors') ?>
+          <?php foreach ($errors as $key => $eror): ?>
+              toastr.error("<?php echo $eror ?>");
+          <?php endforeach ?>
+      <?php endif ?>
+      <?php if (session()->has('warning')): ?>
+          toastr.warning('<?= session('warning') ?>');
+      <?php endif ?>
+      <?php if (session()->has('info')): ?>
+          toastr.info('<?= session('info') ?>');
+      <?php endif ?>
+  </script>
 </body>
 </html>
 

@@ -25,8 +25,8 @@ class CreateReviewsTable extends Migration
                 'type' => 'TEXT',
             ],
             'rating' => [
-                'type' => 'DECIMAL',
-                'constraint' => '3,1',
+                'type' => 'INT',
+                'constraint' => '1',
             ],
             'is_delete' => [
                 'type' => 'TINYINT',

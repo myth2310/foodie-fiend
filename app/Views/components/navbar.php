@@ -63,9 +63,9 @@
         <li>
           <a href="/recommendations" id="recommendationMenuBtn" class="block py-2 px-3 text-gray-900 hover:text-yellow-500 rounded hover:bg-gray-100 md:hover:bg-transparent md:p-0 font-semibold transition-all duration-150 ease-in-out focus:ring-4 focus:outline-none focus:ring-yellow-300 focus:text-yellow-500">Rekomendasi Kuliner</a>
         </li>
-        <li>
+        <!-- <li>
           <a href="/orders" id="myOrderMenuBtn" class="block py-2 px-3 text-gray-900 hover:text-yellow-500 transition-all duration-150 rounded hover:bg-gray-100 md:hover:bg-transparent md:p-0 font-semibold ease-in-out focus:ring-4 focus:outline-none focus:ring-yellow-300 focus:text-yellow-500">Pesanan Saya</a>
-        </li>
+        </li> -->
       </ul>
     </div>
   </div>

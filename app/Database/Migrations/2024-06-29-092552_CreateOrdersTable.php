@@ -13,9 +13,17 @@ class CreateOrdersTable extends Migration
                 'type' => 'CHAR',
                 'constraint' => 36,
             ],
+            'order_id' => [
+                'type' => 'CHAR',
+                'constraint' => 36,
+            ],
             'user_id' => [
                 'type' => 'CHAR',
                 'constraint' => 36,
+            ],
+            'store_id' => [
+                'type' => 'CHAR',
+                'constraint' => 36, 
             ],
             'menu_id' => [
                 'type' => 'CHAR',
@@ -37,8 +45,8 @@ class CreateOrdersTable extends Migration
             ],
             'status' => [
                 'type' => 'ENUM',
-                'constraint' => ['pending', 'done', 'reject'],
-                'default' => 'pending',
+                'constraint' => ['ditunda', 'diproses', 'selesai', 'dibatalkan', 'kadaluwarsa'],
+                'default' => 'ditunda',
             ],
             'is_delete' => [
                 'type' => 'TINYINT',
@@ -61,6 +69,7 @@ class CreateOrdersTable extends Migration
 
         $this->forge->addPrimaryKey('id');
         $this->forge->addForeignKey('user_id', 'users', 'id');
+        $this->forge->addForeignKey('store_id', 'stores', 'id');
         $this->forge->addForeignKey('menu_id', 'menus', 'id');
         $this->forge->createTable('orders', true);
     }

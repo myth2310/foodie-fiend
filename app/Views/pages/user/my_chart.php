@@ -1,5 +1,4 @@
 <?= $this->extend('layouts/dashboard_user') ?>
-
 <?= $this->section('navbar') ?>
   <nav class="text-gray-500 space-y-1">
     <a href="/user/dashboard" class="flex items-center py-2.5 px-4 rounded-lg transition duration-200 hover:font-semibold hover:bg-white hover:shadow-lg hover:text-gray-500" id="profile-link">
@@ -56,7 +55,13 @@
                   </div>
                 </a>
               </div>
-              <div class="flex justify-end items-center w-1/2 space-x-6">
+              <div class="flex justify-end items-center w-1/2 space-x-3">
+                <form action="/chart/remove" method="post">
+                  <input type="text" name="chart_id" value="<?= $item->id ?>" class="hidden">
+                  <button type="submit" class="px-4 py-2 text-white text-base font-medium bg-red-600 transition ease-in-out duration-300 hover:bg-orange-700 rounded-md">
+                    Hapus
+                  </button>
+                </form>
                 <a href="#" class="text-white text-base font-medium">
                   <div class="px-4 py-2 bg-orange-500 transition ease-in-out duration-300 hover:bg-orange-700 rounded-md">
                     <p>Checkout</p>

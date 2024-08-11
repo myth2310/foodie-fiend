@@ -38,7 +38,7 @@ class ChartModel extends Model
     ];
     protected $validationMessages   = [
         'user_id' => [
-            'required' => 'ID pengguna harus diisi',
+            'required' => 'Anda harus masuk terlebih dahulu',
             'max_length' => 'ID pengguna tidak valid',
         ],
         'menu_id' => [

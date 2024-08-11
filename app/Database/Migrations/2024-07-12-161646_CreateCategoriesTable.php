@@ -23,6 +23,7 @@ class CreateCategoriesTable extends Migration
             ],
             'description' => [
                 'type' => 'TEXT',
+                'null' => true,
             ],
             'created_at' => [
                 'type' => 'DATETIME',

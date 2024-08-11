@@ -1,5 +1,4 @@
 <?= $this->extend('layouts/base') ?>
-
 <?= $this->section('content') ?>
   <?= $this->include('partial/preloader') ?>
   <?= $this->include('components/navbar') ?>

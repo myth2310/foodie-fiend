@@ -7,6 +7,7 @@ use App\Entities\MenuEntity;
 use App\Helpers\CloudinaryHelper;
 use App\Models\ChartModel;
 use App\Models\MenuModel;
+use App\Models\ReviewModel;
 use App\Models\StoreModel;
 
 class MenuController extends BaseController
@@ -15,7 +16,7 @@ class MenuController extends BaseController
     protected $menuModel;
     protected $storeModel;
     protected $chartModel;
-
+    protected $reviewModel;
     protected $uploadHelper;
 
     public function __construct()
@@ -24,6 +25,7 @@ class MenuController extends BaseController
         $this->menuModel = new MenuModel();
         $this->storeModel = new StoreModel();
         $this->chartModel = new ChartModel();
+        $this->reviewModel = new ReviewModel();
         $this->uploadHelper = new CloudinaryHelper();
     }
 
@@ -52,12 +54,14 @@ class MenuController extends BaseController
 
     public function detail($menu_id)
     {
+        $reviews = $this->reviewModel->getReviewWithUser($menu_id);
         $user_id = session()->get('user_id');
         $menu = $this->menuModel->getMenuWithStore($menu_id);
         $charts = $this->chartModel->getAllChartWithMenu($user_id);
         $data = [
             'data' => $menu,
             'charts' => $charts,
+            'reviews' => $reviews,
         ];
 
         return view('pages/menu_detail', $data);

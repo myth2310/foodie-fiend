@@ -1,14 +1,13 @@
+<?php $total_price = $order_data['price'] * $order_data['quantity'] ?>
 <?= $this->extend('layouts/base') ?>
-
 <?= $this->section('content') ?>
   <?= $this->include('partial/preloader') ?>
-
-  <div class="flex flex-col items-center border-b bg-white py-4 sm:flex-row sm:px-10 lg:px-20 xl:px-32">
+  <div class="flex flex-col items-center border-b bg-white py-4 sm:flex-row sm:px-10 mb-10 lg:px-20">
   <a href="/" class="flex items-center space-x-3 rtl:space-x-reverse focus:ring-4 focus:outline-none focus:ring-yellow-300 focus:rounded-md">
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-10 h-10 text-white p-2 bg-yellow-500 rounded-full" viewBox="0 0 24 24">
       <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
     </svg>
-    <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Foodie Fiend</span>
+    <span class="self-center text-2xl font-semibold whitespace-nowrap">Foodie Fiend</span>
   </a>
   <div class="mt-4 py-2 text-xs sm:mt-0 sm:ml-auto sm:text-base">
     <div class="relative">
@@ -38,17 +37,19 @@
     </div>
   </div>
 </div>
-<div class="grid sm:px-10 lg:grid-cols-2 lg:px-20 xl:px-32">
+<div class="grid sm:px-10 lg:grid-cols-2 lg:px-20 xl:px-32 mb-10">
   <div class="px-4 pt-8">
-    <p class="text-xl font-medium">Order Summary</p>
-    <p class="text-gray-400">Check your items. And select a suitable shipping method.</p>
+    <p class="text-xl font-medium">Ringkasan pemesanan</p>
     <div class="mt-8 space-y-3 rounded-lg border bg-white px-2 py-4 sm:px-6">
       <div class="flex flex-col rounded-lg bg-white sm:flex-row">
-        <img class="m-2 h-24 w-28 rounded-md border object-cover object-center" src="https://images.unsplash.com/flagged/photo-1556637640-2c80d3201be8?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8c25lYWtlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60" alt="" />
+        <img class="m-2 h-24 w-28 rounded-md border object-cover object-center" src="<?= $order_data['image_url'] ?>" alt="gambar menu" />
         <div class="flex w-full flex-col px-4 py-4">
           <span class="font-semibold"><?= $order_data['menu_name'] ?></span>
           <span class="float-right text-gray-400"><?= $order_data['menu_description'] ?></span>
-          <p class="text-lg font-bold">Rp. <?= $order_data['price'] * $order_data['quantity'] ?></p>
+          <div class="flex space-x-2 text-lg font-bold">
+            <p>Rp. <?php echo "" . number_format($order_data['price'] + 0, 0, ',', '.') ?></p>
+            <span class="text-gray-800">x <?= $order_data['quantity'] ?></span>
+          </div>
         </div>
       </div>
       <!-- <div class="flex flex-col rounded-lg bg-white sm:flex-row">
@@ -61,9 +62,9 @@
       </div> -->
     </div>
 
-    <p class="mt-8 text-lg font-medium">Shipping Methods</p>
-    <form class="mt-5 grid gap-6">
-      <div class="relative">
+    <p class="mt-8 text-lg font-medium">Metode Pembayaran</p>
+    <form class="mt-5 grid gap-6 bg-white">
+      <!-- <div class="relative">
         <input class="peer hidden" id="radio_1" type="radio" name="radio" checked />
         <span class="peer-checked:border-gray-700 absolute right-4 top-1/2 box-content block h-3 w-3 -translate-y-1/2 rounded-full border-8 border-gray-300 bg-white"></span>
         <label class="peer-checked:border-2 peer-checked:border-gray-700 peer-checked:bg-gray-50 flex cursor-pointer select-none rounded-lg border border-gray-300 p-4" for="radio_1">
@@ -73,21 +74,21 @@
             <p class="text-slate-500 text-sm leading-6">Delivery: 2-4 Days</p>
           </div>
         </label>
-      </div>
+      </div> -->
       <div class="relative">
         <input class="peer hidden" id="radio_2" type="radio" name="radio" checked />
         <span class="peer-checked:border-gray-700 absolute right-4 top-1/2 box-content block h-3 w-3 -translate-y-1/2 rounded-full border-8 border-gray-300 bg-white"></span>
         <label class="peer-checked:border-2 peer-checked:border-gray-700 peer-checked:bg-gray-50 flex cursor-pointer select-none rounded-lg border border-gray-300 p-4" for="radio_2">
-          <img class="w-14 object-contain" src="/images/oG8xsl3xsOkwkMsrLGKM4.png" alt="" />
+          <img class="w-14 object-contain rounded-md" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4FfmtnViwP1FvkPgDgiWAdi0tm2YMv5Gvfg&s" alt="" />
           <div class="ml-5">
-            <span class="mt-2 font-semibold">Fedex Delivery</span>
-            <p class="text-slate-500 text-sm leading-6">Delivery: 2-4 Days</p>
+            <span class="mt-2 font-semibold">Midtrans</span>
+            <p class="text-slate-500 text-sm leading-6">E-wallet dan Rekening</p>
           </div>
         </label>
       </div>
     </form>
   </div>
-  <div class="mt-10 bg-gray-50 px-4 pt-8 lg:mt-0">
+  <div class="mt-10 bg-white px-4 pt-8 lg:mt-0 rounded-md">
     <p class="text-xl font-medium">Detail Pembayaran</p>
     <p class="text-gray-400">Lengkapi pesanan kamu pada detail pembayaran.</p>
     <div class="">
@@ -114,19 +115,20 @@
       <div class="mt-6 border-t border-b py-2">
         <div class="flex items-center justify-between">
           <p class="text-sm font-medium text-gray-900">Subtotal</p>
-          <p class="font-semibold text-gray-900">Rp. <?= $order_data['price'] * $order_data['quantity'] ?></p>
+          <div class="flex space-x-1 font-semibold text-gray-900">
+            <p>Rp. <?php echo "" . number_format($order_data['price'] + 0, 0, ',', '.') ?></p>
+            <span>x<?= $order_data['quantity'] ?></span>
+          </div>
         </div>
       </div>
       <div class="mt-6 flex items-center justify-between">
         <p class="text-sm font-medium text-gray-900">Total</p>
-        <p class="text-2xl font-semibold text-gray-900">Rp. <?= $order_data['price'] * $order_data['quantity'] ?></p>
+        <p class="text-2xl font-semibold text-gray-900">Rp. <?php echo "" . number_format($total_price + 0, 0, ',', '.') ?></p>
       </div>
     </div>
-    <button class="mt-4 mb-8 w-full rounded-md bg-gray-900 px-6 py-3 font-medium text-white">Place Order</button>
+    <button id="pay-button" class="mt-4 mb-8 w-full rounded-md bg-gray-900 px-6 py-3 font-medium text-white">Bayar Sekarang</button>
   </div>
 </div>
-
-
 <?= $this->endSection() ?>
 
 <?= $this->section('footer') ?>
@@ -137,15 +139,19 @@
     <script src="<?= base_url('assets/js/navbar.js') ?>"></script>
     <script src="<?= base_url('assets/js/chartDropDown.js') ?>"></script>
     <script src="<?= base_url('assets/js/modalAuthForm.js') ?>"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const loaded = true;
-            const loaderElement = document.getElementById('loader');
-            if (loaded) {
-                setTimeout(() => {
-                    loaderElement.style.display = 'none';
-                }, 500);
-            }
-        });
+    <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="<?= config('Midtrans')->clientKey ?>"></script>
+    <script type="text/javascript">
+      document.getElementById('pay-button').onclick = function(){
+        snap.pay('<?= $order_data['snapToken'] ?>');
+      };
+      document.addEventListener('DOMContentLoaded', () => {
+        const loaded = true;
+        const loaderElement = document.getElementById('loader');
+        if (loaded) {
+          setTimeout(() => {
+            loaderElement.style.display = 'none';
+          }, 500);
+        }
+      });
     </script>
 <?= $this->endSection() ?>

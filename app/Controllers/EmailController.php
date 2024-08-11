@@ -44,7 +44,7 @@ class EmailController extends BaseController
             'email_type' => 'html',
             'template' => 'email_verification.html',
             'name' => $name,
-            'verif_link' => base_url('/verification/' . $token)
+            'verif_link' => base_url('/verification/user/' . $token)
         ]);
 
         $output = $this->invokeMail($kwargs);

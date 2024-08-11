@@ -14,7 +14,7 @@ class OrderModel extends Model
     protected $returnType       = OrderEntity::class;
     protected $useSoftDeletes   = true;
     protected $protectFields    = true;
-    protected $allowedFields    = ['id', 'user_id', 'menu_id', 'quantity', 'price', 'total_price', 'status'];
+    protected $allowedFields    = ['id', 'user_id', 'order_id', 'store_id', 'menu_id', 'quantity', 'price', 'total_price', 'status'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -68,5 +68,21 @@ class OrderModel extends Model
     {
         $data['data']['id'] = Uuid::uuid7()->toString();
         return $data;
+    }
+
+    public function getAllOrdersWithMenus($user_id, $order_status)
+    {
+        if (is_null($order_status)) {
+            return $this->select('orders.*, menus.image_url as menu_img, menus.name as menu_name, stores.name as store_name')
+            ->join('menus', 'menus.id = orders.menu_id')
+            ->join('stores', 'stores.id = orders.store_id')
+            ->where('orders.user_id', $user_id)
+            ->findAll();
+        }
+        return $this->select('orders.*, menus.image_url as menu_img, menus.name as menu_name, stores.name as store_name')
+            ->join('menus', 'menus.id = orders.menu_id')
+            ->join('stores', 'stores.id = orders.store_id')
+            ->where(['orders.user_id' => $user_id, 'orders.status' => $order_status])
+            ->findAll();
     }
 }

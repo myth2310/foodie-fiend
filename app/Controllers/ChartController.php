@@ -26,8 +26,10 @@ class ChartController extends BaseController
         return $this->chartModel->where('user_id', $user_id)->findAll();
     }
 
+    // fungsi untuk menambahkan menu ke keranjang belanja
     public function addToChart($menu_id)
     {
+        // dd(session()->get('is_verif'));
         $chart = $this->chartEntity;
         $chart->user_id = session()->get('user_id');
         $chart->menu_id = $menu_id;
@@ -37,6 +39,10 @@ class ChartController extends BaseController
             $chart->quantity = 1;
         }
 
+        if (intval(session()->get('is_verif')) == 0) {
+            return redirect()->back()->with('errors', ['Lakukan verfikasi email terlebih dahulu', 'Akun Anda belum terverifikasi']);
+        }
+
         if (!$this->chartModel->save($chart)) {
             return redirect()->back()->with('errors', $this->chartModel->errors());
         }
@@ -44,7 +50,13 @@ class ChartController extends BaseController
         return redirect()->back()->with('messages', ['Berhasil ditambahkan ke keranjang']);
     }
 
-    public function removeFromChart($checkout_id)
+    // fungsi untuk menghapus menu dari keranjang
+    public function removeFromChart()
     {
+        $chart_id = $this->request->getPost('chart_id');
+        if(!$this->chartModel->delete($chart_id)) {
+            return redirect()->back()->with('errors', $this->chartModel->errors());
+        }
+        return redirect()->back()->with('messages', ['Berhasil dihapus dari keranjang']);
     }
 }

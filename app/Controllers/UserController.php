@@ -18,6 +18,7 @@ class UserController extends BaseController
     protected $orderModel;
     protected $storeModel;
     protected $emailController;
+    protected $orderController;
 
     public function __construct()
     {
@@ -27,6 +28,7 @@ class UserController extends BaseController
         $this->orderModel = new OrderModel();
         $this->storeModel = new StoreModel();
         $this->emailController = new EmailController();
+        $this->orderController = new OrderController();
     }
 
     // Fungsi menampilkan semua user
@@ -54,8 +56,9 @@ class UserController extends BaseController
 
     public function orders()
     {
+        $user_id = session()->get('user_id');
         $orderStatus = $this->request->getGet('status');
-        $data = $this->orderModel->where('status', $orderStatus)->findAll();
+        $data = $this->orderController->getAllOrders($user_id, $orderStatus);
         return view('pages/user/my_order', ['data' => $data]);
     }
 
@@ -193,6 +196,7 @@ class UserController extends BaseController
             'phone' => $data->phone,
             'role' => $data->role,
             'profile' => $data->profile,
+            'is_verif' => $data->is_verif,
             'logged_in' => TRUE,
         ];
         if ($with_storeId) {

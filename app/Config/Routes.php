@@ -7,16 +7,15 @@ use CodeIgniter\Router\RouteCollection;
  */
 $routes->get('/', 'Home::index');
 
+// development checkout pages
+$routes->post('/checkout', 'OrderController::checkout');
+
 // Recommendation route
 $routes->group('/recommendations', function($routes) {
     $routes->get('', 'RecommendationController::index');
     $routes->get('rating/(:num)', 'RecommendationController::rating/$1');
     $routes->get('invoke', 'RecommendationController::invokePython');
 });
-
-$routes->get('/orders', 'OrderController::index');
-
-$routes->get('/test', 'Home::spiner');
 
 $routes->group('/dashboard', function($routes) {
     $routes->get('', 'DashboardController::index', ['as' => 'dashboard']);
@@ -78,6 +77,7 @@ $routes->group('/stores', function($routes) {
 });
 
 $routes->group('/orders', function($routes) {
+    // $routes->get('', 'OrderController::index');
     $routes->get('create', 'OrderController::create');
 });
 
@@ -95,7 +95,7 @@ $routes->post('/email', 'EmailController::sendEmail');
 
 // Payment route
 $routes->group('payment', function($routes) {
-    $routes->get('', 'PaymentController::index');
+    $routes->get('', 'PaymentController::create');
     $routes->get('(:any)', 'PaymentController::detail/$1');
     $routes->post('notification', 'PaymentController::notification');
 });
@@ -104,7 +104,7 @@ $routes->group('payment', function($routes) {
 $routes->group('chart', function($routes) {
     $routes->get('', 'ChartController::index');
     $routes->post('add/(:any)', 'ChartController::addToChart/$1');
-    $routes->post('remove/(:any)', 'ChartController::removeFromChart/$1');
+    $routes->post('remove', 'ChartController::removeFromChart   ');
 });
 
 // Test email invoke
