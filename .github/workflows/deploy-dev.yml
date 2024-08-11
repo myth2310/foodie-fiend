@@ -1,0 +1,27 @@
+name: CI/CD Pipeline Development
+
+on:
+  push:
+    brances:
+      - development
+
+jobs:
+  runs-on: ubuntu-latest
+
+  steps:
+  # Deploy start
+    - name: Deployment
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        script: |
+          cd /var/www/html/dev-foodie
+          git stash
+          git pull origin development
+          git status
+          git stash pop
+          exec bash
+          composer update
