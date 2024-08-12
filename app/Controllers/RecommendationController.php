@@ -23,11 +23,27 @@ class RecommendationController extends BaseController
         $this->storeController = new StoreController();
     }
 
+    private function get_recommendations($user_id)
+    {
+        $client = curl_init();
+        curl_setopt($client, CURLOPT_URL, "https://anumerta.microsaas.my.id/api/recommendation/'$user_id'");
+        curl_setopt($client, CURLOPT_RETURNTRANSFER, 1);
+        $output = curl_exec($client);
+        curl_close($client);
+
+        $recommendedMenuIds = json_decode($output, true);
+ 
+        $menus = $this->menuModel->whereIn('id', $recommendedMenuIds)->findAll();
+
+        return $menus;
+    }
+
     public function index()
     {
         $user_id = session()->get('user_id');
         $dataChart = $this->chartModel->getAllChartWithMenu($user_id);
-        $recommendation = $this->recommend_python(session()->get('user_id'));
+        $recommendation = $this->get_recommendations($user_id);
+        // dd($recommendation);
         $ratings = $this->reviewModel->countMenusWithRating();
         $data = [
             'title' => 'Halaman Utama | Foodie Fiend',
@@ -39,27 +55,6 @@ class RecommendationController extends BaseController
             'use_hero_text' => true,
         ];
         return view('pages/recommendation', $data);
-    }
-
-    private function recommend_python($user_id)
-    {
-        $user_id = null;
-        // path ke script python
-        $pythonScriptPath = APPPATH . '../scripts/python/recommendation.py';
-
-        // menjalankan script python dengan user_id sebagai parameter
-        $pythonEnv = getenv("PYTHON_PATH");
-        $command = escapeshellcmd("$pythonEnv $pythonScriptPath $user_id");
-        $output = shell_exec($command);
- 
-        // memisahkan hasil output dari script python
-        $json_string = str_replace("'", '"', $output);
-        $recommendedMenuIds = json_decode($json_string, true);
- 
-        $menus = $this->menuModel->whereIn('id', $recommendedMenuIds)->findAll();
-
-        // menampilkan hasil rekomendasi
-        return $menus;
     }
 
     public function rating($ratting)
