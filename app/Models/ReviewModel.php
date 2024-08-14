@@ -78,6 +78,33 @@ class ReviewModel extends Model
                     ->findAll();
     }
 
+    public function getMenusWithRating($menu_ids)
+    {
+        return $this->select('reviews.menu_id id, ROUND(AVG(rating)) rating, m.image_url, m.name, m.price')
+                    ->join('menus m', 'reviews.menu_id = m.id')
+                    ->groupBy('menu_id')
+                    ->whereIn('reviews.menu_id', $menu_ids)
+                    ->findAll();
+    }
+
+    public function getMenusWithRatingFromStoreId($store_id)
+    {
+        return $this->select('reviews.menu_id id, ROUND(AVG(reviews.rating)) rating, m.image_url, m.name, m.price')
+                    ->join('menus m', 'reviews.menu_id = m.id')
+                    ->where('m.store_id', $store_id)
+                    ->groupBy('reviews.menu_id, m.name, m.price, m.image_url')
+                    ->findAll();
+    }
+
+    public function getMenus($rating)
+    {
+        return $this->select('reviews.menu_id, ROUND(AVG(reviews.rating)) rating, m.name, m.price, m.image_url')
+            ->join('menus m', 'reviews.menu_id = m.id')
+            ->groupBy('reviews.menu_id, m.name')
+            ->having('AVG(reviews.rating)', $rating)
+            ->findAll();
+    }
+
     public function countMenusWithRating()
     {
         $rating_1 = $this->select('menu_id')->groupBy('menu_id')->having('AVG(rating)', 1)->countAllResults();

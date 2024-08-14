@@ -7,7 +7,7 @@
   <?= $this->include('components/login_modal') ?>
   <?= $this->include('components/register_modal') ?>
   <?= $this->include('components/store_modal') ?>
-  <?= $this->include('components/item_card') ?>
+<?= $this->include('components/item_card') ?>
 <?= $this->endSection() ?>
 
 <?= $this->section('footer') ?>

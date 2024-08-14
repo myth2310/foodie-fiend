@@ -7,6 +7,7 @@ use App\Entities\StoreEntity;
 use App\Entities\UserEntity;
 use App\Helpers\CloudinaryHelper;
 use App\Models\ChartModel;
+use App\Models\ReviewModel;
 use App\Models\StoreModel;
 use App\Models\UserModel;
 use CodeIgniter\HTTP\ResponseInterface;
@@ -15,10 +16,12 @@ use Exception;
 class StoreController extends BaseController
 {
     protected $chartModel;
+    protected $reviewModel;
 
     public function __construct()
     {
         $this->chartModel = new ChartModel();
+        $this->reviewModel = new ReviewModel();
     }
 
     // Fungsi untuk menampilkan halaman toko
@@ -48,13 +51,12 @@ class StoreController extends BaseController
     public function detail($id)
     {
         $storeModel = new StoreModel();
-        $menuController = new MenuController();
         $categoryController = new CategoryController();
         $user_id = session()->get('user_id');
         $charts = $this->chartModel->getAllChartWithMenu($user_id);
 
         $store = $storeModel->find($id);
-        $dataMenu = $menuController->getAll($id);
+        $dataMenu = $this->reviewModel->getMenusWithRatingFromStoreId($id);
         $categories = $categoryController->getByStoreId($id);
 
         if (!$store) {

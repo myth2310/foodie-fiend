@@ -33,7 +33,7 @@ class RecommendationController extends BaseController
 
         $recommendedMenuIds = json_decode($output, true);
  
-        $menus = $this->menuModel->whereIn('id', $recommendedMenuIds)->findAll();
+        $menus = $this->reviewModel->getMenusWithRating($recommendedMenuIds);
 
         return $menus;
     }
@@ -43,7 +43,6 @@ class RecommendationController extends BaseController
         $user_id = session()->get('user_id');
         $dataChart = $this->chartModel->getAllChartWithMenu($user_id);
         $recommendation = $this->get_recommendations($user_id);
-        // dd($recommendation);
         $ratings = $this->reviewModel->countMenusWithRating();
         $data = [
             'title' => 'Halaman Utama | Foodie Fiend',
@@ -57,14 +56,15 @@ class RecommendationController extends BaseController
         return view('pages/recommendation', $data);
     }
 
-    public function rating($ratting)
+    public function rating($rating)
     {
         $user_id = session()->get('user_id');
         $dataChart = $this->chartModel->getAllChartWithMenu($user_id);
+        $menus = $this->reviewModel->getMenus($rating);
         $data = [
-            'title' => 'Halaman Utama | Foodie Fiend',
-            'hero_img' => 'https://images.squarespace-cdn.com/content/v1/61709486e77e1d27c181981c/a9eb540d-aff8-4360-8354-1d35c856a561/0223_UrbanSpace_ZeroIrving_LizClayman_160.png',
+            'title' => "Menu Rating $rating | Foodie Fiend",
             'charts' => $dataChart,
+            'menus' => $menus,
             'use_chart_button' => false,
             'use_hero_text' => true,
         ];
