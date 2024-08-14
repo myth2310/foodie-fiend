@@ -2,7 +2,7 @@ name: CI/CD Pipeline Production
 
 on:
   push:
-    brances:
+    branches:
       - main
 
 jobs:
