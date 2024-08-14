@@ -10,10 +10,8 @@ class CreateMenusTable extends Migration
     {
         $this->forge->addField([
             'id' => [
-                'type' => 'INT',
-                'constraint' => 11,
-                'unsigned' => true,
-                'auto_increment' => true,
+                'type' => 'CHAR',
+                'constraint' => 36,
             ],
             'store_id' => [
                 'type' => 'CHAR',
@@ -26,10 +24,10 @@ class CreateMenusTable extends Migration
             'price' => [
                 'type' => 'DECIMAL',
                 'constraint' => '10,2',
-
             ],
             'description' => [
                 'type' => 'TEXT',
+                'default' => '',
             ],
             'category' => [
                 'type' => 'VARCHAR',

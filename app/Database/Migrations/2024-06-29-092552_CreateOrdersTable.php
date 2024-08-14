@@ -10,20 +10,24 @@ class CreateOrdersTable extends Migration
     {
         $this->forge->addField([
             'id' => [
-                'type' => 'INT',
-                'constraint' => 11,
-                'unsigned' => true,
-                'auto_increment' => true,
+                'type' => 'CHAR',
+                'constraint' => 36,
+            ],
+            'order_id' => [
+                'type' => 'CHAR',
+                'constraint' => 36,
             ],
             'user_id' => [
-                'type' => 'INT',
-                'constraint' => 11,
-                'unsigned' => true,
+                'type' => 'CHAR',
+                'constraint' => 36,
+            ],
+            'store_id' => [
+                'type' => 'CHAR',
+                'constraint' => 36, 
             ],
             'menu_id' => [
-                'type' => 'INT',
-                'constraint' => 11,
-                'unsigned' => true,
+                'type' => 'CHAR',
+                'constraint' => 36,
             ],
             'quantity' => [
                 'type' => 'INT',
@@ -31,14 +35,18 @@ class CreateOrdersTable extends Migration
                 'unsigned' => true,
                 'default' => 1,
             ],
+            'price' => [
+                'type' => 'DECIMAL',
+                'constraint' => '10,2',
+            ],
             'total_price' => [
                 'type' => 'DECIMAL',
                 'constraint' => '10,2',
             ],
-            'is_reject' => [
-                'type' => 'TINYINT',
-                'constraint' => 1,
-                'default' => 0,
+            'status' => [
+                'type' => 'ENUM',
+                'constraint' => ['ditunda', 'diproses', 'selesai', 'dibatalkan', 'kadaluwarsa'],
+                'default' => 'ditunda',
             ],
             'is_delete' => [
                 'type' => 'TINYINT',
@@ -61,6 +69,7 @@ class CreateOrdersTable extends Migration
 
         $this->forge->addPrimaryKey('id');
         $this->forge->addForeignKey('user_id', 'users', 'id');
+        $this->forge->addForeignKey('store_id', 'stores', 'id');
         $this->forge->addForeignKey('menu_id', 'menus', 'id');
         $this->forge->createTable('orders', true);
     }

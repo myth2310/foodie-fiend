@@ -37,10 +37,10 @@
     <div class="sidebar h-screen w-80 space-y-6 py-7 px-2 absolute inset-y-0 left-0 transform md:relative md:translate-x-0 transition duration-200 ease-in-out">
       <!-- User Image -->
       <div class="flex items-center space-x-4 px-4">
-        <img src="https://down-id.img.susercontent.com/file/83e63657dcc4a0c5c6a8acae1d6edcbe" alt="User Image" class="w-10 h-10 rounded-full">
+        <img src="<?= session()->get('profile') ?>" alt="User Image" class="w-10 h-10 rounded-full">
         <div>
-          <h1 class="text-xl font-semibold text-gray-700">John Doe</h1>
-          <p class="text-sm text-gray-400">johndoe@mail.com</p>
+          <h1 class="text-xl font-semibold text-gray-700"><?= session()->get('name') ?></h1>
+          <p class="text-sm text-gray-400"><?= session()->get('email') ?></p>
         </div>
       </div>
 
@@ -52,7 +52,7 @@
           </div>
           Akun Saya
         </a>
-        <a href="#" class="flex items-center py-2.5 px-4 rounded-lg transition duration-200 hover:font-semibold hover:bg-white hover:shadow-lg hover:text-gray-500" id="shop-chart-link">
+        <a href="#order" class="flex items-center py-2.5 px-4 rounded-lg transition duration-200 hover:font-semibold hover:bg-white hover:shadow-lg hover:text-gray-500" id="shop-chart-link">
           <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-center text-white bg-green-500 stroke-0 text-center xl:p-2.5">
             <i class="fas fa-clipboard-list"></i>
           </div>
@@ -616,22 +616,8 @@
                 <p class="text-gray-600">Kelola informasi profil Anda untuk mengontrol, melindungi dan mengamankan akun</p>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2">
-                <!-- <form class="flex flex-col p-4 text-gray-900 font-normal">
-                  <div class="flex justify-between space-x-4 mb-4">
-                    <label for="name" class="mb-2">Nama</label>
-                    <input type="text" class="bg-gray-100 px-2 py-1 rounded-md shadow-sm mb-2 w-full">
-                  </div>
-                  <div class="flex justify-between space-x-4 mb-4">
-                    <label for="email" class="mb-2">Email</label>
-                    <input type="text" class="bg-gray-100 px-2 py-1 rounded-md shadow-sm mb-2 w-full">
-                  </div>
-                  <div class="flex justify-between space-x-4 mb-4">
-                    <label for="address" class="mb-2">Alamat</label>
-                    <input type="text" class="bg-gray-100 px-2 py-1 rounded-md shadow-sm mb-8 w-full">
-                  </div>
-                  <button type="submit" class="px-4 w-full py-2 bg-orange-500 rounded-md text-white">Simpan</button>
-                </form> -->
-                <form class="p-4">
+                <form class="p-4" action="/user/update">
+                  <?= csrf_field() ?>
                   <table class="w-full">
                     <tbody class="space-y-4 items-center mx-auto">
                       <tr>
@@ -642,31 +628,31 @@
                         </td>
                         <td>
                           <div class="mb-4 w-full">
-                            <input name="name" type="text" class="px-4 py-1.5 bg-gray-100 rounded-md items-center text-gray-700">
+                            <input name="name" type="text" value="<?= session()->get('name') ?>" class="px-4 py-1.5 bg-gray-100 rounded-md items-center text-gray-700">
                           </div>
                         </td>
                       </tr>
                       <tr>
                         <td>
                           <div class="mb-4">
-                            <label for="name" class="text-gray-900">Name</label>
+                            <label for="email" class="text-gray-900">Email</label>
                           </div>
                         </td>
                         <td>
                           <div class="mb-4">
-                            <input name="name" type="text" class="px-4 py-1.5 bg-gray-100 rounded-md items-center text-gray-700">
+                            <input name="email" type="text" value="<?= session()->get('email') ?>" disabled class="px-4 py-1.5 bg-gray-100 rounded-md items-center text-gray-700">
                           </div>
                         </td>
                       </tr>
                       <tr>
                         <td>
                           <div class="mb-4">
-                            <label for="name" class="text-gray-900">Name</label>
+                            <label for="phone" class="text-gray-900">Telepon</label>
                           </div>
                         </td>
                         <td>
                           <div class="mb-4">
-                            <input name="name" type="text" class="px-4 py-1.5 bg-gray-100 rounded-md items-center text-gray-700">
+                            <input type="text" value="<?= session()->get('phone') ?>" disabled class="px-4 py-1.5 bg-gray-100 rounded-md items-center text-gray-700">
                           </div>
                         </td>
                       </tr>
@@ -681,7 +667,7 @@
                 </form>
                 <div class="flex flex-col bg-gray-50 rounded-md shadow-md p-6 mx-auto items-center justify-center">
                   <div class="p-2 mb-4">
-                    <img src="https://down-id.img.susercontent.com/file/83e63657dcc4a0c5c6a8acae1d6edcbe" alt="Profile Image" class="rounded-full h-24 w-24">
+                    <img src="<?= session()->get('profile') ?>" alt="Profile Image" class="rounded-full h-24 w-24">
                   </div>
                   <input type="file" accept=".jpg,.jpeg,.png" class="hidden">
                   <button type="button" class="bg-gray-300 transition ease-in-out duration-300 hover:bg-gray-400 px-4 py-2 rounded-md text-white">Pilih Gambar</button>

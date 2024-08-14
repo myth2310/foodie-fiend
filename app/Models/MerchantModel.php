@@ -2,17 +2,19 @@
 
 namespace App\Models;
 
+use App\Entities\MerchantEntity;
 use CodeIgniter\Model;
+use Ramsey\Uuid\Uuid;
 
 class MerchantModel extends Model
 {
     protected $table            = 'merchants';
     protected $primaryKey       = 'id';
-    protected $useAutoIncrement = true;
-    protected $returnType       = 'App\Entities\MerchantEntity';
+    protected $useAutoIncrement = false;
+    protected $returnType       = MerchantEntity::class;
     protected $useSoftDeletes   = true;
     protected $protectFields    = true;
-    protected $allowedFields    = ['store_id', 'user_id'];
+    protected $allowedFields    = ['id', 'store_id', 'user_id'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -47,7 +49,7 @@ class MerchantModel extends Model
 
     // Callbacks
     protected $allowCallbacks = true;
-    protected $beforeInsert   = [];
+    protected $beforeInsert   = ['generateUUID'];
     protected $afterInsert    = [];
     protected $beforeUpdate   = [];
     protected $afterUpdate    = [];
@@ -55,4 +57,10 @@ class MerchantModel extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
+
+    protected function generateUUID(array $data)
+    {
+        $data['data']['id'] = Uuid::uuid7()->toString();
+        return $data;
+    }
 }

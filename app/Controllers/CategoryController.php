@@ -9,10 +9,19 @@ use CodeIgniter\HTTP\ResponseInterface;
 
 class CategoryController extends BaseController
 {
-    public function index()
+
+    protected $category;
+    protected $categoryModel;
+
+    public function __construct()
     {
-        $categoryModel = new CategoryModel();
-        $categories = $categoryModel->findAll();
+        $this->category = new CategoryEntity();
+        $this->categoryModel = new CategoryModel();
+    }
+
+    public function getAllByStoreId($store_id)
+    {
+        $categories = $this->categoryModel->where('store_id', $store_id)->findAll();
         $totalCategory = count($categories);
         $data = [
             'categories' => $categories,
@@ -22,32 +31,70 @@ class CategoryController extends BaseController
         return $data;
     }
 
+    public function index()
+    {
+        $categories = $this->categoryModel->findAll();
+        $totalCategory = count($categories);
+        $data = [
+            'categories' => $categories,
+            'totalCategory' => $totalCategory,
+        ];
+
+        return $data;
+    }
+
+    public function edit($category_id)
+    {
+        $data = $this->categoryModel->find($category_id);
+        return view('pages/category_edit', ['data' => $data]);
+    }
+
     public function add()
     {
-        $categoryModel = new CategoryModel();
-        $category = new CategoryEntity();
+        $this->category->name = $this->request->getPost('name');
+        $this->category->description = $this->request->getPost('description');
+        $this->category->store_id = session()->get('store_id')->id;
 
-        $category->name = $this->request->getPost('name');
-        $category->description = $this->request->getPost('description');
-
-        if (!$categoryModel->save($category)) {
-            return redirect()->back()->withInput()->with('errors', $categoryModel->errors());
+        if (!$this->categoryModel->save($this->category)) {
+            return redirect()->back()->withInput()->with('errors', $this->categoryModel->errors());
         }
-        return $this->response->setJSON(['status' => 'success']);
+
+        session()->setFlashdata('messages', ['Berhasil tambah kategori']);
+        return redirect()->back();
+    }
+
+    public function update($category_id)
+    {
+        $this->category->name = $this->request->getPost('name');
+        $this->category->description = $this->request->getPost('description');
+
+        if (!$this->categoryModel->update($category_id, $this->category)) {
+            return redirect()->back()->withInput()->with('errors', $this->categoryModel->errors());
+        }
+
+        return redirect()->to('/dashboard/category')->with('messages', ['Berhasil update kategori']);
     }
 
     public function get()
     {
-        $categoryModel = new CategoryModel();
-        return $this->response->setJSON(['data' => $categoryModel->findAll()]);
+        $store = session()->get('store_id');
+        if (!$store) {
+            return redirect()->to('/')->with('errors', ['Login dulu']);
+        }
+        $data = $this->categoryModel->where('store_id', $store->id)->findAll();
+        return $this->response->setJSON(['data' => $data]);
+    }
+
+    public function getByStoreId($store_id)
+    {
+        return $this->categoryModel->where('store_id', $store_id)->findAll();
     }
 
     public function delete($id)
     {
-        $categoryModel = new CategoryModel();
         $session = session();
 
-        if (!$categoryModel->find($id)) {
+        if (!$this->categoryModel->find($id)) {
             $session->setFlashdata('errors', [
                 'Gagal menghapus kategori',
                 'Kategori tidak ditemukan',
@@ -55,12 +102,13 @@ class CategoryController extends BaseController
             return redirect()->back();
         }
 
-        if (!$categoryModel->delete($id)) {
+        if (!$this->categoryModel->delete($id)) {
             $session->setFlashdata('errors', [
                 'Gagal menghapus kategori',
             ]);
             return redirect()->back();
         }
+
         $session->setFlashdata('messages', ['Berhasil menghapus kategori']);
         return redirect()->back();
     }

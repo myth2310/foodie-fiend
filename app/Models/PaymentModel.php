@@ -2,17 +2,19 @@
 
 namespace App\Models;
 
+use App\Entities\PaymentEntity;
 use CodeIgniter\Model;
+use Ramsey\Uuid\Uuid;
 
 class PaymentModel extends Model
 {
     protected $table            = 'payments';
     protected $primaryKey       = 'id';
-    protected $useAutoIncrement = true;
-    protected $returnType       = 'App\Entities\PaymentEntity';
+    protected $useAutoIncrement = false;
+    protected $returnType       = PaymentEntity::class;
     protected $useSoftDeletes   = true;
     protected $protectFields    = true;
-    protected $allowedFields    = ['order_id', 'method', 'account_number', 'transaction_evidence'];
+    protected $allowedFields    = ['id', 'order_id', 'method', 'account_number', 'transaction_evidence'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -41,7 +43,7 @@ class PaymentModel extends Model
 
     // Callbacks
     protected $allowCallbacks = true;
-    protected $beforeInsert   = [];
+    protected $beforeInsert   = ['generateUUID'];
     protected $afterInsert    = [];
     protected $beforeUpdate   = [];
     protected $afterUpdate    = [];
@@ -49,4 +51,10 @@ class PaymentModel extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
+
+    protected function generateUUID(array $data)
+    {
+        $data['data']['id'] = Uuid::uuid7()->toString();
+        return $data;
+    }
 }

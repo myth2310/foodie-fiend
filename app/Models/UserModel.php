@@ -2,17 +2,19 @@
 
 namespace App\Models;
 
+use App\Entities\UserEntity;
 use CodeIgniter\Model;
+use Ramsey\Uuid\Uuid;
 
 class UserModel extends Model
 {
     protected $table            = 'users';
     protected $primaryKey       = 'id';
-    protected $useAutoIncrement = true;
-    protected $returnType       = 'App\Entities\UserEntity';
+    protected $useAutoIncrement = false;
+    protected $returnType       = UserEntity::class;
     protected $useSoftDeletes   = true;
     protected $protectFields    = true;
-    protected $allowedFields    = ['name', 'email', 'phone', 'password', 'profile', 'role'];
+    protected $allowedFields    = ['id', 'name', 'email', 'phone', 'password', 'profile', 'role', 'is_verif', 'verification_token'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -59,7 +61,7 @@ class UserModel extends Model
 
     // Callbacks
     protected $allowCallbacks = true;
-    protected $beforeInsert   = [];
+    protected $beforeInsert   = ['generateUUID'];
     protected $afterInsert    = [];
     protected $beforeUpdate   = [];
     protected $afterUpdate    = [];
@@ -67,4 +69,10 @@ class UserModel extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
+
+    protected function generateUUID(array $data)
+    {
+        $data['data']['id'] = Uuid::uuid7()->toString();
+        return $data;
+    }
 }

@@ -16,6 +16,7 @@
 <?= $this->endSection() ?>
 
 <?= $this->section('scripts') ?>
+    <script src="<?= base_url('assets/js/navbar.js') ?>"></script>
     <script src="<?= base_url('assets/js/chartDropDown.js') ?>"></script>
     <script src="<?= base_url('assets/js/modalAuthForm.js') ?>"></script>
     <script>

@@ -10,10 +10,8 @@ class CreateUsersTable extends Migration
     {
         $this->forge->addField([
             'id' => [
-                'type' => 'INT',
-                'constraint' => 11,
-                'unsigned' => true,
-                'auto_increment' => true,
+                'type' => 'CHAR',
+                'constraint' => 36,
             ],
             'name' => [
                 'type' => 'VARCHAR',
@@ -26,7 +24,7 @@ class CreateUsersTable extends Migration
             ],
             'phone' => [
                 'type' => 'VARCHAR',
-                'constraint' => '15',
+                'constraint' => '20',
                 'unique' => true,
             ],
             'password' => [
@@ -45,6 +43,11 @@ class CreateUsersTable extends Migration
                 'type' => 'TINYINT',
                 'constraint' => 1,
                 'default' => 0,
+            ],
+            'verification_token' => [
+                'type' => 'VARCHAR',
+                'constraint' => '255',
+                'null' => true,
             ],
             'created_at' => [
                 'type' => 'DATETIME',

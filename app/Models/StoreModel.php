@@ -29,13 +29,6 @@ class StoreModel extends Model
     protected $updatedField  = 'updated_at';
     protected $deletedField  = 'deleted_at';
 
-    protected function generateUUID(array $data)
-    {
-        if (isset($data['data']) && $data['data'] instanceof StoreEntity) {
-            $data['data']->id = Uuid::uuid7()->toString();
-        }
-        return $data;
-    }
     // Validation
     protected $validationRules      = [
         'name' => 'required',
@@ -62,4 +55,12 @@ class StoreModel extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
+
+    protected function generateUUID(array $data)
+    {
+        if (isset($data['data']) && $data['data'] instanceof StoreEntity) {
+            $data['data']->id = Uuid::uuid7()->toString();
+        }
+        return $data;
+    }
 }

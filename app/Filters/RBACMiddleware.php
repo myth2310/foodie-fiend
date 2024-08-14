@@ -26,8 +26,7 @@ class RBACMiddleware implements FilterInterface
     public function before(RequestInterface $request, $arguments = null)
     {
         if (session()->get('role') == 'user') {
-            // dd(session()->get('role') == 'store' || session()->get('role') == 'admin');
-            return redirect()->to('/');
+            return redirect()->to('/user/dashboard');
         }
     }
 

@@ -11,6 +11,7 @@ class UserEntity extends Entity
         'phone' => null,
         'email' => null,
         'password' => null,
+        'verification_token' => null,
     ];
     protected $datamap = [];
     protected $dates   = ['created_at', 'updated_at', 'deleted_at'];

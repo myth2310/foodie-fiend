@@ -1,5 +1,4 @@
 <?= $this->extend('layouts/base') ?>
-
 <?= $this->section('content') ?>
   <?= $this->include('partial/preloader') ?>
   <?= $this->include('components/navbar') ?>
@@ -7,7 +6,14 @@
   <?= $this->include('components/login_modal') ?>
   <?= $this->include('components/register_modal') ?>
   <?= $this->include('components/store_modal') ?>
-  <?= $this->include('components/item_card') ?>
+
+  <!-- Main Content Staert -->
+  <section>
+    <div class="w-full p-10">
+      
+    </div>
+  </section>
+  <!-- Main Content End -->
 <?= $this->endSection() ?>
 
 <?= $this->section('footer') ?>
@@ -15,6 +21,7 @@
 <?= $this->endSection() ?>
 
 <?= $this->section('scripts') ?>
+    <script src="<?= base_url('assets/js/recommendation.js') ?>"></script>
     <script src="<?= base_url('assets/js/chartDropDown.js') ?>"></script>
     <script src="<?= base_url('assets/js/modalAuthForm.js') ?>"></script>
     <script>

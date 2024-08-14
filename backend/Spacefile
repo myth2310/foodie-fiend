@@ -1,0 +1,23 @@
+# Spacefile Docs: https://go.deta.dev/docs/spacefile/v0
+v: 0
+micros:
+  - name: foodie-backend
+    src: .
+    engine: python3.9
+    primary: true
+    public_routes:
+      - "/api/**"
+    presets:
+      env:
+        - name: DB_HOST
+          description: Database instance host
+        - name: DB_PORT
+          description: Database instance port
+        - name: DB_USER
+          description: Database instance user
+        - name: DB_PASS
+          description: Database instance password
+        - name: DB_NAME
+          description: Database name
+    run: gunicorn main:app
+    dev: ../labs/.venv/bin/flask --app main run

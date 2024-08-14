@@ -2,17 +2,19 @@
 
 namespace App\Models;
 
+use App\Entities\OrderEntity;
 use CodeIgniter\Model;
+use Ramsey\Uuid\Uuid;
 
 class OrderModel extends Model
 {
     protected $table            = 'orders';
     protected $primaryKey       = 'id';
-    protected $useAutoIncrement = true;
-    protected $returnType       = 'App\Entities\OrderEntity';
+    protected $useAutoIncrement = false;
+    protected $returnType       = OrderEntity::class;
     protected $useSoftDeletes   = true;
     protected $protectFields    = true;
-    protected $allowedFields    = ['user_id', 'menu_id', 'quantity', 'total_price'];
+    protected $allowedFields    = ['id', 'user_id', 'order_id', 'store_id', 'menu_id', 'quantity', 'price', 'total_price', 'status'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -53,7 +55,7 @@ class OrderModel extends Model
 
     // Callbacks
     protected $allowCallbacks = true;
-    protected $beforeInsert   = [];
+    protected $beforeInsert   = ['generateUUID'];
     protected $afterInsert    = [];
     protected $beforeUpdate   = [];
     protected $afterUpdate    = [];
@@ -61,4 +63,26 @@ class OrderModel extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
+
+    protected function generateUUID(array $data)
+    {
+        $data['data']['id'] = Uuid::uuid7()->toString();
+        return $data;
+    }
+
+    public function getAllOrdersWithMenus($user_id, $order_status)
+    {
+        if (is_null($order_status)) {
+            return $this->select('orders.*, menus.image_url as menu_img, menus.name as menu_name, stores.name as store_name')
+            ->join('menus', 'menus.id = orders.menu_id')
+            ->join('stores', 'stores.id = orders.store_id')
+            ->where('orders.user_id', $user_id)
+            ->findAll();
+        }
+        return $this->select('orders.*, menus.image_url as menu_img, menus.name as menu_name, stores.name as store_name')
+            ->join('menus', 'menus.id = orders.menu_id')
+            ->join('stores', 'stores.id = orders.store_id')
+            ->where(['orders.user_id' => $user_id, 'orders.status' => $order_status])
+            ->findAll();
+    }
 }

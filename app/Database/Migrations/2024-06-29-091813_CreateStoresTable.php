@@ -14,9 +14,8 @@ class CreateStoresTable extends Migration
                 'constraint' => 36,
             ],
             'user_id' => [
-                'type' => 'INT',
-                'constraint' => 11,
-                'unsigned' => true,
+                'type' => 'CHAR',
+                'constraint' => 36,
             ],
             'name' => [
                 'type' => 'VARCHAR',

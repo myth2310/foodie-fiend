@@ -6,6 +6,8 @@ use App\Controllers\BaseController;
 use App\Entities\StoreEntity;
 use App\Entities\UserEntity;
 use App\Helpers\CloudinaryHelper;
+use App\Models\ChartModel;
+use App\Models\ReviewModel;
 use App\Models\StoreModel;
 use App\Models\UserModel;
 use CodeIgniter\HTTP\ResponseInterface;
@@ -13,10 +15,22 @@ use Exception;
 
 class StoreController extends BaseController
 {
+    protected $chartModel;
+    protected $reviewModel;
+
+    public function __construct()
+    {
+        $this->chartModel = new ChartModel();
+        $this->reviewModel = new ReviewModel();
+    }
+
     // Fungsi untuk menampilkan halaman toko
     public function index()
     {
-        $data = ['hero_img' => 'https://images.squarespace-cdn.com/content/v1/61709486e77e1d27c181981c/1695741249747-UZPHLNZ0W1P7ZY52V2Y5/0223_UrbanSpace_ZeroIrving_LizClayman_160.png'];
+        $data = [
+            'hero_img' => 'https://images.squarespace-cdn.com/content/v1/61709486e77e1d27c181981c/1695741249747-UZPHLNZ0W1P7ZY52V2Y5/0223_UrbanSpace_ZeroIrving_LizClayman_160.png',
+        ];
+
         return view('pages/detail_shop', $data);
     }
 
@@ -37,20 +51,25 @@ class StoreController extends BaseController
     public function detail($id)
     {
         $storeModel = new StoreModel();
+        $categoryController = new CategoryController();
+        $user_id = session()->get('user_id');
+        $charts = $this->chartModel->getAllChartWithMenu($user_id);
+
         $store = $storeModel->find($id);
-        $menuController = new MenuController();
-        $dataMenu = $menuController->getAll();
+        $dataMenu = $this->reviewModel->getMenusWithRatingFromStoreId($id);
+        $categories = $categoryController->getByStoreId($id);
 
         if (!$store) {
             session()->setFlashdata('errors', ['Toko tidak ditemukan']);
             return redirect()->to('/');
         }
 
-        // return json_encode($store);
-        // dd($store);
         return view('pages/store', [
-            'stores' => $dataMenu,
+            'menus' => $dataMenu,
+            'categories' => $categories,
             'hero_img' => $store->image_url,
+            'charts' => $charts,
+            'title' => $store->name,
             'use_hero_text' => false,
         ]);
     }
@@ -109,7 +128,7 @@ class StoreController extends BaseController
 
                 return redirect()->back()->withInput()->with('errors', $errors);
             }
-            return redirect()->to('/dashboard')->with('message', 'Pengguna berhasil dibuat');
+            return redirect()->to('/')->with('messages', ['Pengguna berhasil dibuat']);
             
         } catch (Exception $err) {
             $db->transRollback();

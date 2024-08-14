@@ -1,26 +1,52 @@
 <?php
 
 namespace App\Controllers;
+use App\Models\MenuModel;
 
 class DashboardController extends BaseController
 {
+    protected $categoryController;
+    protected $menuController;
+    protected $orderController;
+    protected $store_id;
+
+    public function __construct()
+    {
+        $this->categoryController = new CategoryController();
+        $this->menuController = new MenuController();
+        $this->orderController = new OrderController();
+        $this->store_id = session()->get('store_id')->id;
+    }
+
     public function index()
     {
-        $categoryController = new CategoryController();
         if (session()->get('role') != 'store') {
             return redirect()->route('home');
         }
 
-        return view('pages/dashboard', $categoryController->index());
+        // dd(session()->get('store_id')->id);
+        $menus = $this->menuController->getAllByStoreId($this->store_id);
+        $categories = $this->categoryController->getAllByStoreId($this->store_id);
+
+        return view('pages/dashboard', ['data' => [
+            'menus' => $menus,
+            'categories' => $categories,
+        ]]);
     }
     
     public function menu(): string
     {
         $menuController = new MenuController();
-        $menus = $menuController->index();
+        $categoryController = new CategoryController();
+        $menus = $menuController->getAllByStoreId($this->store_id);
+        $categories = $categoryController->getAllByStoreId($this->store_id);
+
         return view('pages/menu', [
             'page' => 'Menu',
-            'data' => $menus,
+            'data' => [
+                'menu' => $menus,
+                'category' => $categories
+            ],
             'title' => 'Menu',
         ]);
     }
@@ -28,7 +54,7 @@ class DashboardController extends BaseController
     public function category(): string
     {
         $categoryController = new CategoryController();
-        $categories = $categoryController->index();
+        $categories = $categoryController->getAllByStoreId($this->store_id);
         return view('pages/category', [
             'page' => 'Kategori',
             'data' => $categories,
