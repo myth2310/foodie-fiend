@@ -12,13 +12,12 @@
     <div class="block px-4 py-2 font-medium text-center text-gray-700 rounded-t-lg bg-gray-50">
         Keranjang (<?= count($charts) ?>)
     </div>
-    <ul class="divide-y divide-gray-100 h-64 overflow-y-auto">
+    <ul class="divide-y divide-gray-100 h-64 overflow-y-auto mt-5">
       <?php foreach($charts as $chart): ?>
       <li>
-        <!-- TODO: Repair -->
         <a href="<?php echo '/' ?>" class="flex px-4 py-3 hover:bg-gray-10">
           <div class="flex-shrink-0">
-            <img class="rounded-full w-11 h-11" src="<?= $chart->menu_img ?>" alt="Jese image">
+            <img class="w-11 h-11" src="<?= $chart->menu_img ?>" alt="Jese image">
           </div>
           <div class="w-full ps-3">
             <div class="text-sm font-semibold text-gray-700"><?= $chart->store_name ?></div>

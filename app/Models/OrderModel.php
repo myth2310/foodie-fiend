@@ -70,19 +70,49 @@ class OrderModel extends Model
         return $data;
     }
 
-    public function getAllOrdersWithMenus($user_id, $order_status)
+
+    // public function getAllOrdersWithMenus($user_id, $order_status)
+    // {
+    //     if (is_null($order_status)) {
+    //         return $this->select('orders.*, menus.image_url as menu_img, menus.name as menu_name, stores.name as store_name')
+    //         ->join('menus', 'menus.id = orders.menu_id')
+    //         ->join('stores', 'stores.id = orders.store_id')
+    //         ->where('orders.user_id', $user_id)
+    //         ->findAll();
+    //     }
+    //     return $this->select('orders.*, menus.image_url as menu_img, menus.name as menu_name, stores.name as store_name')
+    //         ->join('menus', 'menus.id = orders.menu_id')
+    //         ->join('stores', 'stores.id = orders.store_id')
+    //         ->where(['orders.user_id' => $user_id, 'orders.status' => $order_status])
+    //         ->findAll();
+    // }
+
+    public function getAllOrdersWithMenus($user_id, $order_status, $perPage = 2)
     {
-        if (is_null($order_status)) {
-            return $this->select('orders.*, menus.image_url as menu_img, menus.name as menu_name, stores.name as store_name')
+        $this->select('orders.created_at, 
+                   GROUP_CONCAT(menus.image_url) as menu_imgs, 
+                   GROUP_CONCAT(menus.name) as menu_names, 
+                   GROUP_CONCAT(orders.price) as price, 
+                   GROUP_CONCAT(orders.total_price) as total_price, 
+                   GROUP_CONCAT(orders.quantity) as quantity, 
+                   GROUP_CONCAT(orders.status) as status, 
+                   stores.name as store_name'
+                   )
             ->join('menus', 'menus.id = orders.menu_id')
             ->join('stores', 'stores.id = orders.store_id')
-            ->where('orders.user_id', $user_id)
-            ->findAll();
+            ->where('orders.user_id', $user_id);
+    
+        // Menambahkan kondisi untuk status jika ada
+        if (!is_null($order_status)) {
+            $this->where('orders.status', $order_status);
         }
-        return $this->select('orders.*, menus.image_url as menu_img, menus.name as menu_name, stores.name as store_name')
-            ->join('menus', 'menus.id = orders.menu_id')
-            ->join('stores', 'stores.id = orders.store_id')
-            ->where(['orders.user_id' => $user_id, 'orders.status' => $order_status])
-            ->findAll();
+    
+        // Mengurutkan data berdasarkan tanggal pembuatan terbaru
+        $this->orderBy('orders.created_at', 'DESC');
+    
+        // Menyusun hasil dan tambahkan pagination
+        return $this->groupBy('orders.created_at, stores.name')
+            ->paginate($perPage);
     }
+    
 }

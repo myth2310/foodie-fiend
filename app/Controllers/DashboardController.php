@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Controllers;
+
 use App\Models\MenuModel;
 
 class DashboardController extends BaseController
@@ -10,12 +11,17 @@ class DashboardController extends BaseController
     protected $orderController;
     protected $store_id;
 
+
+
     public function __construct()
     {
         $this->categoryController = new CategoryController();
         $this->menuController = new MenuController();
         $this->orderController = new OrderController();
-        $this->store_id = session()->get('store_id')->id;
+        $store = session()->get('store_id');
+        if (is_string($store)) {
+            $this->store_id = $store;
+        }
     }
 
     public function index()
@@ -33,7 +39,7 @@ class DashboardController extends BaseController
             'categories' => $categories,
         ]]);
     }
-    
+
     public function menu(): string
     {
         $menuController = new MenuController();

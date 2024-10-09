@@ -16,7 +16,6 @@ db_name = os.getenv("DB_NAME")
 db_user = os.getenv("DB_USER")
 db_pass = os.getenv("DB_PASS")
 
-
 # fungsi untuk mengambil data ulasan pengguna di database
 def fetch_reviews(query, params=None):
     connection_pooling = pooling.MySQLConnectionPool(
@@ -35,9 +34,12 @@ def fetch_reviews(query, params=None):
     cursor = conn.cursor(dictionary=True)
     try:
         cursor.execute(query, params)
-        resutl = cursor.fetchall()
-        conn.commit()
-        df = pd.DataFrame(resutl)
+        result = cursor.fetchall()
+        df = pd.DataFrame(result)
+        if df.empty:
+            print("DataFrame is empty!")
+        else:
+            print("DataFrame columns:", df.columns)  
         return df
     except Exception as e:
         print(f"Error: {e}")
@@ -48,14 +50,12 @@ def fetch_reviews(query, params=None):
 
 
 def recommend(ratings_matrix, user_id=None, top_n: int = 20):
-    # mengembalikan data rekomendasi default berdasarkan rating rata-rata tertinggi
     if user_id is None or user_id not in ratings_matrix.index:
         popular_menus = (
             ratings_matrix.mean(axis=0).sort_values(ascending=False).head(top_n)
         )
         return [(menu_id, score) for menu_id, score in popular_menus.items()]
 
-    # membuat model NearestNeighbors dengan cosine similarity (metode untuk menghitung jarak)
     model = NearestNeighbors(metric="cosine", algorithm="brute")
     model.fit(ratings_matrix)
 
@@ -63,7 +63,7 @@ def recommend(ratings_matrix, user_id=None, top_n: int = 20):
     distances, indices = model.kneighbors(
         [ratings_matrix.iloc[user_idx]], n_neighbors=top_n + 1
     )
-    similar_users = indices.flatten()[1:]  # melewatkan pengguna itu sendiri
+    similar_users = indices.flatten()[1:]  
 
     recommendations = {}
     for sim_user_idx in similar_users:
@@ -79,35 +79,34 @@ def recommend(ratings_matrix, user_id=None, top_n: int = 20):
                     1 - distances[0, similar_users.tolist().index(sim_user_idx)]
                 ) * ratings_matrix.at[sim_user_id, menu_id]
 
-    # mengurutkan rekomendasi berdasarkan skor tertinggi
     recommended_menus = sorted(
         recommendations.items(), key=lambda x: x[1], reverse=True
     )
     recommended_menus = [
         (menu_id, score) for menu_id, score in recommended_menus[:top_n]
     ]
-
     return recommended_menus
-
 
 @app.route("/api/recommendation/<user_id>")
 def get_recommendation(user_id):
-    # menampung data ulasan
     query = "SELECT user_id, menu_id, rating FROM reviews"
     reviews = fetch_reviews(query)
-    # membuat matrix rating
+    
+    if 'user_id' not in reviews.columns or 'menu_id' not in reviews.columns or 'rating' not in reviews.columns:
+        return jsonify({"error": "Missing columns in data"}), 500
+    
     ratings_matrix = reviews.pivot(
         index="user_id", columns="menu_id", values="rating"
     ).fillna(0)
 
     try:
         recommended_menus = recommend(ratings_matrix, user_id)
-    except:
+    except Exception as e:
+        print(f"Recommendation error: {e}")
         recommended_menus = recommend(ratings_matrix)
-    finally:
-        menu_ids = [item[0] for item in recommended_menus]
-        return jsonify(menu_ids)
+    
+    menu_ids = [item[0] for item in recommended_menus]
+    return jsonify(menu_ids)
 
 
-if __name__ == "__main__":
-    app.run(port=8080, debug=True)
+

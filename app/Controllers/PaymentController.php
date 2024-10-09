@@ -24,26 +24,33 @@ class PaymentController extends BaseController
         $this->orderModel = new OrderModel();
     }
 
+
     public function create($data)
-    {
-        $total_price = $data['price'] * $data['quantity'];
+{
+    foreach ($data as $item) {
+        
+        $total_price = $item['price'] * $item['quantity'];
         $order_id = Uuid::uuid7()->toString();
+
+        // Data pesanan
         $order_data = [
             'user_id' => session()->get('user_id'),
             'order_id' => $order_id,
-            'store_id' => $data['store_id'],
-            'menu_id' => $data['menu_id'],
-            'quantity' => $data['quantity'],
-            'price' => $data['price'],
+            'store_id' => $item['store_id'],
+            'menu_id' => $item['menu_id'],
+            'quantity' => $item['quantity'],
+            'price' => $item['price'],
             'total_price' => $total_price,
             'status' => 'pending',
         ];
+
         $order = new OrderEntity($order_data);
         $this->orderModel->save($order);
 
+        // Data transaksi untuk Midtrans
         $transaction_detail = [
             'order_id' => $order_id,
-            'gross_amount' => $total_price, // Amount in IDR
+            'gross_amount' => $total_price,
         ];
         $customer_detail = [
             'first_name' => session()->get('name'),
@@ -54,12 +61,70 @@ class PaymentController extends BaseController
             'transaction_details' => $transaction_detail,
             'customer_details' => $customer_detail,
             'callbacks' => [
-                'finish' => base_url('/user/dashboard/order'),
+                'finish' => base_url('/'),
             ],
         ];
 
-        return $this->midtrans->getSnapToken($transaction_data);
+        $transactionData = [
+            'order_id' => $order_id,
+            'transaction_id' => null,
+            'gross_amount' => $total_price,
+            'transaction_status' => 'pending',
+            'payment_type' => null,
+            'transaction_time' => null,
+            'fraud_status' => null,
+            'customer_name' => $customer_detail['first_name'],
+            'customer_email' => $customer_detail['email'],
+            'customer_phone' => $customer_detail['phone'],
+        ];
+
+        $transactionEntity = new TransactionEntity($transactionData);
+        $this->transactionModel->insert($transactionEntity);
     }
+
+    // Kembalikan token untuk transaksi
+    return $this->midtrans->getSnapToken($transaction_data);
+}
+
+
+
+    //     public function create($data)
+    // {
+    //     $total_price = $data['price'] * $data['quantity'];
+    //     $order_id = Uuid::uuid7()->toString();
+    //     $order_data = [
+    //         'user_id' => session()->get('user_id'),
+    //         'order_id' => $order_id,
+    //         'store_id' => $data['store_id'],
+    //         'menu_id' => $data['menu_id'],
+    //         'quantity' => $data['quantity'],
+    //         'price' => $data['price'],
+    //         'total_price' => $total_price,
+    //         // Set status awal menjadi 'pending'
+    //         'status' => 'completed',
+    //     ];
+    //     $order = new OrderEntity($order_data);
+    //     $this->orderModel->save($order);
+
+    //     $transaction_detail = [
+    //         'order_id' => $order_id,
+    //         'gross_amount' => $total_price,
+    //     ];
+    //     $customer_detail = [
+    //         'first_name' => session()->get('name'),
+    //         'email' => session()->get('email'),
+    //         'phone' => session()->get('phone'),
+    //     ];
+    //     $transaction_data = [
+    //         'transaction_details' => $transaction_detail,
+    //         'customer_details' => $customer_detail,
+    //         'callbacks' => [
+    //             'finish' => base_url('/'), 
+    //         ],
+    //     ];
+
+    //     return $this->midtrans->getSnapToken($transaction_data);
+    // }
 
     public function notification()
     {
@@ -76,20 +141,9 @@ class PaymentController extends BaseController
             'customer_name' => $notif->customer_details->first_name . ' ' . $notif->customer_details->last_name,
             'customer_email' => $notif->customer_details->email,
             'customer_phone' => $notif->customer_details->phone,
-            'payment_code' => $notif->payment_code ?? null,
-            'bank' => $notif->bank ?? null,
-            'va_numbers' => $notif->va_numbers[0]->va_number ?? null,
-            'approval_code' => $notif->approval_code ?? null,
-            'signature_key' => $notif->signature_key,
-            'currency' => $notif->currency,
-            'expiry_time' => $notif->expiry_time ?? null,
-            'billing_address' => json_encode($notif->billing_address ?? null),
-            'shipping_address' => json_encode($notif->shipping_address ?? null),
-            'item_details' => json_encode($notif->item_details),
         ];
-        $transactionEntity = new TransactionEntity($transactionData);
 
-        // simpan atau perbarui data transaksi di database
+        $transactionEntity = new TransactionEntity($transactionData);
         $existingTransaction = $this->transactionModel->where('transaction_id', $notif->transaction_id)->first();
         if ($existingTransaction) {
             $transactionEntity->id = $existingTransaction->id;
@@ -97,43 +151,15 @@ class PaymentController extends BaseController
         } else {
             $this->transactionModel->insert($transactionEntity);
         }
-
-        // proses status transaksi sesuai kebutuhan
         $transaction = $notif->transaction_status;
-        $type = $notif->payment_type;
         $order_id = $notif->order_id;
-        $fraud = $notif->fraud_status;
 
-        // update status transaksi
-        $this->transactionModel->where('transaction_id', $notif->transaction_id)->set([
-            'transaction_status' => $transaction,
-        ])->update();
-
-        if ($transaction == 'capture') {
-            if ($type == 'credit_card') {
-                if ($fraud == 'challenge') {
-                    // Update order status to 'challenge' in database
-                    $this->orderModel->where('order_id', $order_id)->set(['status' => 'pending'])->update();
-                } else {
-                    // Update order status to 'success' in database
-                    $this->orderModel->where('order_id', $order_id)->set(['status' => 'diproses'])->update();
-                }
-            }
-        } elseif ($transaction == 'settlement') {
-            // Update order status to 'settlement' in database
-            $this->orderModel->where('order_id', $order_id)->set(['status' => 'diproses'])->update();
+        if ($transaction == 'capture' || $transaction == 'settlement') {
+            $this->orderModel->where('order_id', $order_id)->set(['status' => 'completed'])->update();
         } elseif ($transaction == 'pending') {
-            // Updata order status to 'pending' in database
-            $this->orderModel->where('order_id', $order_id)->set(['status' => 'ditunda'])->update();
-        } else if ($transaction == 'deny') {
-            // Update order status to 'deny' in database
-            $this->orderModel->where('order_id', $order_id)->set(['status' => 'dibatalkan'])->update();
-        } else if ($transaction == 'expire') {
-            // Update order status to 'expire' in database
-            $this->orderModel->where('order_id', $order_id)->set(['status' => 'kadaluwarsa'])->update();
-        } else if ($transaction == 'cancel') {
-            // Update order status to 'cancel' in database
-            $this->orderModel->where('order_id', $order_id)->set(['status' => 'dibatalkan'])->update();
+            $this->orderModel->where('order_id', $order_id)->set(['status' => 'pending'])->update();
+        } elseif ($transaction == 'deny' || $transaction == 'cancel' || $transaction == 'expire') {
+            $this->orderModel->where('order_id', $order_id)->set(['status' => 'canceled'])->update();
         }
 
         return $this->response->setStatusCode(200);

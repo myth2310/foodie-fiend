@@ -41,15 +41,20 @@ class RecommendationController extends BaseController
     public function index()
     {
         $user_id = session()->get('user_id');
-        $dataChart = $this->chartModel->getAllChartWithMenu($user_id);
-        $recommendation = $this->get_recommendations($user_id);
-        $ratings = $this->reviewModel->countMenusWithRating();
+        // $dataChart = $this->chartModel->getAllChartWithMenu($user_id);
+        // $recommendation = $this->get_recommendations($user_id);
+        $ratings = $this->menuModel->countMenusWithRating();
+      
+        $recommended_menus = $this->menuModel->getMenusAll($user_id);
+        
+        $charts = $this->chartModel->getAllChartWithMenu($user_id);
+
         $data = [
-            'title' => 'Halaman Utama | Foodie Fiend',
+            'title' => 'Rekomendasi Kuliner | Foodie Fiend',
             'hero_img' => 'https://images.squarespace-cdn.com/content/v1/61709486e77e1d27c181981c/a9eb540d-aff8-4360-8354-1d35c856a561/0223_UrbanSpace_ZeroIrving_LizClayman_160.png',
-            'charts' => $dataChart,
             'menus_ratings' => $ratings,
-            'menus' => $recommendation,
+            'menus' => $recommended_menus,
+            'charts' => $charts,
             'use_chart_button' => false,
             'use_hero_text' => true,
         ];
@@ -61,9 +66,11 @@ class RecommendationController extends BaseController
         $user_id = session()->get('user_id');
         $dataChart = $this->chartModel->getAllChartWithMenu($user_id);
         $menus = $this->reviewModel->getMenus($rating);
+
         $data = [
             'title' => "Menu Rating $rating | Foodie Fiend",
             'charts' => $dataChart,
+            'rating' => $rating,
             'menus' => $menus,
             'use_chart_button' => false,
             'use_hero_text' => true,

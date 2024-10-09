@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Foodie | Dashboard User</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous"/>
   <link rel="stylesheet" href="<?= base_url('assets/css/styles.css'); ?>">
   <style>
@@ -60,6 +61,40 @@
     <!-- Main Content End -->
   </div>
   <?= $this->renderSection('scripts') ?>
+
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    <?php if (session()->getFlashdata('success')): ?>
+      swal({
+        title: "Sukses!",
+        text: "<?= session()->getFlashdata('success') ?>",
+        icon: "success",
+        content: {
+          element: "p",
+          attributes: {
+            style: "text-align: center;"
+          }
+        }
+      });
+    <?php elseif (session()->getFlashdata('error')): ?>
+      swal({
+        title: "Error!",
+        html: true,
+        text: "<?= session()->getFlashdata('error') ?>",
+        icon: "error",
+        content: {
+          element: "p",
+          attributes: {
+            style: "text-align: center;"
+          }
+        }
+      });
+    <?php endif; ?>
+  });
+</script>
+
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
   <script>

@@ -69,7 +69,7 @@ class MenuController extends BaseController
 
     public function create()
     {
-        $this->menu->store_id = session()->get('store_id')->id;
+        $this->menu->store_id = session()->get('store_id');
         $this->menu->name = $this->request->getPost('menu_name');
         $this->menu->price = $this->request->getPost('menu_price');
         $this->menu->category = $this->request->getPost('menu_category');
@@ -169,4 +169,6 @@ class MenuController extends BaseController
     {
         return $this->menuModel->where('store_id', $store_id)->findAll();
     }
+
+   
 }

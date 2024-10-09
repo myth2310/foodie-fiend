@@ -21,7 +21,7 @@
     <!-- row 1 -->
     <div class="flex flex-wrap -mx-3">
       <!-- card1 -->
-      <div class="w-full max-w-full px-3 mb-6 sm:w-1/2 sm:flex-none xl:mb-0 xl:w-1/4">
+      <div class="w-full max-w-full px mb-6 sm:w-1/2 sm:flex-none xl:mb-0 xl:w-1/4">
         <div class="relative flex flex-col min-w-0 break-words bg-white shadow-xl rounded-2xl bg-clip-border">
           <div class="flex-auto p-4">
             <div class="flex flex-row -mx-3">
@@ -90,7 +90,7 @@
         <div class="relative flex flex-col min-w-0 break-words bg-white border-0 border-solid shadow-xl border-black-125 rounded-2xl bg-clip-border">
           <div class="p-4 pb-0 mb-0 rounded-t-4">
             <div class="flex justify-between">
-              <h6 class="mb-2">Menu</h6>
+              <h6 class="mb-2">Daftar Menu</h6>
             </div>
           </div>
           <div class="overflow-x-auto">
@@ -115,18 +115,7 @@
                       <h6 class="mb-0 text-sm leading-normal"><?= $menu->price ?></h6>
                     </div>
                   </td>
-                  <td class="p-2 align-middle bg-transparent border-b whitespace-nowrap">
-                    <div class="text-center">
-                      <p class="mb-0 text-xs font-semibold leading-tight">Value:</p>
-                      <h6 class="mb-0 text-sm leading-normal">$230,900</h6>
-                    </div>
-                  </td>
-                  <td class="p-2 text-sm leading-normal align-middle bg-transparent border-b whitespace-nowrap">
-                    <div class="flex-1 text-center">
-                      <p class="mb-0 text-xs font-semibold leading-tight">Bounce:</p>
-                      <h6 class="mb-0 text-sm leading-normal">29.9%</h6>
-                    </div>
-                  </td>
+                 
                 </tr>
                 <?php endforeach ?>
               </tbody>
@@ -137,7 +126,7 @@
       <div class="w-full max-w-full px-3 mt-0 lg:w-5/12 lg:flex-none">
         <div class="border-black/12.5 shadow-xl relative flex min-w-0 flex-col break-words rounded-2xl border-0 border-solid bg-white bg-clip-border">
           <div class="p-4 pb-0 rounded-t-4">
-            <h6 class="mb-0">Kategori</h6>
+            <h6 class="mb-0">Daftar Kategori</h6>
           </div>
           <div class="flex-auto p-4">
             <?php if($totalCategory == 0): ?>
@@ -154,9 +143,7 @@
                         <h6 class="mb-1 text-sm leading-normal text-slate-700"><?= $category->name ?></h6>
                       </div>
                     </div>
-                    <div class="flex">
-                      <button class="group ease-in leading-pro text-xs rounded-3.5xl p-1.2 h-6.5 w-6.5 mx-0 my-auto inline-block cursor-pointer border-0 bg-transparent text-center align-middle font-bold text-slate-700 shadow-none transition-all"><i class="ni ease-bounce text-2xs group-hover:translate-x-1.25 ni-bold-right transition-all duration-200" aria-hidden="true"></i></button>
-                    </div>
+                   
                   </li>
                 <?php endforeach; ?>
               </ul>

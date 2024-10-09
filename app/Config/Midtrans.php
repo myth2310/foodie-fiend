@@ -11,9 +11,11 @@ class Midtrans extends BaseConfig
     public $isProduction;
     public $isSanitized;
     public $is3ds;
+    public $merchantId;
 
     public function __construct()
     {
+        $this->merchantId = getenv("MIDTRANS_MERCHANT_ID");
         $this->serverKey = getenv("MIDTRANS_SERVER_KEY");
         $this->clientKey = getenv("MIDTRANS_CLIENT_KEY");
         $this->isProduction = getenv("MIDTRANS_IS_PRODUCTION") === 'true';

@@ -12,6 +12,7 @@ class CategoryController extends BaseController
 
     protected $category;
     protected $categoryModel;
+    protected $store_id;
 
     public function __construct()
     {
@@ -53,7 +54,7 @@ class CategoryController extends BaseController
     {
         $this->category->name = $this->request->getPost('name');
         $this->category->description = $this->request->getPost('description');
-        $this->category->store_id = session()->get('store_id')->id;
+        $this->category->store_id = session()->get('store_id');
 
         if (!$this->categoryModel->save($this->category)) {
             return redirect()->back()->withInput()->with('errors', $this->categoryModel->errors());
@@ -62,6 +63,7 @@ class CategoryController extends BaseController
         session()->setFlashdata('messages', ['Berhasil tambah kategori']);
         return redirect()->back();
     }
+
 
     public function update($category_id)
     {

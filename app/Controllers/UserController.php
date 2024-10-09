@@ -41,7 +41,7 @@ class UserController extends BaseController
 
     public function dashboard()
     {
-        if(session()->get('role') != 'user') {
+        if (session()->get('role') != 'user') {
             return redirect()->to('/');
         }
         return view('pages/user/index');
@@ -58,9 +58,19 @@ class UserController extends BaseController
     {
         $user_id = session()->get('user_id');
         $orderStatus = $this->request->getGet('status');
-        $data = $this->orderController->getAllOrders($user_id, $orderStatus);
-        return view('pages/user/my_order', ['data' => $data]);
+
+
+        $my_order = $this->orderModel->getAllOrdersWithMenus($user_id, $orderStatus);
+        $pager = $this->orderModel->pager;
+
+        $data = [
+            'data' => $my_order,
+            'pager' => $pager,
+        ];
+
+        return view('pages/user/my_order', $data);
     }
+
 
     public function settings()
     {
@@ -78,43 +88,71 @@ class UserController extends BaseController
         return view('pages/signup');
     }
 
-    // Fungsi untuk menyimpan data user ke Database
+    //     public function store()
+    // {
+    //     $this->user->name = $this->request->getPost('name');
+    //     $this->user->email = $this->request->getPost('email');
+    //     $this->user->phone = $this->request->getPost('phone');
+    //     $this->user->profile = 'https://res.cloudinary.com/beta7x/image/upload/v1720840088/610-6104451_image-placeholder-png-user-profile-placeholder-image-png-removebg-preview_bccniu.png';
+    //     $this->user->setPassword($this->request->getPost('password'));
+
+    //     // Buat token untuk verifikasi pengguna
+    //     $token = bin2hex(random_bytes(16));
+    //     $this->user->verification_token = $token;
+
+    //     $storeUser = $this->userModel->insert($this->user);
+    //     if (!$storeUser) {
+    //         session()->setFlashdata('error', 'Terjadi kesalahan dalam penyimpanan data pengguna.');
+    //         return redirect()->back()->withInput()->with('errors', $this->userModel->errors());
+    //     }
+
+    //     $data = $this->userModel->where('email', $this->user->email)->first();
+    //     switch ($data->role) {
+    //         case 'store':
+    //             $this->setSession($data, true);
+    //             break;
+    //         default:
+    //             $this->setSession($data);
+    //             break;
+    //     }
+
+    //     if (!$this->emailController->sendVerification($data->email, $data->name, $token)) {
+    //         session()->setFlashdata('error', 'Gagal mengirim email verifikasi.');
+    //         return redirect()->to('/')->with('errors', ['Gagal mengirim email verifikasi']);
+    //     }
+
+    //     session()->setFlashdata('success', 'Pengguna berhasil dibuat dan email verifikasi berhasil terkirim!');
+    //     return redirect()->to('/');
+    // }
+
     public function store()
     {
-        $this->user->name = $this->request->getPost('name');
-        $this->user->email = $this->request->getPost('email');
-        $this->user->phone = $this->request->getPost('phone');
-        $this->user->profile = 'https://res.cloudinary.com/beta7x/image/upload/v1720840088/610-6104451_image-placeholder-png-user-profile-placeholder-image-png-removebg-preview_bccniu.png';
-        $this->user->setPassword($this->request->getPost('password'));
-        
-        // Buat token untuk verifikasi pengguna
-        $token = bin2hex(random_bytes(16));
-        $this->user->verification_token = $token;
+        $userModel = new UserModel();
+        $user = new UserEntity();
 
-        $storeUser = $this->userModel->insert($this->user);
-        if (!$storeUser) {
-            return redirect()->back()->withInput()->with('errors', $this->userModel->errors());
-        }
-        
-        $data = $this->userModel->where('email', $this->user->email)->first();
-        switch ($data->role) {
-            case 'store':
-                $this->setSession($data, true);
-                break;
-            default:
-                $this->setSession($data);
-                break;
-        }
-        
-        $messages = ['Pengguna berhasil dibuat'];
-        
-        if (!$this->emailController->sendVerification($data->email, $data->name, $token)) {
-            return redirect()->to('/')->with('errors', ['Gagal mengirim email verifikasi']);
+        $user->name = $this->request->getPost('name');
+        $user->email = $this->request->getPost('email');
+        $user->phone = $this->request->getPost('phone');
+        $user->role = $this->request->getPost('role');
+        $user->role = 'store';
+        $user->profile = 'https://res.cloudinary.com/beta7x/image/upload/v1720840088/610-6104451_image-placeholder-png-user-profile-placeholder-image-png-removebg-preview_bccniu.png';
+        $password = $this->request->getPost('password');
+        $user->setPassword($password);
+
+        if (!$userModel->insert($user)) {
+            $errors = $userModel->errors(); // Ambil pesan error dari validasi
+
+            // Mengonversi pesan error menjadi string untuk ditampilkan di SweetAlert
+            $errorMessages = implode("<br>", $errors);
+
+            // Redirect dengan flashdata error
+            return redirect()->back()->withInput()->with('error', $errorMessages);
         }
 
-        array_push($messages, 'Email verifikasi berhasil terkirim');
-        return redirect()->to('/')->with('messages', $messages);
+        return redirect()->to('/')->with('success', 'Pengguna berhasil dibuat');
     }
+
+
 
     // Fungsi untuk menampilkan halaman edit user
     public function edit($id)
@@ -134,7 +172,7 @@ class UserController extends BaseController
     public function update($id)
     {
         $user = $this->userModel->find($id);
-        
+
         if (!$user) {
             return redirect()->back()->with('errors', ['Pengguna tidak ditemukan']);
         }
@@ -185,8 +223,7 @@ class UserController extends BaseController
             return redirect()->to('/')->with('errors', ['Gagal verifikasi email pengguna']);
         }
     }
-
-    // Fungsi untuk setting session pengguna
+    
     public function setSession($data, $with_storeId = false)
     {
         $session_data = [

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Controllers;
+
 use App\Models\StoreModel;
 use App\Models\UserModel;
 
@@ -24,7 +25,8 @@ class AuthController extends BaseController
         return view('pages/otp_login');
     }
 
-    public function verifyOTP() {
+    public function verifyOTP()
+    {
         $secret = getenv('OTP_SECRET_KEY');
         $otp_code = $this->request->getPost('otp_code');
 
@@ -56,19 +58,20 @@ class AuthController extends BaseController
                         break;
                 }
 
-                $session->setFlashdata('messages', ['Sukses login']);
-
+                $session->setFlashdata('success', 'Sukses login');
                 if ($data->role == 'store' || $data->role == 'admin') {
-                    return redirect()->route('dashboard');
+                    return redirect()->to('/dashboard');
                 }
+                
+
 
                 return redirect()->route('home');
             } else {
-                $session->setFlashdata('errors', ['Email or password is incorrect.']);
+                $session->setFlashdata('error', 'Email atau password salah.');
                 return redirect()->to('/');
             }
         }
-        $session->setFlashdata('errors', ['Email atau password salah.']);
+        $session->setFlashdata('error', 'Email atau password salah.');
         return redirect()->to('/');
     }
 
