@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\MenuModel;
+use App\Models\OrderModel;
 
 class DashboardController extends BaseController
 {
@@ -30,9 +31,9 @@ class DashboardController extends BaseController
             return redirect()->route('home');
         }
 
-        // dd(session()->get('store_id')->id);
         $menus = $this->menuController->getAllByStoreId($this->store_id);
         $categories = $this->categoryController->getAllByStoreId($this->store_id);
+
 
         return view('pages/dashboard', ['data' => [
             'menus' => $menus,
@@ -74,6 +75,17 @@ class DashboardController extends BaseController
 
     public function order(): string
     {
-        return view('pages/order', ['page' => 'Pesanan']);
+        $orderModel = new OrderModel();
+        $perPage = 5;  // Jumlah data per halaman
+    
+        $orders = $orderModel->getOrdersByStoreId($this->store_id, $perPage);
+        $pager = $orderModel->pager;  
+    
+        return view('pages/order', [
+            'page' => 'Pesanan',
+            'orders' => $orders,
+            'pager' => $pager  // Kirimkan pager ke view
+        ]);
     }
+    
 }

@@ -19,11 +19,11 @@
     </div>
     Pesanan Saya
   </a>
-  <a href="/user/dashboard/setting" class="flex items-center py-2.5 px-4 rounded-lg transition duration-200 hover:font-semibold hover:bg-white hover:shadow-lg hover:text-gray-500" id="setting-link">
+  <a href="/recommendations" class="flex items-center py-2.5 px-4 rounded-lg transition duration-200 hover:font-semibold hover:bg-white hover:shadow-lg hover:text-gray-500" id="setting-link">
     <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-center text-white bg-gray-500 stroke-0 text-center xl:p-2.5">
-      <i class="fas fa-cog"></i>
+      <i class="fa-solid fa-bowl-food"></i>
     </div>
-    Pengaturan
+    Jelajah UMKM
   </a>
   <a href="/logout" class="flex items-center py-2.5 px-4 rounded-lg transition duration-200 hover:font-semibold hover:bg-white hover:shadow-lg hover:text-gray-500" id="logout-link">
     <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-center text-white bg-red-500 stroke-0 text-center xl:p-2.5">
@@ -64,11 +64,12 @@
                     <i class="fa-solid fa-clock" style="color: #FFD43B;"></i>
                     <p class="capitalize">Pesanan Pending</p>
                   </div>
-                <?php elseif ($item->status === 'success') : ?>
+                <?php elseif ($item->status === 'completed') : ?>
                   <div class="flex items-center space-x-2 text-green-600">
                     <i class="fas fa-shipping-fast"></i>
                     <p class="capitalize">Pesanan Telah dibayar</p>
                   </div>
+              
                 <?php else : ?>
                   <div class="flex items-center space-x-2 text-red-600">
                     <i class="fas fa-times-circle"></i>
@@ -83,7 +84,6 @@
                     </div>
                   </a>
                 <?php endif; ?>
-
                 <a href="/ratings/<?= $item->menu_id ?>" class="text-white text-base font-medium">
                   <div class="px-4 py-2 bg-orange-500 transition ease-in-out duration-300 hover:bg-orange-700 rounded-md">
                     <p>Beri Ulasan</p>
@@ -93,9 +93,11 @@
             </div>
             <hr>
             <div class="flex px-6 py-4 bg-white rounded-md">
+
               <div class="flex items-center w-full">
                 <span class="text-gray-600">Tanggal Pesanan : <?= date('d F Y', strtotime($item->created_at)); ?></span>
               </div>
+
             </div>
             <div class="flex flex-col px-6 py-4 bg-white rounded-md">
               <?php
@@ -105,7 +107,7 @@
               $prices = explode(',', $item->price);
               $total_prices = explode(',', $item->total_price);
               $quantities = explode(',', $item->quantity);
-              $grand_total = 0; // Inisialisasi grand total
+              $grand_total = 0; 
               ?>
 
               <?php for ($i = 0; $i < count($menu_names); $i++): ?>
@@ -113,18 +115,18 @@
                   <img class="w-16 h-16 rounded-md" src="<?= $menu_imgs[$i] ?>" alt="<?= $menu_names[$i] ?>">
                   <div class="ml-4">
                     <h4><?= $menu_names[$i] ?></h4>
-                    <p>x<?= isset($quantities[$i]) ? $quantities[$i] : 1; ?></p> <!-- Menampilkan kuantitas atau 1 jika tidak ada -->
+                    <p>x<?= isset($quantities[$i]) ? $quantities[$i] : 1; ?></p> 
                   </div>
                   <div class="flex font-semibold justify-center items-center space-x-1 text-orange-400 ml-auto">
                     <span>Rp.</span>
-                    <span><?php echo number_format((float)$total_prices[$i], 0, ',', '.'); ?></span> <!-- Total harga untuk item ini -->
+                    <span><?php echo number_format((float)$total_prices[$i], 0, ',', '.'); ?></span>
                   </div>
                 </div>
-                <?php $grand_total += (float)$total_prices[$i]; // Menambahkan total harga item ke grand total 
+                <?php $grand_total += (float)$total_prices[$i]; 
                 ?>
               <?php endfor; ?>
 
-              <!-- Menampilkan total harga semua item -->
+             
               <div class="flex justify-between mt-4 font-semibold text-lg">
                 <span>Total Harga:</span>
                 <span>Rp. <?= number_format($grand_total, 0, ',', '.'); ?></span> <!-- Menampilkan grand total -->
@@ -132,14 +134,11 @@
             </div>
           </div>
         <?php endforeach; ?>
-
-
-
-
+        <div style="float: right">
+          <?= $pager->links('default', 'custom_pager') ?>
+        </div>
       </div>
-      <div class="flex justify-center mt-4 space-x-1">
-        <?= $pager->links() ?>
-      </div>
+
     </div>
   </div>
 </div>

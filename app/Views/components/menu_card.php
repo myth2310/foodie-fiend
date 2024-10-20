@@ -26,7 +26,8 @@
                     </div>
                     <p class="text-sm font-bold text-slate-900 mb-1">Rp. <?= number_format($menu['price'], 0, ',', '.') ?></p>
                     <?php if (session()->get('user_id')): ?>
-                        <form action="<?= base_url('chart/add/' . $menu->id) ?>" method="post">
+                        <form action="<?= base_url('chart/add/' . $menu['id']) ?>" method="post">
+
                             <input type="hidden" name="quantity" value="1" />
                             <button type="submit" class="w-full flex items-center justify-center rounded-md bg-yellow-500 px-3 py-1 text-xs font-medium text-white transition-all duration-150 ease-in-out hover:bg-yellow-700 focus:outline-none focus:ring-4 focus:ring-yellow-300">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="mr-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">

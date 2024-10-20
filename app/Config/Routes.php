@@ -64,6 +64,7 @@ $routes->group('/user', function ($routes) {
         $routes->get('chart', 'UserController::charts', ['as' => 'my_chart']);
         $routes->get('order', 'UserController::orders');
         $routes->get('setting', 'UserController::settings', ['as' => 'my_setting']);
+        $routes->post('review', 'RatingController::review');
     });
     $routes->get('profile', 'UserController::profile', ['as' => 'profile']);
     $routes->get('edit/(:num)', 'UserController::edit/$1');
@@ -109,7 +110,6 @@ $routes->group('chart', function ($routes) {
 
 $routes->group('ratings', function ($routes) {
     $routes->get('(:any)', 'RatingController::getProductData/$1');
-    $routes->get('', 'RatingController::index');
 });
 
 // Test email invoke

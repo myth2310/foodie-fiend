@@ -30,6 +30,7 @@ class ChartController extends BaseController
     public function addToChart($menu_id)
     {
       
+        $session = session();
         $user_id = session()->get('user_id');
         $existingItem = $this->chartModel->where('user_id', $user_id)
             ->where('menu_id', $menu_id)
@@ -55,11 +56,12 @@ class ChartController extends BaseController
             }
         }
 
+        $session->setFlashdata('success', 'Menu berhasil ditambahkan ke keranjang!');
+
         return redirect()->back()->with('messages', ['Berhasil ditambahkan ke keranjang']);
     }
 
 
-    // fungsi untuk menghapus menu dari keranjang
     public function removeFromChart()
     {
         $chart_id = $this->request->getPost('chart_id');

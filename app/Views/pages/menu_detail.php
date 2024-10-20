@@ -30,9 +30,7 @@
               <svg fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-4 h-4 text-yellow-300" viewBox="0 0 24 24">
                 <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
               </svg>
-              <!-- <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-4 h-4 text-yellow-300" viewBox="0 0 24 24">
-                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
-              </svg> -->
+
               <span class="ml-3"><?= count($reviews) ?> Reviews</span>
             </span>
           </div>
@@ -91,41 +89,42 @@
         <h2 class="text-2xl font-bold text-gray-900 "><i class="fa-solid fa-comment"></i> Semua ulasan</h2>
       </div>
       <div class="py-8">
-        <ul id="listReview">
-          <?php if (empty($menus)): ?>
-            <div class="text-gray-500">
-              <p>Belum ada ulasan pada menu ini.</p>
-            </div>
-          <?php else: ?>
-            <?php foreach ($reviews as $review): ?>
-              <li class="mb-5">
-                <div class="flex mb-1.5">
-                  <!-- Rating -->
-                  <span class="flex items-center">
-                    <?php for ($i = 0; $i < $review->rating; $i++): ?>
-                      <svg fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-4 h-4 text-yellow-300" viewBox="0 0 24 24">
-                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
-                      </svg>
-                    <?php endfor ?>
-                  </span>
-                  <!-- Waktu review (Optional) -->
-                  <!-- <span class="ml-3 text-gray-600">1 menit yang lalu</span> -->
+      <ul id="listReview" class="space-y-5">
+    <?php if (empty($reviews)): ?>
+        <li class="text-gray-500 text-center">
+            <p>Belum ada ulasan pada menu ini.</p>
+        </li>
+    <?php else: ?>
+        <?php foreach ($reviews as $review): ?>
+            <li class="flex items-start">
+                <img src="<?= $review->user_profile ?>" alt="User Profile" class="rounded-full h-10 w-10 mr-3">
+                <div class="flex-1">
+                    <span class="text-xl text-gray-800 font-semibold"><?= $review->user_name ?></span>
+                    
+                    <div class="flex items-center mb-1.5">
+                        <!-- Rating -->
+                        <span class="flex items-center">
+                            <?php for ($i = 0; $i < $review->rating; $i++): ?>
+                                <svg fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-4 h-4 text-yellow-300" viewBox="0 0 24 24">
+                                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+                                </svg>
+                            <?php endfor ?>
+                        </span>
+                    </div>
+                    
+                    <div class="flex mb-4">
+                        <!-- Ulasan user -->
+                        <p class="text-gray-700"><?= $review->review ?></p>
+                    </div>
+                    
+                    <hr class="border-gray-300">
                 </div>
-                <div class="flex mb-1.5 items-center space-x-2">
-                  <!-- Image profile user -->
-                  <img src="<?= $review->user_profile ?>" alt="User Profile" class="rounded-full h-10 w-10">
-                  <!-- Nama user -->
-                  <span class="text-xl text-gray-800 font-semibold"><?= $review->user_name ?></span>
-                </div>
-                <div class="flex mb-4">
-                  <!-- Ulasan user -->
-                  <p><?= $review->review ?></p>
-                </div>
-                <hr>
-              </li>
-            <?php endforeach ?>
-          <?php endif ?>
-        </ul>
+            </li>
+        <?php endforeach; ?>
+    <?php endif; ?>
+</ul>
+
+
       </div>
     </div>
   </section>

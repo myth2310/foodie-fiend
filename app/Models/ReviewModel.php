@@ -76,8 +76,11 @@ class ReviewModel extends Model
         return $this->select('reviews.*, users.name as user_name, users.profile as user_profile')
             ->join('users', 'reviews.user_id = users.id')
             ->where('reviews.menu_id', $menu_id)
+            ->orderBy('reviews.created_at', 'DESC') 
+            ->limit(5) 
             ->findAll();
     }
+    
 
     public function getMenusWithRating($menu_ids)
     {

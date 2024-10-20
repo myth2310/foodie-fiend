@@ -36,11 +36,16 @@ def fetch_reviews(query, params=None):
         cursor.execute(query, params)
         result = cursor.fetchall()
         df = pd.DataFrame(result)
+
         if df.empty:
             print("DataFrame is empty!")
         else:
             print("DataFrame columns:", df.columns)  
+
+        # Hitung rata-rata rating jika ada duplikat (banyak ulasan untuk menu yang sama)
+        df = df.groupby(['user_id', 'menu_id'], as_index=False).agg({'rating': 'mean'})
         return df
+
     except Exception as e:
         print(f"Error: {e}")
         conn.rollback()
@@ -91,10 +96,11 @@ def recommend(ratings_matrix, user_id=None, top_n: int = 20):
 def get_recommendation(user_id):
     query = "SELECT user_id, menu_id, rating FROM reviews"
     reviews = fetch_reviews(query)
-    
+
     if 'user_id' not in reviews.columns or 'menu_id' not in reviews.columns or 'rating' not in reviews.columns:
         return jsonify({"error": "Missing columns in data"}), 500
-    
+
+    # Pivot table untuk membentuk ratings_matrix
     ratings_matrix = reviews.pivot(
         index="user_id", columns="menu_id", values="rating"
     ).fillna(0)
@@ -104,9 +110,8 @@ def get_recommendation(user_id):
     except Exception as e:
         print(f"Recommendation error: {e}")
         recommended_menus = recommend(ratings_matrix)
-    
+
     menu_ids = [item[0] for item in recommended_menus]
     return jsonify(menu_ids)
-
 
 

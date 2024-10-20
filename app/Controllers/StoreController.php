@@ -40,15 +40,18 @@ class StoreController extends BaseController
     public function getAllStore()
     {
         $storeModel = new StoreModel();
-        $stores = $storeModel->findAll();
+        $stores = $storeModel->orderBy('RAND()')->findAll();
+        
         $totalStore = count($stores);
+    
         $data = [
             'stores' => $stores,
             'totalStore' => $totalStore, 
         ];
-
+    
         return $data;
     }
+    
 
     // Fungsi untuk menampilkan detail toko
     public function detail($id)

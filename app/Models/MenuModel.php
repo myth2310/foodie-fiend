@@ -142,29 +142,32 @@ class MenuModel extends Model
 
 
 
-    public function countMenusWithRating()
+    public function countMenusWithRating() 
     {
         $ratings = [];
-
+    
         for ($i = 1; $i <= 4; $i++) {
             $menuCount = $this->select('menus.id')
                 ->join('reviews', 'reviews.menu_id = menus.id')
                 ->groupBy('menus.id')
-                ->having('AVG(reviews.rating) =', $i)
+                ->having('AVG(reviews.rating)', $i) 
                 ->countAllResults();
+    
+           
             $randomMenu = $this->select('menus.image_url')
                 ->join('reviews', 'reviews.menu_id = menus.id')
                 ->where('reviews.rating', $i)
                 ->orderBy('RAND()')
                 ->first();
-
-
+    
+            
             $ratings["rating_{$i}"] = [
                 'count' => $menuCount,
-                'image' => $randomMenu ? $randomMenu['image_url'] : null,
+                'image' => $randomMenu ? $randomMenu->image_url : null, 
             ];
         }
-
+    
         return $ratings;
     }
+    
 }

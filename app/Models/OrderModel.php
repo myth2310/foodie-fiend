@@ -89,7 +89,9 @@ class OrderModel extends Model
 
     public function getAllOrdersWithMenus($user_id, $order_status, $perPage = 2)
     {
-        $this->select('orders.created_at, 
+        $this->select(
+            'orders.created_at, 
+                   GROUP_CONCAT(orders.menu_id) as menu_id, 
                    GROUP_CONCAT(menus.image_url) as menu_imgs, 
                    GROUP_CONCAT(menus.name) as menu_names, 
                    GROUP_CONCAT(orders.price) as price, 
@@ -97,22 +99,37 @@ class OrderModel extends Model
                    GROUP_CONCAT(orders.quantity) as quantity, 
                    GROUP_CONCAT(orders.status) as status, 
                    stores.name as store_name'
-                   )
+        )
             ->join('menus', 'menus.id = orders.menu_id')
             ->join('stores', 'stores.id = orders.store_id')
             ->where('orders.user_id', $user_id);
-    
-        // Menambahkan kondisi untuk status jika ada
+
         if (!is_null($order_status)) {
             $this->where('orders.status', $order_status);
         }
-    
-        // Mengurutkan data berdasarkan tanggal pembuatan terbaru
+
         $this->orderBy('orders.created_at', 'DESC');
-    
-        // Menyusun hasil dan tambahkan pagination
+
         return $this->groupBy('orders.created_at, stores.name')
             ->paginate($perPage);
+    }
+
+    public function getOrdersByStoreId($store_id, $perPage = 5)
+    {
+        return $this->select('
+                    orders.id, 
+                    orders.total_price, 
+                    orders.status, 
+                    orders.quantity, 
+                    orders.created_at, 
+                    menus.name AS menu_name, 
+                    users.name AS customer_name
+                ')
+            ->join('menus', 'menus.id = orders.menu_id')
+            ->join('users', 'users.id = orders.user_id')
+            ->where('orders.store_id', $store_id)
+            ->orderBy('orders.created_at', 'DESC')
+            ->paginate($perPage);  
     }
     
 }

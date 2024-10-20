@@ -88,69 +88,69 @@ class UserController extends BaseController
         return view('pages/signup');
     }
 
-    //     public function store()
-    // {
-    //     $this->user->name = $this->request->getPost('name');
-    //     $this->user->email = $this->request->getPost('email');
-    //     $this->user->phone = $this->request->getPost('phone');
-    //     $this->user->profile = 'https://res.cloudinary.com/beta7x/image/upload/v1720840088/610-6104451_image-placeholder-png-user-profile-placeholder-image-png-removebg-preview_bccniu.png';
-    //     $this->user->setPassword($this->request->getPost('password'));
-
-    //     // Buat token untuk verifikasi pengguna
-    //     $token = bin2hex(random_bytes(16));
-    //     $this->user->verification_token = $token;
-
-    //     $storeUser = $this->userModel->insert($this->user);
-    //     if (!$storeUser) {
-    //         session()->setFlashdata('error', 'Terjadi kesalahan dalam penyimpanan data pengguna.');
-    //         return redirect()->back()->withInput()->with('errors', $this->userModel->errors());
-    //     }
-
-    //     $data = $this->userModel->where('email', $this->user->email)->first();
-    //     switch ($data->role) {
-    //         case 'store':
-    //             $this->setSession($data, true);
-    //             break;
-    //         default:
-    //             $this->setSession($data);
-    //             break;
-    //     }
-
-    //     if (!$this->emailController->sendVerification($data->email, $data->name, $token)) {
-    //         session()->setFlashdata('error', 'Gagal mengirim email verifikasi.');
-    //         return redirect()->to('/')->with('errors', ['Gagal mengirim email verifikasi']);
-    //     }
-
-    //     session()->setFlashdata('success', 'Pengguna berhasil dibuat dan email verifikasi berhasil terkirim!');
-    //     return redirect()->to('/');
-    // }
-
-    public function store()
+        public function store()
     {
-        $userModel = new UserModel();
-        $user = new UserEntity();
+        $this->user->name = $this->request->getPost('name');
+        $this->user->email = $this->request->getPost('email');
+        $this->user->phone = $this->request->getPost('phone');
+        $this->user->profile = 'https://res.cloudinary.com/beta7x/image/upload/v1720840088/610-6104451_image-placeholder-png-user-profile-placeholder-image-png-removebg-preview_bccniu.png';
+        $this->user->setPassword($this->request->getPost('password'));
 
-        $user->name = $this->request->getPost('name');
-        $user->email = $this->request->getPost('email');
-        $user->phone = $this->request->getPost('phone');
-        $user->role = $this->request->getPost('role');
-        $user->role = 'store';
-        $user->profile = 'https://res.cloudinary.com/beta7x/image/upload/v1720840088/610-6104451_image-placeholder-png-user-profile-placeholder-image-png-removebg-preview_bccniu.png';
-        $password = $this->request->getPost('password');
-        $user->setPassword($password);
+        // Buat token untuk verifikasi pengguna
+        $token = bin2hex(random_bytes(16));
+        $this->user->verification_token = $token;
 
-        if (!$userModel->insert($user)) {
-            $errors = $userModel->errors(); // Ambil pesan error dari validasi
-
-            // Mengonversi pesan error menjadi string untuk ditampilkan di SweetAlert
-            $errorMessages = implode("<br>", $errors);
-
-            // Redirect dengan flashdata error
-            return redirect()->back()->withInput()->with('error', $errorMessages);
+        $storeUser = $this->userModel->insert($this->user);
+        if (!$storeUser) {
+            session()->setFlashdata('error', 'Terjadi kesalahan dalam penyimpanan data pengguna.');
+            return redirect()->back()->withInput()->with('errors', $this->userModel->errors());
         }
 
-        return redirect()->to('/')->with('success', 'Pengguna berhasil dibuat');
+        $data = $this->userModel->where('email', $this->user->email)->first();
+        switch ($data->role) {
+            case 'store':
+                $this->setSession($data, true);
+                break;
+            default:
+                $this->setSession($data);
+                break;
+        }
+
+        // if (!$this->emailController->sendVerification($data->email, $data->name, $token)) {
+        //     session()->setFlashdata('error', 'Gagal mengirim email verifikasi.');
+        //     return redirect()->to('/')->with('errors', ['Gagal mengirim email verifikasi']);
+        // }
+
+        session()->setFlashdata('success', 'Pengguna berhasil dibuat dan email verifikasi berhasil terkirim!');
+        return redirect()->to('/');
     }
+
+    // public function store()
+    // {
+    //     $userModel = new UserModel();
+    //     $user = new UserEntity();
+
+    //     $user->name = $this->request->getPost('name');
+    //     $user->email = $this->request->getPost('email');
+    //     $user->phone = $this->request->getPost('phone');
+    //     $user->role = $this->request->getPost('role');
+    //     $user->role = 'store';
+    //     $user->profile = 'https://res.cloudinary.com/beta7x/image/upload/v1720840088/610-6104451_image-placeholder-png-user-profile-placeholder-image-png-removebg-preview_bccniu.png';
+    //     $password = $this->request->getPost('password');
+    //     $user->setPassword($password);
+
+    //     if (!$userModel->insert($user)) {
+    //         $errors = $userModel->errors(); 
+
+            
+    //         $errorMessages = implode("<br>", $errors);
+
+    //         // Redirect dengan flashdata error
+    //         return redirect()->back()->withInput()->with('error', $errorMessages);
+    //     }
+
+    //     return redirect()->to('/')->with('success', 'Pengguna berhasil dibuat');
+    // }
 
 
 

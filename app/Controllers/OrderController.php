@@ -201,15 +201,20 @@ class OrderController extends BaseController
         $image_url = $this->request->getPost('image_url');
         $user_id = session()->get('user_id');
         $charts_id = $this->request->getPost('charts_id'); 
-
+    
+        // Initialize charts_id to an empty array if it's not set
+        if (!isset($charts_id)) {
+            $charts_id = []; // Or set to null based on your requirement
+        }
+    
         $data = [];
-
+    
         if (is_array($menu_id)) {
             foreach ($menu_id as $index => $menu) {
                 $data[] = [
                     'store_id' => $store_id,
                     'menu_id' => $menu,
-                    'charts_id' => $charts_id[$index], 
+                    'charts_id' => isset($charts_id[$index]) ? $charts_id[$index] : null, // Default to null if not set
                     'price' => $price[$index],
                     'quantity' => $quantity[$index],
                     'menu_name' => $menu_name[$index],
@@ -221,7 +226,7 @@ class OrderController extends BaseController
             $data[] = [
                 'store_id' => $store_id,
                 'menu_id' => $menu_id,
-                'id' => $charts_id,
+                'charts_id' => $charts_id, // No index needed if not an array
                 'price' => $price,
                 'quantity' => $quantity,
                 'menu_name' => $menu_name,
@@ -229,19 +234,19 @@ class OrderController extends BaseController
                 'image_url' => $image_url
             ];
         }
-
+    
         try {
             $snapToken = $this->paymentController->create($data);
         } catch (\Exception $e) {
             log_message('error', 'Gagal mendapatkan Snap Token: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Gagal mendapatkan Snap Token');
         }
-
+    
         if (!$snapToken) {
             log_message('error', 'Snap Token tidak valid.');
             return redirect()->back()->with('error', 'Gagal mendapatkan Snap Token');
         }
-
+    
         $order_data = [];
         foreach ($data as $item) {
             $order_data[] = [
@@ -253,13 +258,13 @@ class OrderController extends BaseController
                 'status' => 'pending',
                 'image_url' => $item['image_url'],
                 'snapToken' => $snapToken,
-                'id' => $item['charts_id'],
+                'charts_id' => $item['charts_id'], // This can be null if not set
             ];
         }
-
+    
         $orderModel = new \App\Models\OrderModel();
         $chartModel = new \App\Models\ChartModel();
-
+    
         $db = \Config\Database::connect();
         $db->transBegin(); 
         try {
@@ -270,38 +275,37 @@ class OrderController extends BaseController
                     $orderModel->insert($order);
                 }
             }
-
+    
             $order_id = $orderModel->insertID();
             
             if (is_array($charts_id)) {
                 foreach ($charts_id as $id) {
                     $chartModel->delete($id); 
                 }
-            } else {
+            } elseif ($charts_id !== null) { 
                 $chartModel->delete($charts_id); 
             }
-
+    
             if ($db->transStatus() === false) {
                 $db->transRollback();
                 throw new \Exception('Pesanan gagal disimpan.');
             } else {
                 $db->transCommit();
             }
-
+    
             return view('pages/checkout', [
                 'order_data' => $order_data,
                 'order_id' => $order_id
             ]);
         } catch (\Exception $e) {
             log_message('error', 'Pesanan gagal disimpan: ' . $e->getMessage());
-
+    
             $db->transRollback(); 
             $session = session();
             $session->setFlashdata('error', 'Pesanan gagal disimpan: ' . $e->getMessage());
             return redirect()->back();
         }
     }
-
 
     public function getAllOrders($user_id, $order_status)
     {
