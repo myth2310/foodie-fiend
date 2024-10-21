@@ -76,11 +76,11 @@ class ReviewModel extends Model
         return $this->select('reviews.*, users.name as user_name, users.profile as user_profile')
             ->join('users', 'reviews.user_id = users.id')
             ->where('reviews.menu_id', $menu_id)
-            ->orderBy('reviews.created_at', 'DESC') 
-            ->limit(5) 
+            ->orderBy('reviews.created_at', 'DESC')
+            ->limit(5)
             ->findAll();
     }
-    
+
 
     public function getMenusWithRating($menu_ids)
     {
@@ -99,18 +99,15 @@ class ReviewModel extends Model
             ->groupBy('reviews.menu_id, m.name, m.price, m.image_url')
             ->findAll();
     }
-   
+
 
 
     public function getMenus($rating)
     {
-        return $this->select('reviews.menu_id, ROUND(AVG(reviews.rating)) rating, m.name, m.price, m.image_url')
+        return $this->select('reviews.menu_id, FLOOR(AVG(reviews.rating)) AS rounded_rating, m.name, m.price, m.image_url')
             ->join('menus m', 'reviews.menu_id = m.id')
-            ->groupBy('reviews.menu_id, m.name')
-            ->having('AVG(reviews.rating)', $rating)
+            ->groupBy('reviews.menu_id, m.name, m.price, m.image_url')
+            ->having('rounded_rating', $rating)
             ->findAll();
     }
-
-   
-    
 }
