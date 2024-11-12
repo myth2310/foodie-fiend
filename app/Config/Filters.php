@@ -110,7 +110,8 @@ class Filters extends BaseFilters
     public array $filters = [
         'auth' => [
             'before' => [
-                'dashboard',
+                'admin/dashboard/*',
+                'admin/dashboard',
                 'dashboard/*',
                 'user/*',
                 'checkout',
@@ -120,6 +121,7 @@ class Filters extends BaseFilters
             'before' => [
                 'dashboard',
                 'dashboard/*',
+                
             ],
         ],
     ];

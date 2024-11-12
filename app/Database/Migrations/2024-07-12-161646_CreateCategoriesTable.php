@@ -13,10 +13,10 @@ class CreateCategoriesTable extends Migration
                 'type' => 'CHAR',
                 'constraint' => 36,
             ],
-            'store_id' => [
-                'type' => 'CHAR',
-                'constraint' => 36,
-            ],
+            // 'store_id' => [
+            //     'type' => 'CHAR',
+            //     'constraint' => 36,
+            // ],
             'name' => [
                 'type' => 'VARCHAR',
                 'constraint' => 255,
@@ -39,7 +39,7 @@ class CreateCategoriesTable extends Migration
             ],
         ]);
         $this->forge->addKey('id', true);
-        $this->forge->addForeignKey('store_id', 'stores', 'id');
+        // $this->forge->addForeignKey('store_id', 'stores', 'id');
         $this->forge->createTable('categories', true);
     }
 

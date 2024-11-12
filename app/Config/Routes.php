@@ -28,8 +28,24 @@ $routes->group('/dashboard', function ($routes) {
         $routes->get('edit/(:any)', 'CategoryController::edit/$1');
     });
     $routes->get('profile', 'DashboardController::profile', ['as' => 'profile']);
+    $routes->get('detail-order/(:any)', 'DashboardController::detailOrder/$1');
     $routes->get('order', 'DashboardController::order', ['as' => 'order']);
+    $routes->get('download-template-surat', 'StoreController::downloadTemplateSurat');
+    $routes->post('update/store/(:any)', 'StoreController::update/$1');
+    $routes->post('update-delivery-status/(:any)', 'OrderController::updateDeliveryStatus/$1');
+
 });
+
+$routes->group('/admin/dashboard', function ($routes) {
+    $routes->get('/', 'DashboardController::dashboard'); 
+    $routes->get('download-ktp/(:any)', 'DashboardController::downloadKTP/$1'); 
+    $routes->get('mitra', 'DashboardController::mitra'); 
+    $routes->get('umkm/detail/(:any)', 'DashboardController::detail/$1'); 
+    $routes->post('umkm/verify/(:any)', 'DashboardController::verify/$1');
+    $routes->get('umkm/view-pdf/(:any)', 'DashboardController::viewPdf/$1');
+});
+
+
 
 $routes->group('/data', function ($routes) {
     $routes->group('menu', function ($routes) {
@@ -68,7 +84,7 @@ $routes->group('/user', function ($routes) {
     });
     $routes->get('profile', 'UserController::profile', ['as' => 'profile']);
     $routes->get('edit/(:num)', 'UserController::edit/$1');
-    $routes->post('update/(:num)', 'UserController::update/$1');
+    $routes->post('update/(:segment)', 'UserController::update/$1');
 });
 
 // Shop group
@@ -104,6 +120,7 @@ $routes->group('payment', function ($routes) {
 $routes->group('chart', function ($routes) {
     $routes->get('', 'ChartController::index');
     $routes->post('add/(:any)', 'ChartController::addToChart/$1');
+    $routes->post('update', 'ChartController::update');
     $routes->post('remove', 'ChartController::removeFromChart   ');
 });
 

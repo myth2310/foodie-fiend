@@ -19,6 +19,7 @@ class Home extends BaseController
         $user_id = session()->get('user_id');
         $dataChart = $this->chartModel->getAllChartWithMenu($user_id);
         $dataStore = $this->storeController->getAllStore();
+    
         $data = [
             'title' => 'Halaman Utama | Foodie Fiend',
             'hero_img' => 'https://images.squarespace-cdn.com/content/v1/61709486e77e1d27c181981c/a9eb540d-aff8-4360-8354-1d35c856a561/0223_UrbanSpace_ZeroIrving_LizClayman_160.png',
@@ -30,7 +31,7 @@ class Home extends BaseController
 
         return view('pages/index', $data);
     }
-
+   
     public function spiner(): string
     {
         return view('partial/preloader');

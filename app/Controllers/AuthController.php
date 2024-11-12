@@ -53,18 +53,21 @@ class AuthController extends BaseController
                     case 'store':
                         $this->userController->setSession($data, true);
                         break;
+                    case 'admin':
+                        $this->userController->setSession($data);
+                        break;
                     default:
                         $this->userController->setSession($data);
                         break;
                 }
 
                 $session->setFlashdata('success', 'Sukses login');
-                if ($data->role == 'store' || $data->role == 'admin') {
+                if ($data->role == 'store') {
                     return redirect()->to('/dashboard');
+                } else if ($data->role == 'admin') {
+                    return redirect()->to('/admin/dashboard');
                 }
                 
-
-
                 return redirect()->route('home');
             } else {
                 $session->setFlashdata('error', 'Email atau password salah.');

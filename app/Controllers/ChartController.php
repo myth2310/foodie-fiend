@@ -29,7 +29,7 @@ class ChartController extends BaseController
 
     public function addToChart($menu_id)
     {
-      
+
         $session = session();
         $user_id = session()->get('user_id');
         $existingItem = $this->chartModel->where('user_id', $user_id)
@@ -70,4 +70,21 @@ class ChartController extends BaseController
         }
         return redirect()->back()->with('messages', ['Berhasil dihapus dari keranjang']);
     }
+
+    public function update()
+    {
+        $itemId = $this->request->getPost('item_id');
+        $newQuantity = $this->request->getPost('quantity');
+
+        $cartModel = new ChartModel();
+
+        // Update the quantity in the database
+        $cartModel->update($itemId, ['quantity' => $newQuantity]);
+
+        return $this->response->setJSON([
+            'success' => true,
+        ]);
+    }
+
+
 }

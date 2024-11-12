@@ -48,6 +48,10 @@ class CreateOrdersTable extends Migration
                 'constraint' => ['ditunda', 'diproses', 'selesai', 'dibatalkan', 'kadaluwarsa'],
                 'default' => 'ditunda',
             ],
+            'delivery_status' => [
+                'type' => 'ENUM',
+                'constraint' => ['dimasak', 'diantar', 'selesai'],
+            ],
             'is_delete' => [
                 'type' => 'TINYINT',
                 'constraint' => 1,

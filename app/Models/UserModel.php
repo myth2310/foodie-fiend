@@ -14,7 +14,7 @@ class UserModel extends Model
     protected $returnType       = UserEntity::class;
     protected $useSoftDeletes   = true;
     protected $protectFields    = true;
-    protected $allowedFields    = ['id', 'name', 'email', 'phone', 'password', 'profile', 'role', 'is_verif', 'verification_token'];
+    protected $allowedFields    = ['id', 'name', 'email', 'phone', 'password', 'lat', 'long', 'address', 'profile', 'role', 'is_verif', 'verification_token'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -38,7 +38,7 @@ class UserModel extends Model
     ];
     protected $validationMessages = [
         'name' => [
-            'required' => 'Nama wajib diisi.', 
+            'required' => 'Nama wajib diisi.',
             'max_length' => 'Nama terlalu panjang. Panjang karakter tidak diizinkan.',
         ],
         'email' => [
@@ -75,4 +75,42 @@ class UserModel extends Model
         $data['data']['id'] = Uuid::uuid7()->toString();
         return $data;
     }
+
+    public function getUserWithStore($storeId)
+    {
+        return $this->db->table('users') 
+            ->select('stores.*,stores.name as stores_name, users.*') 
+            ->join('stores', 'users.id = stores.user_id', 'inner') 
+            ->where('users.id', $storeId) 
+            ->get()
+            ->getRowArray(); 
+    }
+
+    public function getStore($perPage = 5)
+    {
+        return $this->select('users.*, users.id as store_id, stores.*')
+            ->join('stores', 'users.id = stores.user_id')
+            ->where('users.role', 'store')
+            ->paginate($perPage);
+    }
+
+    public function getUmkmById($id)
+    {
+        $umkm = $this->select('users.*, stores.*')
+            ->join('stores', 'users.id = stores.user_id')
+            ->where('users.id', $id)
+            ->first();
+
+        return $umkm;
+    }
+    public function getUserId($id)
+    {
+        $users = $this->select('users.*')
+            ->where('users.id', $id)
+            ->first();
+
+        return $users;
+    }
+
+
 }

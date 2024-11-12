@@ -7,12 +7,14 @@ use App\Entities\OrderEntity;
 use App\Models\ChartModel;
 use App\Models\MenuModel;
 use App\Models\OrderModel;
+use App\Models\UserModel;
 use CodeIgniter\HTTP\ResponseInterface;
 
 class OrderController extends BaseController
 {
     protected $order;
     protected $orderModel;
+    protected $userModel;
     protected $chartModel;
     protected $storeController;
     protected $paymentController;
@@ -22,6 +24,7 @@ class OrderController extends BaseController
         $this->order = new OrderEntity();
         $this->orderModel = new OrderModel();
         $this->chartModel = new ChartModel();
+        $this->userModel = new UserModel();
         $this->storeController = new StoreController();
         $this->paymentController = new PaymentController();
     }
@@ -189,10 +192,28 @@ class OrderController extends BaseController
     // }
 
 
+    public function haversineDistance($lat1, $lon1, $lat2, $lon2)
+    {
+        $earthRadius = 6371;
+
+        $dLat = deg2rad($lat2 - $lat1);
+        $dLon = deg2rad($lon2 - $lon1);
+
+        $a = sin($dLat / 2) * sin($dLat / 2) +
+            cos(deg2rad($lat1)) * cos(deg2rad($lat2)) *
+            sin($dLon / 2) * sin($dLon / 2);
+
+        $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+
+        $distance = $earthRadius * $c;
+
+        return $distance;
+    }
 
     public function checkout()
     {
         $store_id = $this->request->getPost('store_id');
+        $stores_id = $this->request->getPost('stores_id');
         $menu_id = $this->request->getPost('menu_id');
         $price = $this->request->getPost('price');
         $quantity = $this->request->getPost('quantity');
@@ -200,21 +221,45 @@ class OrderController extends BaseController
         $menu_description = $this->request->getPost('menu_description');
         $image_url = $this->request->getPost('image_url');
         $user_id = session()->get('user_id');
-        $charts_id = $this->request->getPost('charts_id'); 
-    
-        // Initialize charts_id to an empty array if it's not set
-        if (!isset($charts_id)) {
-            $charts_id = []; // Or set to null based on your requirement
+        $charts_id = $this->request->getPost('charts_id');
+
+        $userModel = new UserModel();
+        $store_maps = $userModel->getUserId($stores_id);
+        $users_maps = $userModel->getUserId($user_id);
+
+        $customerLat = $users_maps->lat;
+        $customerLon = $users_maps->long;
+        $umkmLat = $store_maps->lat;
+        $umkmLon = $store_maps->long;
+        $distance = $this->haversineDistance($customerLat, $customerLon, $umkmLat, $umkmLon);
+        $ratePerKm = 1000;
+        $shippingCost = $distance * $ratePerKm;
+        $applicationFee = 2000;
+
+        $grandTotal = 0;
+        if (is_array($menu_id)) {
+            foreach ($menu_id as $index => $menu) {
+                $totalPrice = $price[$index] * $quantity[$index];
+                $grandTotal += $totalPrice;
+            }
+        } else {
+            $totalPrice = $price * $quantity;
+            $grandTotal += $totalPrice;
         }
-    
+
+        $grandTotal += $shippingCost + $applicationFee;
+
+        if (!isset($charts_id)) {
+            $charts_id = [];
+        }
+
         $data = [];
-    
         if (is_array($menu_id)) {
             foreach ($menu_id as $index => $menu) {
                 $data[] = [
                     'store_id' => $store_id,
                     'menu_id' => $menu,
-                    'charts_id' => isset($charts_id[$index]) ? $charts_id[$index] : null, // Default to null if not set
+                    'charts_id' => isset($charts_id[$index]) ? $charts_id[$index] : null,
                     'price' => $price[$index],
                     'quantity' => $quantity[$index],
                     'menu_name' => $menu_name[$index],
@@ -226,7 +271,7 @@ class OrderController extends BaseController
             $data[] = [
                 'store_id' => $store_id,
                 'menu_id' => $menu_id,
-                'charts_id' => $charts_id, // No index needed if not an array
+                'charts_id' => $charts_id,
                 'price' => $price,
                 'quantity' => $quantity,
                 'menu_name' => $menu_name,
@@ -234,19 +279,20 @@ class OrderController extends BaseController
                 'image_url' => $image_url
             ];
         }
-    
+
         try {
-            $snapToken = $this->paymentController->create($data);
+            // Pass grandTotal to the payment controller for snapToken generation
+            $snapToken = $this->paymentController->create($data, $grandTotal);
         } catch (\Exception $e) {
             log_message('error', 'Gagal mendapatkan Snap Token: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Gagal mendapatkan Snap Token');
         }
-    
+
         if (!$snapToken) {
             log_message('error', 'Snap Token tidak valid.');
             return redirect()->back()->with('error', 'Gagal mendapatkan Snap Token');
         }
-    
+
         $order_data = [];
         foreach ($data as $item) {
             $order_data[] = [
@@ -255,18 +301,18 @@ class OrderController extends BaseController
                 'menu_description' => $item['menu_description'],
                 'quantity' => $item['quantity'],
                 'price' => $item['price'],
-                'status' => 'pending',
+                'status' => 'selesai',
                 'image_url' => $item['image_url'],
                 'snapToken' => $snapToken,
-                'charts_id' => $item['charts_id'], // This can be null if not set
+                'charts_id' => $item['charts_id'],
             ];
         }
-    
+
         $orderModel = new \App\Models\OrderModel();
         $chartModel = new \App\Models\ChartModel();
-    
         $db = \Config\Database::connect();
-        $db->transBegin(); 
+        $db->transBegin();
+
         try {
             if (count($order_data) > 1) {
                 $orderModel->insertBatch($order_data);
@@ -275,38 +321,58 @@ class OrderController extends BaseController
                     $orderModel->insert($order);
                 }
             }
-    
+
             $order_id = $orderModel->insertID();
-            
+
             if (is_array($charts_id)) {
                 foreach ($charts_id as $id) {
-                    $chartModel->delete($id); 
+                    $chartModel->delete($id);
                 }
-            } elseif ($charts_id !== null) { 
-                $chartModel->delete($charts_id); 
+            } elseif ($charts_id !== null) {
+                $chartModel->delete($charts_id);
             }
-    
+
             if ($db->transStatus() === false) {
                 $db->transRollback();
                 throw new \Exception('Pesanan gagal disimpan.');
             } else {
                 $db->transCommit();
             }
-    
+
             return view('pages/checkout', [
                 'order_data' => $order_data,
-                'order_id' => $order_id
+                'order_id' => $order_id,
+                'shipping_cost' => $shippingCost,
+                'application_fee' => $applicationFee,
+                'grand_total' => $grandTotal
             ]);
         } catch (\Exception $e) {
             log_message('error', 'Pesanan gagal disimpan: ' . $e->getMessage());
-    
-            $db->transRollback(); 
+            $db->transRollback();
             $session = session();
             $session->setFlashdata('error', 'Pesanan gagal disimpan: ' . $e->getMessage());
             return redirect()->back();
         }
     }
 
+
+    public function updateDeliveryStatus($orderId) {
+        $newStatus = $this->request->getPost('status_pengantaran');
+        
+        $orderModel = new OrderModel();
+        $order = $orderModel->find($orderId);
+    
+        if ($order) {
+            $order->delivery_status = $newStatus;
+            $orderModel->save($order);
+            return redirect()->back()->with('swal_success', 'Status pengiriman berhasil diperbarui.');
+        } else {
+            return redirect()->back()->with('swal_error', 'Pesanan tidak ditemukan.');
+        }
+    }
+    
+
+    
     public function getAllOrders($user_id, $order_status)
     {
         return $this->orderModel->getAllOrdersWithMenus($user_id, $order_status);

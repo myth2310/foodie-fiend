@@ -76,7 +76,7 @@ class ChartModel extends Model
 
     public function getAllChartWithMenu($user_id)
     {
-        return $this->select('charts.*, menus.name as menu_name, menus.image_url as menu_img, menus.price as menu_price, stores.name as store_name')
+        return $this->select('charts.*, stores.user_id as stores_id, menus.name as menu_name, menus.image_url as menu_img, menus.price as menu_price, stores.name as store_name')
             ->join('menus', 'menus.id = charts.menu_id')
             ->join('stores', 'stores.id = charts.store_id')
             ->findAll();

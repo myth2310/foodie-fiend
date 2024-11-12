@@ -2,62 +2,96 @@
 
 namespace App\Database\Seeds;
 
-use App\Models\CategoryModel;
 use CodeIgniter\Database\Seeder;
+use Ramsey\Uuid\Uuid;
 
 class CategorySeeder extends Seeder
 {
     public function run()
     {
-        $categoryModel = new CategoryModel();
-        // Buat data seeder
         $data = [
             [
-                'name' => 'Berkuah',
-                'description' => 'Kategori untuk semua makanan yang memiliku kuah',
+                'id' => Uuid::uuid7()->toString(),
+                'name'        => 'Makanan Ringan',
+                'description' => 'Camilan ringan yang mudah dikonsumsi.',
+                'created_at'  => date('Y-m-d H:i:s'),
+                'updated_at'  => date('Y-m-d H:i:s'),
+                'deleted_at'  => null,
             ],
             [
-                'name' => 'Tidak Berkuah',
-                'description' => 'Kategori untuk semua makanan yang tidak memiliki kuah',
+                'id'          => '2b3c4d5e-6f7g-8h9i-0j1k-2l3m4n5o6p7q',
+                'name'        => 'Makanan Berat',
+                'description' => 'Makanan utama yang mengenyangkan, seperti nasi dan lauk-pauk.',
+                'created_at'  => date('Y-m-d H:i:s'),
+                'updated_at'  => date('Y-m-d H:i:s'),
+                'deleted_at'  => null,
             ],
             [
-                'name' => 'Sate',
-                'description' => 'Kategori untuk semua jenis makanan Sate',
+                'id' => Uuid::uuid7()->toString(),
+                'name'        => 'Minuman',
+                'description' => 'Berbagai jenis minuman, baik yang panas maupun dingin.',
+                'created_at'  => date('Y-m-d H:i:s'),
+                'updated_at'  => date('Y-m-d H:i:s'),
+                'deleted_at'  => null,
             ],
             [
-                'name' => 'Bakso',
-                'description' => 'Kategori untuk semua jenis makanan Bakso',
+                'id' => Uuid::uuid7()->toString(),
+                'name'        => 'Kue & Roti',
+                'description' => 'Kue dan roti, baik untuk camilan maupun hidangan penutup.',
+                'created_at'  => date('Y-m-d H:i:s'),
+                'updated_at'  => date('Y-m-d H:i:s'),
+                'deleted_at'  => null,
             ],
             [
-                'name' => 'Nasi Goreng',
-                'description' => 'Kategori untuk semua jenis makanan Nasi Goreng',
+                'id' => Uuid::uuid7()->toString(),
+                'name'        => 'Makanan Tradisional',
+                'description' => 'Makanan khas daerah atau tradisional Indonesia.',
+                'created_at'  => date('Y-m-d H:i:s'),
+                'updated_at'  => date('Y-m-d H:i:s'),
+                'deleted_at'  => null,
             ],
             [
-                'name' => 'Sayur',
-                'description' => 'Kategori untuk semua jenis Sayur',
+                'id' => Uuid::uuid7()->toString(),
+                'name'        => 'Makanan Organik',
+                'description' => 'Makanan yang terbuat dari bahan organik tanpa bahan pengawet.',
+                'created_at'  => date('Y-m-d H:i:s'),
+                'updated_at'  => date('Y-m-d H:i:s'),
+                'deleted_at'  => null,
             ],
             [
-                'name' => 'Gulai',
-                'description' => 'Kategori untuk semua jenis makanan Gulai',
+                'id' => Uuid::uuid7()->toString(),
+                'name'        => 'Makanan Beku',
+                'description' => 'Makanan yang dibekukan untuk daya tahan lebih lama, seperti bakso atau nugget.',
+                'created_at'  => date('Y-m-d H:i:s'),
+                'updated_at'  => date('Y-m-d H:i:s'),
+                'deleted_at'  => null,
             ],
             [
-                'name' => 'Pecel',
-                'description' => 'Kategori untuk semua jenis makanan Pecel',
+                'id' => Uuid::uuid7()->toString(),
+                'name'        => 'Makanan Sehat',
+                'description' => 'Makanan yang rendah kalori, rendah lemak, dan kaya nutrisi.',
+                'created_at'  => date('Y-m-d H:i:s'),
+                'updated_at'  => date('Y-m-d H:i:s'),
+                'deleted_at'  => null,
             ],
             [
-                'name' => 'Gorengan',
-                'description' => 'Kategori untuk semua jenis makanan Goreng-gorengan',
+                'id' => Uuid::uuid7()->toString(),
+                'name'        => 'Makanan Olahan',
+                'description' => 'Makanan yang diproses seperti abon, rendang, dan dendeng.',
+                'created_at'  => date('Y-m-d H:i:s'),
+                'updated_at'  => date('Y-m-d H:i:s'),
+                'deleted_at'  => null,
             ],
             [
-                'name' => 'Lainnya',
-                'description' => 'Kategori untuk semua makanan yang lain',
-            ],
+                'id' => Uuid::uuid7()->toString(),
+                'name'        => 'Bumbu & Rempah',
+                'description' => 'Berbagai bumbu dan rempah kemasan seperti sambal, kecap, dan bubuk rempah.',
+                'created_at'  => date('Y-m-d H:i:s'),
+                'updated_at'  => date('Y-m-d H:i:s'),
+                'deleted_at'  => null,
+            ]
         ];
 
-        // Menggunakan query builder untuk memasukkan data
-        // $this->db->table('categories')->insertBatch($data);
-
-        // Menggunakan model untuk memasukkan data
-        $categoryModel->insertBatch($data);
+        $this->db->table('categories')->insertBatch($data);
     }
 }

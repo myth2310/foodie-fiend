@@ -14,7 +14,7 @@ class StoreModel extends Model
     protected $returnType       = StoreEntity::class;
     protected $useSoftDeletes   = true;
     protected $protectFields    = true;
-    protected $allowedFields    = ['id', 'user_id', 'name', 'address', 'image_url'];
+    protected $allowedFields    = ['id', 'user_id', 'name', 'address', 'image_url', 'ktp_url', 'umkm_letter'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -64,5 +64,14 @@ class StoreModel extends Model
         return $data;
     }
 
+    public function getStoreWithUser($storeId)
+    {
+        return $this->db->table('stores') 
+            ->select('stores.*,stores.name as stores_name, users.*') 
+            ->join('users', 'users.id = stores.user_id', 'inner') 
+            ->where('stores.user_id', $storeId) 
+            ->get()
+            ->getRowArray(); 
+    } 
     
 }

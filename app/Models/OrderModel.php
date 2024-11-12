@@ -14,7 +14,7 @@ class OrderModel extends Model
     protected $returnType       = OrderEntity::class;
     protected $useSoftDeletes   = true;
     protected $protectFields    = true;
-    protected $allowedFields    = ['id', 'user_id', 'order_id', 'store_id', 'menu_id', 'quantity', 'price', 'total_price', 'status'];
+    protected $allowedFields    = ['id', 'user_id', 'order_id', 'store_id', 'menu_id', 'quantity', 'price', 'total_price', 'status','delivery_status'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -98,7 +98,8 @@ class OrderModel extends Model
                    GROUP_CONCAT(orders.total_price) as total_price, 
                    GROUP_CONCAT(orders.quantity) as quantity, 
                    GROUP_CONCAT(orders.status) as status, 
-                   stores.name as store_name'
+                   GROUP_CONCAT(orders.delivery_status) as delivery_status, 
+                   stores.name as store_name',
         )
             ->join('menus', 'menus.id = orders.menu_id')
             ->join('stores', 'stores.id = orders.store_id')
@@ -122,6 +123,7 @@ class OrderModel extends Model
                     orders.status, 
                     orders.quantity, 
                     orders.created_at, 
+                    orders.delivery_status, 
                     menus.name AS menu_name, 
                     users.name AS customer_name
                 ')
@@ -130,6 +132,18 @@ class OrderModel extends Model
             ->where('orders.store_id', $store_id)
             ->orderBy('orders.created_at', 'DESC')
             ->paginate($perPage);  
+    }
+
+
+    public function getDetailOrder($id)
+    {
+        $orderDetail = $this->select('orders.*, users.*,menus.name as menus_name')
+            ->join('users', 'users.id = orders.user_id')
+            ->join('menus', 'menus.id = orders.menu_id')
+            ->where('orders.id', $id)
+            ->first();
+
+        return $orderDetail;
     }
     
 }

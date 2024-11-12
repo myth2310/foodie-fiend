@@ -14,9 +14,10 @@ class UserSeeder extends Seeder
     
         $data = [
             'id' => Uuid::uuid7()->toString(),
-            'name' => 'Admin User',
-            'email' => 'admin@example.com',
+            'name' => 'Admin Food Fiend',
+            'email' => 'foodfiend@gmail.com',
             'phone' => '6281234567890',
+            'address' => 'Jatibarang Kab.Brebes',
             'password' => password_hash('password123', PASSWORD_BCRYPT),
             'profile' => 'https://res.cloudinary.com/beta7x/image/upload/v1720840088/610-6104451_image-placeholder-png-user-profile-placeholder-image-png-removebg-preview_bccniu.png', 
             'role' => 'admin', 

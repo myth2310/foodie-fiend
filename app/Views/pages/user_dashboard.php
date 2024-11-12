@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Foodie | Dashboard User</title>
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous"/>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous" />
   <link rel="stylesheet" href="<?= base_url('assets/css/styles.css'); ?>">
   <style>
     @media (max-width: 768px) {
@@ -12,25 +13,29 @@
         transform: translateX(-100%);
         transition: transform 0.3s ease;
       }
+
       .sidebar.active {
         transform: translateX(0);
       }
     }
+
     .profile-nav-link.active {
-      color: #F97316; /* Tailwind's blue-700 */
+      color: #F97316;
       font-weight: bold;
-      /* border-bottom: 2px solid #F97316; */
     }
+
     .profile-nav-link {
-      color: #6B7280; /* Tailwind's gray-600 */
+      color: #6B7280;
       transition: color 0.3s, border-bottom 0.3s;
     }
+
     .profile-nav-link:hover {
-      color: #F97316; /* Tailwind's blue-700 */
-      /* border-bottom: 2px solid #F97316; */
+      color: #F97316;
+
     }
   </style>
 </head>
+
 <body class="bg-gray-100">
   <div class="flex">
     <!-- Sidebar -->
@@ -76,7 +81,7 @@
     <!-- Main Content -->
     <div class="w-screen">
       <button class="md:hidden mb-4 bg-blue-600 text-white py-2 px-4 rounded" id="menu-button">☰</button>
-      
+
       <!-- <nav class="flex justify-between bg-gray-400 py-6 text-base px-10">
         <a href="#" class="profile-nav-link" data-target="menu-form">Menu</a>
         <a href="#" class="profile-nav-link" data-target="belum-bayar-form">Belum Bayar</a>
@@ -86,610 +91,649 @@
 
       <!-- Main section -->
       <section>
-          <!-- Profile Navigation Bar   -->
-          <div id="profile-nav" class="hidden mt-4">
-            <nav class="bg-white flex space-x-8 border-b-2 py-4 px-8 mx-4 rounded-md shadow-md text-base font-semibold">
-              <a href="#" class="profile-nav-link" data-target="menu-form">Semua</a>
-              <a href="#" class="profile-nav-link" data-target="belum-bayar-form">Belum Bayar</a>
-              <a href="#" class="profile-nav-link" data-target="selesai-form">Selesai</a>
-              <a href="#" class="profile-nav-link" data-target="dibatalkan-form">Dibatalkan</a>
-            </nav>
+        <!-- Profile Navigation Bar   -->
+        <div id="profile-nav" class="hidden mt-4">
+          <nav class="bg-white flex space-x-8 border-b-2 py-4 px-8 mx-4 rounded-md shadow-md text-base font-semibold">
+            <a href="#" class="profile-nav-link" data-target="menu-form">Semua</a>
+            <a href="#" class="profile-nav-link" data-target="belum-bayar-form">Belum Bayar</a>
+            <a href="#" class="profile-nav-link" data-target="selesai-form">Selesai</a>
+            <a href="#" class="profile-nav-link" data-target="dibatalkan-form">Dibatalkan</a>
+          </nav>
 
-            <!-- Forms -->
-            <div id="forms" class="mt-4 mx-4">
-              <div id="dashboard-form" class="hidden">
-                <h2 class="text-xl font-semibold">Update User Information</h2>
-                <form class="mt-4 space-y-4" enctype="multipart/form-data">
-                  <label class="block">
-                    <span class="text-gray-700">Full Name</span>
-                    <input type="text" class="form-input mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-                  </label>
-                  <label class="block">
-                    <span class="text-gray-700">Email</span>
-                    <input type="email" class="form-input mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-                  </label>
-                  <label class="block">
-                    <span class="text-gray-700">Profile Picture</span>
-                    <input type="file" class="form-input mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-                  </label>
-                  <button type="submit" class="mt-4 bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700">Update</button>
-                </form>
-              </div>
+          <!-- Forms -->
+          <div id="forms" class="mt-4 mx-4">
+            <div id="dashboard-form" class="hidden">
+              <h2 class="text-xl font-semibold">Update User Information</h2>
+              <form class="mt-4 space-y-4" enctype="multipart/form-data">
+                <label class="block">
+                  <span class="text-gray-700">Full Name</span>
+                  <input type="text" class="form-input mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                </label>
+                <label class="block">
+                  <span class="text-gray-700">Email</span>
+                  <input type="email" class="form-input mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                </label>
+                <label class="block">
+                  <span class="text-gray-700">Profile Picture</span>
+                  <input type="file" class="form-input mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                </label>
+                <button type="submit" class="mt-4 bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700">Update</button>
+              </form>
+            </div>
 
-              <div id="menu-form" class="profile-form hidden">
-                <div id="allMenusContainer" class="h-screen overflow-y-auto">
-                  <!-- Item kedua -->
-                  <div class="mt-4 shadow-sm">
-                    <div class="flex px-6 py-4 bg-white rounded-md">
-                      <div class="flex items-center w-full space-x-6">
-                        <span class="font-semibold text-gray-800">Nama Toko</span>
-                        <a href="#" class="text-gray-500 hover:text-gray-700">
-                          <div class="px-4 py-2 hover:bg-gray-100 transition ease-in-out duration-300 rounded-md items-center border">
-                            <i class="fas fa-store"></i>
-                            <span>Kunjungi Toko</span>
-                          </div>
-                        </a>
-                      </div>
-                      <div class="flex justify-end items-center w-1/2 space-x-6">
-                        <div class="flex items-center space-x-2 text-green-600">
-                          <i class="fas fa-shipping-fast"></i>
-                          <p>Pesanan telah sampai</p>
+            <div id="menu-form" class="profile-form hidden">
+              <div id="allMenusContainer" class="h-screen overflow-y-auto">
+                <!-- Item kedua -->
+                <div class="mt-4 shadow-sm">
+                  <div class="flex px-6 py-4 bg-white rounded-md">
+                    <div class="flex items-center w-full space-x-6">
+                      <span class="font-semibold text-gray-800">Nama Toko</span>
+                      <a href="#" class="text-gray-500 hover:text-gray-700">
+                        <div class="px-4 py-2 hover:bg-gray-100 transition ease-in-out duration-300 rounded-md items-center border">
+                          <i class="fas fa-store"></i>
+                          <span>Kunjungi Toko</span>
                         </div>
-                        <a href="#" class="text-white text-base font-medium">
-                          <div class="px-4 py-2 bg-orange-500 transition ease-in-out duration-300 hover:bg-orange-700 rounded-md">
-                            <p>Beri Ulasan</p>
-                          </div>
-                        </a> 
-                      </div>
+                      </a>
                     </div>
-                    <hr>
-                    <div class="flex px-6 py-4 bg-white rounded-md">
-                      <div class="flex items-center w-full">
-                        <img class="w-16 h-16 rounded-md" src="https://down-id.img.susercontent.com/file/id-11134207-7r98p-lplzfppfo8a6ff_tn" alt="Item image">
-                        <div class="ml-4">
-                          <h4>[NEW!] itel P55 5G RAM 6+128GB - 5G Network - 50M Dual Clear Cam - 18W Fast Charging - 5000mAh Battery</h4>
-                          <p>x1</p>
+                    <div class="flex justify-end items-center w-1/2 space-x-6">
+                      <div class="flex items-center space-x-2 text-green-600">
+                        <i class="fas fa-shipping-fast"></i>
+                        <p>Pesanan telah sampai</p>
+                      </div>
+                      <a href="#" class="text-white text-base font-medium">
+                        <div class="px-4 py-2 bg-orange-500 transition ease-in-out duration-300 hover:bg-orange-700 rounded-md">
+                          <p>Beri Ulasan</p>
                         </div>
-                      </div>
-                      <div class="flex font-semibold justify-center items-center space-x-1 text-orange-400">
-                        <span>Rp.</span>
-                        <span>1.600.000</span>
-                      </div>
+                      </a>
                     </div>
                   </div>
-
-                  <div class="mt-4 shadow-sm">
-                    <div class="flex px-6 py-4 bg-white rounded-md">
-                      <div class="flex items-center w-full space-x-6">
-                        <span class="font-semibold text-gray-800">Nama Toko</span>
-                        <a href="#" class="text-gray-500 hover:text-gray-700">
-                          <div class="px-4 py-2 hover:bg-gray-100 transition ease-in-out duration-300 rounded-md items-center border">
-                            <i class="fas fa-store"></i>
-                            <span>Kunjungi Toko</span>
-                          </div>
-                        </a>
-                      </div>
-                      <div class="flex justify-end items-center w-1/2 space-x-6">
-                        <div class="flex items-center space-x-2 text-green-600">
-                          <i class="fas fa-shipping-fast"></i>
-                          <p>Pesanan telah sampai</p>
-                        </div>
-                        <a href="#" class="text-white text-base font-medium">
-                          <div class="px-4 py-2 bg-orange-500 transition ease-in-out duration-300 hover:bg-orange-700 rounded-md">
-                            <p>Beri Ulasan</p>
-                          </div>
-                        </a> 
+                  <hr>
+                  <div class="flex px-6 py-4 bg-white rounded-md">
+                    <div class="flex items-center w-full">
+                      <img class="w-16 h-16 rounded-md" src="https://down-id.img.susercontent.com/file/id-11134207-7r98p-lplzfppfo8a6ff_tn" alt="Item image">
+                      <div class="ml-4">
+                        <h4>[NEW!] itel P55 5G RAM 6+128GB - 5G Network - 50M Dual Clear Cam - 18W Fast Charging - 5000mAh Battery</h4>
+                        <p>x1</p>
                       </div>
                     </div>
-                    <hr>
-                    <div class="flex px-6 py-4 bg-white rounded-md">
-                      <div class="flex items-center w-full">
-                        <img class="w-16 h-16 rounded-md" src="https://down-id.img.susercontent.com/file/id-11134207-7r98p-lplzfppfo8a6ff_tn" alt="Item image">
-                        <div class="ml-4">
-                          <h4>[NEW!] itel P55 5G RAM 6+128GB - 5G Network - 50M Dual Clear Cam - 18W Fast Charging - 5000mAh Battery</h4>
-                          <p>x1</p>
-                        </div>
-                      </div>
-                      <div class="flex font-semibold justify-center items-center space-x-1 text-orange-400">
-                        <span>Rp.</span>
-                        <span>1.600.000</span>
-                      </div>
+                    <div class="flex font-semibold justify-center items-center space-x-1 text-orange-400">
+                      <span>Rp.</span>
+                      <span>1.600.000</span>
                     </div>
                   </div>
-
-                  <div class="mt-4 shadow-sm">
-                    <div class="flex px-6 py-4 bg-white rounded-md">
-                      <div class="flex items-center w-full space-x-6">
-                        <span class="font-semibold text-gray-800">Nama Toko</span>
-                        <a href="#" class="text-gray-500 hover:text-gray-700">
-                          <div class="px-4 py-2 hover:bg-gray-100 transition ease-in-out duration-300 rounded-md items-center border">
-                            <i class="fas fa-store"></i>
-                            <span>Kunjungi Toko</span>
-                          </div>
-                        </a>
-                      </div>
-                      <div class="flex justify-end items-center w-1/2 space-x-6">
-                        <div class="flex items-center space-x-2 text-green-600">
-                          <i class="fas fa-shipping-fast"></i>
-                          <p>Pesanan telah sampai</p>
-                        </div>
-                        <a href="#" class="text-white text-base font-medium">
-                          <div class="px-4 py-2 bg-orange-500 transition ease-in-out duration-300 hover:bg-orange-700 rounded-md">
-                            <p>Beri Ulasan</p>
-                          </div>
-                        </a> 
-                      </div>
-                    </div>
-                    <hr>
-                    <div class="flex px-6 py-4 bg-white rounded-md">
-                      <div class="flex items-center w-full">
-                        <img class="w-16 h-16 rounded-md" src="https://down-id.img.susercontent.com/file/id-11134207-7r98p-lplzfppfo8a6ff_tn" alt="Item image">
-                        <div class="ml-4">
-                          <h4>[NEW!] itel P55 5G RAM 6+128GB - 5G Network - 50M Dual Clear Cam - 18W Fast Charging - 5000mAh Battery</h4>
-                          <p>x1</p>
-                        </div>
-                      </div>
-                      <div class="flex font-semibold justify-center items-center space-x-1 text-orange-400">
-                        <span>Rp.</span>
-                        <span>1.600.000</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="mt-4 shadow-sm">
-                    <div class="flex px-6 py-4 bg-white rounded-md">
-                      <div class="flex items-center w-full space-x-6">
-                        <span class="font-semibold text-gray-800">Nama Toko</span>
-                        <a href="#" class="text-gray-500 hover:text-gray-700">
-                          <div class="px-4 py-2 hover:bg-gray-100 transition ease-in-out duration-300 rounded-md items-center border">
-                            <i class="fas fa-store"></i>
-                            <span>Kunjungi Toko</span>
-                          </div>
-                        </a>
-                      </div>
-                      <div class="flex justify-end items-center w-1/2 space-x-6">
-                        <div class="flex items-center space-x-2 text-green-600">
-                          <i class="fas fa-shipping-fast"></i>
-                          <p>Pesanan telah sampai</p>
-                        </div>
-                        <a href="#" class="text-white text-base font-medium">
-                          <div class="px-4 py-2 bg-orange-500 transition ease-in-out duration-300 hover:bg-orange-700 rounded-md">
-                            <p>Beri Ulasan</p>
-                          </div>
-                        </a> 
-                      </div>
-                    </div>
-                    <hr>
-                    <div class="flex px-6 py-4 bg-white rounded-md">
-                      <div class="flex items-center w-full">
-                        <img class="w-16 h-16 rounded-md" src="https://down-id.img.susercontent.com/file/id-11134207-7r98p-lplzfppfo8a6ff_tn" alt="Item image">
-                        <div class="ml-4">
-                          <h4>[NEW!] itel P55 5G RAM 6+128GB - 5G Network - 50M Dual Clear Cam - 18W Fast Charging - 5000mAh Battery</h4>
-                          <p>x1</p>
-                        </div>
-                      </div>
-                      <div class="flex font-semibold justify-center items-center space-x-1 text-orange-400">
-                        <span>Rp.</span>
-                        <span>1.600.000</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="mt-4 shadow-sm">
-                    <div class="flex px-6 py-4 bg-white rounded-md">
-                      <div class="flex items-center w-full space-x-6">
-                        <span class="font-semibold text-gray-800">Nama Toko</span>
-                        <a href="#" class="text-gray-500 hover:text-gray-700">
-                          <div class="px-4 py-2 hover:bg-gray-100 transition ease-in-out duration-300 rounded-md items-center border">
-                            <i class="fas fa-store"></i>
-                            <span>Kunjungi Toko</span>
-                          </div>
-                        </a>
-                      </div>
-                      <div class="flex justify-end items-center w-1/2 space-x-6">
-                        <div class="flex items-center space-x-2 text-green-600">
-                          <i class="fas fa-shipping-fast"></i>
-                          <p>Pesanan telah sampai</p>
-                        </div>
-                        <a href="#" class="text-white text-base font-medium">
-                          <div class="px-4 py-2 bg-orange-500 transition ease-in-out duration-300 hover:bg-orange-700 rounded-md">
-                            <p>Beri Ulasan</p>
-                          </div>
-                        </a> 
-                      </div>
-                    </div>
-                    <hr>
-                    <div class="flex px-6 py-4 bg-white rounded-md">
-                      <div class="flex items-center w-full">
-                        <img class="w-16 h-16 rounded-md" src="https://down-id.img.susercontent.com/file/id-11134207-7r98p-lplzfppfo8a6ff_tn" alt="Item image">
-                        <div class="ml-4">
-                          <h4>[NEW!] itel P55 5G RAM 6+128GB - 5G Network - 50M Dual Clear Cam - 18W Fast Charging - 5000mAh Battery</h4>
-                          <p>x1</p>
-                        </div>
-                      </div>
-                      <div class="flex font-semibold justify-center items-center space-x-1 text-orange-400">
-                        <span>Rp.</span>
-                        <span>1.600.000</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="mt-4 shadow-sm">
-                    <div class="flex px-6 py-4 bg-white rounded-md">
-                      <div class="flex items-center w-full space-x-6">
-                        <span class="font-semibold text-gray-800">Nama Toko</span>
-                        <a href="#" class="text-gray-500 hover:text-gray-700">
-                          <div class="px-4 py-2 hover:bg-gray-100 transition ease-in-out duration-300 rounded-md items-center border">
-                            <i class="fas fa-store"></i>
-                            <span>Kunjungi Toko</span>
-                          </div>
-                        </a>
-                      </div>
-                      <div class="flex justify-end items-center w-1/2 space-x-6">
-                        <div class="flex items-center space-x-2 text-green-600">
-                          <i class="fas fa-shipping-fast"></i>
-                          <p>Pesanan telah sampai</p>
-                        </div>
-                        <a href="#" class="text-white text-base font-medium">
-                          <div class="px-4 py-2 bg-orange-500 transition ease-in-out duration-300 hover:bg-orange-700 rounded-md">
-                            <p>Beri Ulasan</p>
-                          </div>
-                        </a> 
-                      </div>
-                    </div>
-                    <hr>
-                    <div class="flex px-6 py-4 bg-white rounded-md">
-                      <div class="flex items-center w-full">
-                        <img class="w-16 h-16 rounded-md" src="https://down-id.img.susercontent.com/file/id-11134207-7r98p-lplzfppfo8a6ff_tn" alt="Item image">
-                        <div class="ml-4">
-                          <h4>[NEW!] itel P55 5G RAM 6+128GB - 5G Network - 50M Dual Clear Cam - 18W Fast Charging - 5000mAh Battery</h4>
-                          <p>x1</p>
-                        </div>
-                      </div>
-                      <div class="flex font-semibold justify-center items-center space-x-1 text-orange-400">
-                        <span>Rp.</span>
-                        <span>1.600.000</span>
-                      </div>
-                    </div>
-                  </div>
-
                 </div>
-              </div>
 
-              <div id="belum-bayar-form" class="profile-form hidden">
-                <div class="h-screen overflow-y-auto">
-                  <!-- Item kedua -->
-                  <div class="mt-4 shadow-sm">
-                    <div class="flex px-6 py-4 bg-white rounded-md">
-                      <div class="flex items-center w-full space-x-6">
-                        <span class="font-semibold text-gray-800">Nama Toko</span>
-                        <a href="#" class="text-gray-500 hover:text-gray-700">
-                          <div class="px-4 py-2 hover:bg-gray-100 transition ease-in-out duration-300 rounded-md items-center border">
-                            <i class="fas fa-store"></i>
-                            <span>Kunjungi Toko</span>
-                          </div>
-                        </a>
-                      </div>
-                      <div class="flex justify-end items-center w-1/2 space-x-6">
-                        <div class="flex items-center space-x-2 text-green-600">
-                          <i class="fas fa-shipping-fast"></i>
-                          <p>Pesanan telah sampai</p>
+                <div class="mt-4 shadow-sm">
+                  <div class="flex px-6 py-4 bg-white rounded-md">
+                    <div class="flex items-center w-full space-x-6">
+                      <span class="font-semibold text-gray-800">Nama Toko</span>
+                      <a href="#" class="text-gray-500 hover:text-gray-700">
+                        <div class="px-4 py-2 hover:bg-gray-100 transition ease-in-out duration-300 rounded-md items-center border">
+                          <i class="fas fa-store"></i>
+                          <span>Kunjungi Toko</span>
                         </div>
-                        <a href="#" class="text-white text-base font-medium">
-                          <div class="px-4 py-2 bg-orange-500 transition ease-in-out duration-300 hover:bg-orange-700 rounded-md">
-                            <p>Beri Ulasan</p>
-                          </div>
-                        </a> 
-                      </div>
+                      </a>
                     </div>
-                    <hr>
-                    <div class="flex px-6 py-4 bg-white rounded-md">
-                      <div class="flex items-center w-full">
-                        <img class="w-16 h-16 rounded-md" src="https://down-id.img.susercontent.com/file/id-11134207-7r98p-lplzfppfo8a6ff_tn" alt="Item image">
-                        <div class="ml-4">
-                          <h4>[NEW!] itel P55 5G RAM 6+128GB - 5G Network - 50M Dual Clear Cam - 18W Fast Charging - 5000mAh Battery</h4>
-                          <p>x1</p>
+                    <div class="flex justify-end items-center w-1/2 space-x-6">
+                      <div class="flex items-center space-x-2 text-green-600">
+                        <i class="fas fa-shipping-fast"></i>
+                        <p>Pesanan telah sampai</p>
+                      </div>
+                      <a href="#" class="text-white text-base font-medium">
+                        <div class="px-4 py-2 bg-orange-500 transition ease-in-out duration-300 hover:bg-orange-700 rounded-md">
+                          <p>Beri Ulasan</p>
                         </div>
-                      </div>
-                      <div class="flex font-semibold justify-center items-center space-x-1 text-orange-400">
-                        <span>Rp.</span>
-                        <span>1.600.000</span>
-                      </div>
+                      </a>
                     </div>
                   </div>
-
-                  <div class="mt-4 shadow-sm">
-                    <div class="flex px-6 py-4 bg-white rounded-md">
-                      <div class="flex items-center w-full space-x-6">
-                        <span class="font-semibold text-gray-800">Nama Toko</span>
-                        <a href="#" class="text-gray-500 hover:text-gray-700">
-                          <div class="px-4 py-2 hover:bg-gray-100 transition ease-in-out duration-300 rounded-md items-center border">
-                            <i class="fas fa-store"></i>
-                            <span>Kunjungi Toko</span>
-                          </div>
-                        </a>
-                      </div>
-                      <div class="flex justify-end items-center w-1/2 space-x-6">
-                        <div class="flex items-center space-x-2 text-green-600">
-                          <i class="fas fa-shipping-fast"></i>
-                          <p>Pesanan telah sampai</p>
-                        </div>
-                        <a href="#" class="text-white text-base font-medium">
-                          <div class="px-4 py-2 bg-orange-500 transition ease-in-out duration-300 hover:bg-orange-700 rounded-md">
-                            <p>Beri Ulasan</p>
-                          </div>
-                        </a> 
+                  <hr>
+                  <div class="flex px-6 py-4 bg-white rounded-md">
+                    <div class="flex items-center w-full">
+                      <img class="w-16 h-16 rounded-md" src="https://down-id.img.susercontent.com/file/id-11134207-7r98p-lplzfppfo8a6ff_tn" alt="Item image">
+                      <div class="ml-4">
+                        <h4>[NEW!] itel P55 5G RAM 6+128GB - 5G Network - 50M Dual Clear Cam - 18W Fast Charging - 5000mAh Battery</h4>
+                        <p>x1</p>
                       </div>
                     </div>
-                    <hr>
-                    <div class="flex px-6 py-4 bg-white rounded-md">
-                      <div class="flex items-center w-full">
-                        <img class="w-16 h-16 rounded-md" src="https://down-id.img.susercontent.com/file/id-11134207-7r98p-lplzfppfo8a6ff_tn" alt="Item image">
-                        <div class="ml-4">
-                          <h4>[NEW!] itel P55 5G RAM 6+128GB - 5G Network - 50M Dual Clear Cam - 18W Fast Charging - 5000mAh Battery</h4>
-                          <p>x1</p>
-                        </div>
-                      </div>
-                      <div class="flex font-semibold justify-center items-center space-x-1 text-orange-400">
-                        <span>Rp.</span>
-                        <span>1.600.000</span>
-                      </div>
+                    <div class="flex font-semibold justify-center items-center space-x-1 text-orange-400">
+                      <span>Rp.</span>
+                      <span>1.600.000</span>
                     </div>
                   </div>
-
-                  <div class="mt-4 shadow-sm">
-                    <div class="flex px-6 py-4 bg-white rounded-md">
-                      <div class="flex items-center w-full space-x-6">
-                        <span class="font-semibold text-gray-800">Nama Toko</span>
-                        <a href="#" class="text-gray-500 hover:text-gray-700">
-                          <div class="px-4 py-2 hover:bg-gray-100 transition ease-in-out duration-300 rounded-md items-center border">
-                            <i class="fas fa-store"></i>
-                            <span>Kunjungi Toko</span>
-                          </div>
-                        </a>
-                      </div>
-                      <div class="flex justify-end items-center w-1/2 space-x-6">
-                        <div class="flex items-center space-x-2 text-green-600">
-                          <i class="fas fa-shipping-fast"></i>
-                          <p>Pesanan telah sampai</p>
-                        </div>
-                        <a href="#" class="text-white text-base font-medium">
-                          <div class="px-4 py-2 bg-orange-500 transition ease-in-out duration-300 hover:bg-orange-700 rounded-md">
-                            <p>Beri Ulasan</p>
-                          </div>
-                        </a> 
-                      </div>
-                    </div>
-                    <hr>
-                    <div class="flex px-6 py-4 bg-white rounded-md">
-                      <div class="flex items-center w-full">
-                        <img class="w-16 h-16 rounded-md" src="https://down-id.img.susercontent.com/file/id-11134207-7r98p-lplzfppfo8a6ff_tn" alt="Item image">
-                        <div class="ml-4">
-                          <h4>[NEW!] itel P55 5G RAM 6+128GB - 5G Network - 50M Dual Clear Cam - 18W Fast Charging - 5000mAh Battery</h4>
-                          <p>x1</p>
-                        </div>
-                      </div>
-                      <div class="flex font-semibold justify-center items-center space-x-1 text-orange-400">
-                        <span>Rp.</span>
-                        <span>1.600.000</span>
-                      </div>
-                    </div>
-                  </div>
-
                 </div>
-              </div>
 
-              <div id="selesai-form" class="profile-form hidden">
-                <div class="h-screen overflow-y-auto">
-                  <!-- Item kedua -->
-                  <div class="mt-4 shadow-sm">
-                    <div class="flex px-6 py-4 bg-white rounded-md">
-                      <div class="flex items-center w-full space-x-6">
-                        <span class="font-semibold text-gray-800">Nama Toko</span>
-                        <a href="#" class="text-gray-500 hover:text-gray-700">
-                          <div class="px-4 py-2 hover:bg-gray-100 transition ease-in-out duration-300 rounded-md items-center border">
-                            <i class="fas fa-store"></i>
-                            <span>Kunjungi Toko</span>
-                          </div>
-                        </a>
-                      </div>
-                      <div class="flex justify-end items-center w-1/2 space-x-6">
-                        <div class="flex items-center space-x-2 text-green-600">
-                          <i class="fas fa-shipping-fast"></i>
-                          <p>Pesanan telah sampai</p>
+                <div class="mt-4 shadow-sm">
+                  <div class="flex px-6 py-4 bg-white rounded-md">
+                    <div class="flex items-center w-full space-x-6">
+                      <span class="font-semibold text-gray-800">Nama Toko</span>
+                      <a href="#" class="text-gray-500 hover:text-gray-700">
+                        <div class="px-4 py-2 hover:bg-gray-100 transition ease-in-out duration-300 rounded-md items-center border">
+                          <i class="fas fa-store"></i>
+                          <span>Kunjungi Toko</span>
                         </div>
-                        <a href="#" class="text-white text-base font-medium">
-                          <div class="px-4 py-2 bg-orange-500 transition ease-in-out duration-300 hover:bg-orange-700 rounded-md">
-                            <p>Beri Ulasan</p>
-                          </div>
-                        </a> 
-                      </div>
+                      </a>
                     </div>
-                    <hr>
-                    <div class="flex px-6 py-4 bg-white rounded-md">
-                      <div class="flex items-center w-full">
-                        <img class="w-16 h-16 rounded-md" src="https://down-id.img.susercontent.com/file/id-11134207-7r98p-lplzfppfo8a6ff_tn" alt="Item image">
-                        <div class="ml-4">
-                          <h4>[NEW!] itel P55 5G RAM 6+128GB - 5G Network - 50M Dual Clear Cam - 18W Fast Charging - 5000mAh Battery</h4>
-                          <p>x1</p>
+                    <div class="flex justify-end items-center w-1/2 space-x-6">
+                      <div class="flex items-center space-x-2 text-green-600">
+                        <i class="fas fa-shipping-fast"></i>
+                        <p>Pesanan telah sampai</p>
+                      </div>
+                      <a href="#" class="text-white text-base font-medium">
+                        <div class="px-4 py-2 bg-orange-500 transition ease-in-out duration-300 hover:bg-orange-700 rounded-md">
+                          <p>Beri Ulasan</p>
                         </div>
-                      </div>
-                      <div class="flex font-semibold justify-center items-center space-x-1 text-orange-400">
-                        <span>Rp.</span>
-                        <span>1.600.000</span>
-                      </div>
+                      </a>
                     </div>
                   </div>
-
-                  <div class="mt-4 shadow-sm">
-                    <div class="flex px-6 py-4 bg-white rounded-md">
-                      <div class="flex items-center w-full space-x-6">
-                        <span class="font-semibold text-gray-800">Nama Toko</span>
-                        <a href="#" class="text-gray-500 hover:text-gray-700">
-                          <div class="px-4 py-2 hover:bg-gray-100 transition ease-in-out duration-300 rounded-md items-center border">
-                            <i class="fas fa-store"></i>
-                            <span>Kunjungi Toko</span>
-                          </div>
-                        </a>
-                      </div>
-                      <div class="flex justify-end items-center w-1/2 space-x-6">
-                        <div class="flex items-center space-x-2 text-green-600">
-                          <i class="fas fa-shipping-fast"></i>
-                          <p>Pesanan telah sampai</p>
-                        </div>
-                        <a href="#" class="text-white text-base font-medium">
-                          <div class="px-4 py-2 bg-orange-500 transition ease-in-out duration-300 hover:bg-orange-700 rounded-md">
-                            <p>Beri Ulasan</p>
-                          </div>
-                        </a> 
+                  <hr>
+                  <div class="flex px-6 py-4 bg-white rounded-md">
+                    <div class="flex items-center w-full">
+                      <img class="w-16 h-16 rounded-md" src="https://down-id.img.susercontent.com/file/id-11134207-7r98p-lplzfppfo8a6ff_tn" alt="Item image">
+                      <div class="ml-4">
+                        <h4>[NEW!] itel P55 5G RAM 6+128GB - 5G Network - 50M Dual Clear Cam - 18W Fast Charging - 5000mAh Battery</h4>
+                        <p>x1</p>
                       </div>
                     </div>
-                    <hr>
-                    <div class="flex px-6 py-4 bg-white rounded-md">
-                      <div class="flex items-center w-full">
-                        <img class="w-16 h-16 rounded-md" src="https://down-id.img.susercontent.com/file/id-11134207-7r98p-lplzfppfo8a6ff_tn" alt="Item image">
-                        <div class="ml-4">
-                          <h4>[NEW!] itel P55 5G RAM 6+128GB - 5G Network - 50M Dual Clear Cam - 18W Fast Charging - 5000mAh Battery</h4>
-                          <p>x1</p>
-                        </div>
-                      </div>
-                      <div class="flex font-semibold justify-center items-center space-x-1 text-orange-400">
-                        <span>Rp.</span>
-                        <span>1.600.000</span>
-                      </div>
+                    <div class="flex font-semibold justify-center items-center space-x-1 text-orange-400">
+                      <span>Rp.</span>
+                      <span>1.600.000</span>
                     </div>
                   </div>
-
                 </div>
-              </div>
 
-              <div id="dibatalkan-form" class="profile-form hidden">
+                <div class="mt-4 shadow-sm">
+                  <div class="flex px-6 py-4 bg-white rounded-md">
+                    <div class="flex items-center w-full space-x-6">
+                      <span class="font-semibold text-gray-800">Nama Toko</span>
+                      <a href="#" class="text-gray-500 hover:text-gray-700">
+                        <div class="px-4 py-2 hover:bg-gray-100 transition ease-in-out duration-300 rounded-md items-center border">
+                          <i class="fas fa-store"></i>
+                          <span>Kunjungi Toko</span>
+                        </div>
+                      </a>
+                    </div>
+                    <div class="flex justify-end items-center w-1/2 space-x-6">
+                      <div class="flex items-center space-x-2 text-green-600">
+                        <i class="fas fa-shipping-fast"></i>
+                        <p>Pesanan telah sampai</p>
+                      </div>
+                      <a href="#" class="text-white text-base font-medium">
+                        <div class="px-4 py-2 bg-orange-500 transition ease-in-out duration-300 hover:bg-orange-700 rounded-md">
+                          <p>Beri Ulasan</p>
+                        </div>
+                      </a>
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="flex px-6 py-4 bg-white rounded-md">
+                    <div class="flex items-center w-full">
+                      <img class="w-16 h-16 rounded-md" src="https://down-id.img.susercontent.com/file/id-11134207-7r98p-lplzfppfo8a6ff_tn" alt="Item image">
+                      <div class="ml-4">
+                        <h4>[NEW!] itel P55 5G RAM 6+128GB - 5G Network - 50M Dual Clear Cam - 18W Fast Charging - 5000mAh Battery</h4>
+                        <p>x1</p>
+                      </div>
+                    </div>
+                    <div class="flex font-semibold justify-center items-center space-x-1 text-orange-400">
+                      <span>Rp.</span>
+                      <span>1.600.000</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mt-4 shadow-sm">
+                  <div class="flex px-6 py-4 bg-white rounded-md">
+                    <div class="flex items-center w-full space-x-6">
+                      <span class="font-semibold text-gray-800">Nama Toko</span>
+                      <a href="#" class="text-gray-500 hover:text-gray-700">
+                        <div class="px-4 py-2 hover:bg-gray-100 transition ease-in-out duration-300 rounded-md items-center border">
+                          <i class="fas fa-store"></i>
+                          <span>Kunjungi Toko</span>
+                        </div>
+                      </a>
+                    </div>
+                    <div class="flex justify-end items-center w-1/2 space-x-6">
+                      <div class="flex items-center space-x-2 text-green-600">
+                        <i class="fas fa-shipping-fast"></i>
+                        <p>Pesanan telah sampai</p>
+                      </div>
+                      <a href="#" class="text-white text-base font-medium">
+                        <div class="px-4 py-2 bg-orange-500 transition ease-in-out duration-300 hover:bg-orange-700 rounded-md">
+                          <p>Beri Ulasan</p>
+                        </div>
+                      </a>
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="flex px-6 py-4 bg-white rounded-md">
+                    <div class="flex items-center w-full">
+                      <img class="w-16 h-16 rounded-md" src="https://down-id.img.susercontent.com/file/id-11134207-7r98p-lplzfppfo8a6ff_tn" alt="Item image">
+                      <div class="ml-4">
+                        <h4>[NEW!] itel P55 5G RAM 6+128GB - 5G Network - 50M Dual Clear Cam - 18W Fast Charging - 5000mAh Battery</h4>
+                        <p>x1</p>
+                      </div>
+                    </div>
+                    <div class="flex font-semibold justify-center items-center space-x-1 text-orange-400">
+                      <span>Rp.</span>
+                      <span>1.600.000</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mt-4 shadow-sm">
+                  <div class="flex px-6 py-4 bg-white rounded-md">
+                    <div class="flex items-center w-full space-x-6">
+                      <span class="font-semibold text-gray-800">Nama Toko</span>
+                      <a href="#" class="text-gray-500 hover:text-gray-700">
+                        <div class="px-4 py-2 hover:bg-gray-100 transition ease-in-out duration-300 rounded-md items-center border">
+                          <i class="fas fa-store"></i>
+                          <span>Kunjungi Toko</span>
+                        </div>
+                      </a>
+                    </div>
+                    <div class="flex justify-end items-center w-1/2 space-x-6">
+                      <div class="flex items-center space-x-2 text-green-600">
+                        <i class="fas fa-shipping-fast"></i>
+                        <p>Pesanan telah sampai</p>
+                      </div>
+                      <a href="#" class="text-white text-base font-medium">
+                        <div class="px-4 py-2 bg-orange-500 transition ease-in-out duration-300 hover:bg-orange-700 rounded-md">
+                          <p>Beri Ulasan</p>
+                        </div>
+                      </a>
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="flex px-6 py-4 bg-white rounded-md">
+                    <div class="flex items-center w-full">
+                      <img class="w-16 h-16 rounded-md" src="https://down-id.img.susercontent.com/file/id-11134207-7r98p-lplzfppfo8a6ff_tn" alt="Item image">
+                      <div class="ml-4">
+                        <h4>[NEW!] itel P55 5G RAM 6+128GB - 5G Network - 50M Dual Clear Cam - 18W Fast Charging - 5000mAh Battery</h4>
+                        <p>x1</p>
+                      </div>
+                    </div>
+                    <div class="flex font-semibold justify-center items-center space-x-1 text-orange-400">
+                      <span>Rp.</span>
+                      <span>1.600.000</span>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <div id="belum-bayar-form" class="profile-form hidden">
               <div class="h-screen overflow-y-auto">
-                  <!-- Item kedua -->
-                  <div class="mt-4 shadow-sm">
-                    <div class="flex px-6 py-4 bg-white rounded-md">
-                      <div class="flex items-center w-full space-x-6">
-                        <span class="font-semibold text-gray-800">Nama Toko</span>
-                        <a href="#" class="text-gray-500 hover:text-gray-700">
-                          <div class="px-4 py-2 hover:bg-gray-100 transition ease-in-out duration-300 rounded-md items-center border">
-                            <i class="fas fa-store"></i>
-                            <span>Kunjungi Toko</span>
-                          </div>
-                        </a>
-                      </div>
-                      <div class="flex justify-end items-center w-1/2 space-x-6">
-                        <div class="flex items-center space-x-2 text-green-600">
-                          <i class="fas fa-shipping-fast"></i>
-                          <p>Pesanan telah sampai</p>
+                <!-- Item kedua -->
+                <div class="mt-4 shadow-sm">
+                  <div class="flex px-6 py-4 bg-white rounded-md">
+                    <div class="flex items-center w-full space-x-6">
+                      <span class="font-semibold text-gray-800">Nama Toko</span>
+                      <a href="#" class="text-gray-500 hover:text-gray-700">
+                        <div class="px-4 py-2 hover:bg-gray-100 transition ease-in-out duration-300 rounded-md items-center border">
+                          <i class="fas fa-store"></i>
+                          <span>Kunjungi Toko</span>
                         </div>
-                        <a href="#" class="text-white text-base font-medium">
-                          <div class="px-4 py-2 bg-orange-500 transition ease-in-out duration-300 hover:bg-orange-700 rounded-md">
-                            <p>Beri Ulasan</p>
-                          </div>
-                        </a> 
-                      </div>
+                      </a>
                     </div>
-                    <hr>
-                    <div class="flex px-6 py-4 bg-white rounded-md">
-                      <div class="flex items-center w-full">
-                        <img class="w-16 h-16 rounded-md" src="https://down-id.img.susercontent.com/file/id-11134207-7r98p-lplzfppfo8a6ff_tn" alt="Item image">
-                        <div class="ml-4">
-                          <h4>[NEW!] itel P55 5G RAM 6+128GB - 5G Network - 50M Dual Clear Cam - 18W Fast Charging - 5000mAh Battery</h4>
-                          <p>x1</p>
+                    <div class="flex justify-end items-center w-1/2 space-x-6">
+                      <div class="flex items-center space-x-2 text-green-600">
+                        <i class="fas fa-shipping-fast"></i>
+                        <p>Pesanan telah sampai</p>
+                      </div>
+                      <a href="#" class="text-white text-base font-medium">
+                        <div class="px-4 py-2 bg-orange-500 transition ease-in-out duration-300 hover:bg-orange-700 rounded-md">
+                          <p>Beri Ulasan</p>
                         </div>
-                      </div>
-                      <div class="flex font-semibold justify-center items-center space-x-1 text-orange-400">
-                        <span>Rp.</span>
-                        <span>1.600.000</span>
-                      </div>
+                      </a>
                     </div>
                   </div>
-
+                  <hr>
+                  <div class="flex px-6 py-4 bg-white rounded-md">
+                    <div class="flex items-center w-full">
+                      <img class="w-16 h-16 rounded-md" src="https://down-id.img.susercontent.com/file/id-11134207-7r98p-lplzfppfo8a6ff_tn" alt="Item image">
+                      <div class="ml-4">
+                        <h4>[NEW!] itel P55 5G RAM 6+128GB - 5G Network - 50M Dual Clear Cam - 18W Fast Charging - 5000mAh Battery</h4>
+                        <p>x1</p>
+                      </div>
+                    </div>
+                    <div class="flex font-semibold justify-center items-center space-x-1 text-orange-400">
+                      <span>Rp.</span>
+                      <span>1.600.000</span>
+                    </div>
+                  </div>
                 </div>
+
+                <div class="mt-4 shadow-sm">
+                  <div class="flex px-6 py-4 bg-white rounded-md">
+                    <div class="flex items-center w-full space-x-6">
+                      <span class="font-semibold text-gray-800">Nama Toko</span>
+                      <a href="#" class="text-gray-500 hover:text-gray-700">
+                        <div class="px-4 py-2 hover:bg-gray-100 transition ease-in-out duration-300 rounded-md items-center border">
+                          <i class="fas fa-store"></i>
+                          <span>Kunjungi Toko</span>
+                        </div>
+                      </a>
+                    </div>
+                    <div class="flex justify-end items-center w-1/2 space-x-6">
+                      <div class="flex items-center space-x-2 text-green-600">
+                        <i class="fas fa-shipping-fast"></i>
+                        <p>Pesanan telah sampai</p>
+                      </div>
+                      <a href="#" class="text-white text-base font-medium">
+                        <div class="px-4 py-2 bg-orange-500 transition ease-in-out duration-300 hover:bg-orange-700 rounded-md">
+                          <p>Beri Ulasan</p>
+                        </div>
+                      </a>
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="flex px-6 py-4 bg-white rounded-md">
+                    <div class="flex items-center w-full">
+                      <img class="w-16 h-16 rounded-md" src="https://down-id.img.susercontent.com/file/id-11134207-7r98p-lplzfppfo8a6ff_tn" alt="Item image">
+                      <div class="ml-4">
+                        <h4>[NEW!] itel P55 5G RAM 6+128GB - 5G Network - 50M Dual Clear Cam - 18W Fast Charging - 5000mAh Battery</h4>
+                        <p>x1</p>
+                      </div>
+                    </div>
+                    <div class="flex font-semibold justify-center items-center space-x-1 text-orange-400">
+                      <span>Rp.</span>
+                      <span>1.600.000</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mt-4 shadow-sm">
+                  <div class="flex px-6 py-4 bg-white rounded-md">
+                    <div class="flex items-center w-full space-x-6">
+                      <span class="font-semibold text-gray-800">Nama Toko</span>
+                      <a href="#" class="text-gray-500 hover:text-gray-700">
+                        <div class="px-4 py-2 hover:bg-gray-100 transition ease-in-out duration-300 rounded-md items-center border">
+                          <i class="fas fa-store"></i>
+                          <span>Kunjungi Toko</span>
+                        </div>
+                      </a>
+                    </div>
+                    <div class="flex justify-end items-center w-1/2 space-x-6">
+                      <div class="flex items-center space-x-2 text-green-600">
+                        <i class="fas fa-shipping-fast"></i>
+                        <p>Pesanan telah sampai</p>
+                      </div>
+                      <a href="#" class="text-white text-base font-medium">
+                        <div class="px-4 py-2 bg-orange-500 transition ease-in-out duration-300 hover:bg-orange-700 rounded-md">
+                          <p>Beri Ulasan</p>
+                        </div>
+                      </a>
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="flex px-6 py-4 bg-white rounded-md">
+                    <div class="flex items-center w-full">
+                      <img class="w-16 h-16 rounded-md" src="https://down-id.img.susercontent.com/file/id-11134207-7r98p-lplzfppfo8a6ff_tn" alt="Item image">
+                      <div class="ml-4">
+                        <h4>[NEW!] itel P55 5G RAM 6+128GB - 5G Network - 50M Dual Clear Cam - 18W Fast Charging - 5000mAh Battery</h4>
+                        <p>x1</p>
+                      </div>
+                    </div>
+                    <div class="flex font-semibold justify-center items-center space-x-1 text-orange-400">
+                      <span>Rp.</span>
+                      <span>1.600.000</span>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <div id="selesai-form" class="profile-form hidden">
+              <div class="h-screen overflow-y-auto">
+                <!-- Item kedua -->
+                <div class="mt-4 shadow-sm">
+                  <div class="flex px-6 py-4 bg-white rounded-md">
+                    <div class="flex items-center w-full space-x-6">
+                      <span class="font-semibold text-gray-800">Nama Toko</span>
+                      <a href="#" class="text-gray-500 hover:text-gray-700">
+                        <div class="px-4 py-2 hover:bg-gray-100 transition ease-in-out duration-300 rounded-md items-center border">
+                          <i class="fas fa-store"></i>
+                          <span>Kunjungi Toko</span>
+                        </div>
+                      </a>
+                    </div>
+                    <div class="flex justify-end items-center w-1/2 space-x-6">
+                      <div class="flex items-center space-x-2 text-green-600">
+                        <i class="fas fa-shipping-fast"></i>
+                        <p>Pesanan telah sampai</p>
+                      </div>
+                      <a href="#" class="text-white text-base font-medium">
+                        <div class="px-4 py-2 bg-orange-500 transition ease-in-out duration-300 hover:bg-orange-700 rounded-md">
+                          <p>Beri Ulasan</p>
+                        </div>
+                      </a>
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="flex px-6 py-4 bg-white rounded-md">
+                    <div class="flex items-center w-full">
+                      <img class="w-16 h-16 rounded-md" src="https://down-id.img.susercontent.com/file/id-11134207-7r98p-lplzfppfo8a6ff_tn" alt="Item image">
+                      <div class="ml-4">
+                        <h4>[NEW!] itel P55 5G RAM 6+128GB - 5G Network - 50M Dual Clear Cam - 18W Fast Charging - 5000mAh Battery</h4>
+                        <p>x1</p>
+                      </div>
+                    </div>
+                    <div class="flex font-semibold justify-center items-center space-x-1 text-orange-400">
+                      <span>Rp.</span>
+                      <span>1.600.000</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mt-4 shadow-sm">
+                  <div class="flex px-6 py-4 bg-white rounded-md">
+                    <div class="flex items-center w-full space-x-6">
+                      <span class="font-semibold text-gray-800">Nama Toko</span>
+                      <a href="#" class="text-gray-500 hover:text-gray-700">
+                        <div class="px-4 py-2 hover:bg-gray-100 transition ease-in-out duration-300 rounded-md items-center border">
+                          <i class="fas fa-store"></i>
+                          <span>Kunjungi Toko</span>
+                        </div>
+                      </a>
+                    </div>
+                    <div class="flex justify-end items-center w-1/2 space-x-6">
+                      <div class="flex items-center space-x-2 text-green-600">
+                        <i class="fas fa-shipping-fast"></i>
+                        <p>Pesanan telah sampai</p>
+                      </div>
+                      <a href="#" class="text-white text-base font-medium">
+                        <div class="px-4 py-2 bg-orange-500 transition ease-in-out duration-300 hover:bg-orange-700 rounded-md">
+                          <p>Beri Ulasan</p>
+                        </div>
+                      </a>
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="flex px-6 py-4 bg-white rounded-md">
+                    <div class="flex items-center w-full">
+                      <img class="w-16 h-16 rounded-md" src="https://down-id.img.susercontent.com/file/id-11134207-7r98p-lplzfppfo8a6ff_tn" alt="Item image">
+                      <div class="ml-4">
+                        <h4>[NEW!] itel P55 5G RAM 6+128GB - 5G Network - 50M Dual Clear Cam - 18W Fast Charging - 5000mAh Battery</h4>
+                        <p>x1</p>
+                      </div>
+                    </div>
+                    <div class="flex font-semibold justify-center items-center space-x-1 text-orange-400">
+                      <span>Rp.</span>
+                      <span>1.600.000</span>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <div id="dibatalkan-form" class="profile-form hidden">
+              <div class="h-screen overflow-y-auto">
+                <!-- Item kedua -->
+                <div class="mt-4 shadow-sm">
+                  <div class="flex px-6 py-4 bg-white rounded-md">
+                    <div class="flex items-center w-full space-x-6">
+                      <span class="font-semibold text-gray-800">Nama Toko</span>
+                      <a href="#" class="text-gray-500 hover:text-gray-700">
+                        <div class="px-4 py-2 hover:bg-gray-100 transition ease-in-out duration-300 rounded-md items-center border">
+                          <i class="fas fa-store"></i>
+                          <span>Kunjungi Toko</span>
+                        </div>
+                      </a>
+                    </div>
+                    <div class="flex justify-end items-center w-1/2 space-x-6">
+                      <div class="flex items-center space-x-2 text-green-600">
+                        <i class="fas fa-shipping-fast"></i>
+                        <p>Pesanan telah sampai</p>
+                      </div>
+                      <a href="#" class="text-white text-base font-medium">
+                        <div class="px-4 py-2 bg-orange-500 transition ease-in-out duration-300 hover:bg-orange-700 rounded-md">
+                          <p>Beri Ulasan</p>
+                        </div>
+                      </a>
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="flex px-6 py-4 bg-white rounded-md">
+                    <div class="flex items-center w-full">
+                      <img class="w-16 h-16 rounded-md" src="https://down-id.img.susercontent.com/file/id-11134207-7r98p-lplzfppfo8a6ff_tn" alt="Item image">
+                      <div class="ml-4">
+                        <h4>[NEW!] itel P55 5G RAM 6+128GB - 5G Network - 50M Dual Clear Cam - 18W Fast Charging - 5000mAh Battery</h4>
+                        <p>x1</p>
+                      </div>
+                    </div>
+                    <div class="flex font-semibold justify-center items-center space-x-1 text-orange-400">
+                      <span>Rp.</span>
+                      <span>1.600.000</span>
+                    </div>
+                  </div>
+                </div>
+
               </div>
             </div>
           </div>
+        </div>
 
-          <div id="user-form-detail" class="p-8 bg-white shadow-xl rounded-lg m-6">
-            <div class="mb-8">
-                <span class="font-semibold text-xl text-gray-800">Profil Saya</span>
-                <p class="text-gray-600">Kelola informasi profil Anda untuk mengontrol, melindungi dan mengamankan akun</p>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2">
-                <form class="p-4" action="/user/update">
-                  <?= csrf_field() ?>
-                  <table class="w-full">
-                    <tbody class="space-y-4 items-center mx-auto">
-                      <tr>
-                        <td>
-                          <div class="mb-4">
-                            <label for="name" class="text-gray-900">Name</label>
-                          </div>
-                        </td>
-                        <td>
-                          <div class="mb-4 w-full">
-                            <input name="name" type="text" value="<?= session()->get('name') ?>" class="px-4 py-1.5 bg-gray-100 rounded-md items-center text-gray-700">
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <div class="mb-4">
-                            <label for="email" class="text-gray-900">Email</label>
-                          </div>
-                        </td>
-                        <td>
-                          <div class="mb-4">
-                            <input name="email" type="text" value="<?= session()->get('email') ?>" disabled class="px-4 py-1.5 bg-gray-100 rounded-md items-center text-gray-700">
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <div class="mb-4">
-                            <label for="phone" class="text-gray-900">Telepon</label>
-                          </div>
-                        </td>
-                        <td>
-                          <div class="mb-4">
-                            <input type="text" value="<?= session()->get('phone') ?>" disabled class="px-4 py-1.5 bg-gray-100 rounded-md items-center text-gray-700">
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td></td>
-                        <td>
-                          <button type="submit" class="text-white bg-orange-500 px-4 p-2 rounded-md">Simpan</button>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </form>
-                <div class="flex flex-col bg-gray-50 rounded-md shadow-md p-6 mx-auto items-center justify-center">
-                  <div class="p-2 mb-4">
-                    <img src="<?= session()->get('profile') ?>" alt="Profile Image" class="rounded-full h-24 w-24">
-                  </div>
-                  <input type="file" accept=".jpg,.jpeg,.png" class="hidden">
-                  <button type="button" class="bg-gray-300 transition ease-in-out duration-300 hover:bg-gray-400 px-4 py-2 rounded-md text-white">Pilih Gambar</button>
-                  <div class="flex flex-col mt-4 text-gray-700 items-center">
-                      <p>Ukuran gambar: maks. 1 MB</p>
-                      <p>Format Gambart: .JPEG,.PNG</p>
-                  </div>
-                </div>
+        <div id="user-form-detail" class="p-8 bg-white shadow-xl rounded-lg m-6">
+          <div class="mb-8">
+            <span class="font-semibold text-xl text-gray-800">Profil Saya</span>
+            <p class="text-gray-600">Kelola informasi profil Anda untuk mengontrol, melindungi dan mengamankan akun</p>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2">
+            <form class="p-4" action="/user/update">
+              <?= csrf_field() ?>
+              <table class="w-full">
+                <tbody class="space-y-4 items-center mx-auto">
+                  <tr>
+                    <td>
+                      <div class="mb-4">
+                        <label for="name" class="text-gray-900">Name</label>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="mb-4 w-full">
+                        <input name="name" type="text" value="<?= session()->get('name') ?>" class="px-4 py-1.5 bg-gray-100 rounded-md items-center text-gray-700">
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="mb-4">
+                        <label for="email" class="text-gray-900">Email</label>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="mb-4">
+                        <input name="email" type="text" value="<?= session()->get('email') ?>" disabled class="px-4 py-1.5 bg-gray-100 rounded-md items-center text-gray-700">
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="mb-4">
+                        <label for="phone" class="text-gray-900">Telepon</label>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="mb-4">
+                        <input type="text" value="<?= session()->get('phone') ?>" disabled class="px-4 py-1.5 bg-gray-100 rounded-md items-center text-gray-700">
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td>
+                      <button type="submit" class="text-white bg-orange-500 px-4 p-2 rounded-md">Simpan</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </form>
+            <div class="flex flex-col bg-gray-50 rounded-md shadow-md p-6 mx-auto items-center justify-center">
+              <div class="p-2 mb-4">
+                <img src="<?= session()->get('profile') ?>" alt="Profile Image" class="rounded-full h-24 w-24">
+              </div>
+              <input type="file" accept=".jpg,.jpeg,.png" class="hidden">
+              <button type="button" class="bg-gray-300 transition ease-in-out duration-300 hover:bg-gray-400 px-4 py-2 rounded-md text-white">Pilih Gambar</button>
+              <div class="flex flex-col mt-4 text-gray-700 items-center">
+                <p>Ukuran gambar: maks. 1 MB</p>
+                <p>Format Gambart: .JPEG,.PNG</p>
+              </div>
             </div>
           </div>
+        </div>
       </section>
     </div>
   </div>
 
   <script>
     const imageUrl = "https://down-id.img.susercontent.com/file/id-11134207-7r98p-lplzfppfo8a6ff_tn";
-    const data = [
-        { id: "asdasd-asdasdasd-asdasdasd", storeName: "Pondok Bakso", menuName: "Bakso Iga", imageUrl, price: 15000, quantity: 10, totalPrice: 150000 },
-        { id: "asdasd-asdasdasd-asdasdasd", storeName: "Pondok Bakso", menuName: "Bakso Iga", imageUrl, price: 15000, quantity: 10, totalPrice: 150000 },
-        { id: "asdasd-asdasdasd-asdasdasd", storeName: "Pondok Bakso", menuName: "Bakso Iga", imageUrl, price: 15000, quantity: 10, totalPrice: 150000 },
-        { id: "asdasd-asdasdasd-asdasdasd", storeName: "Pondok Bakso", menuName: "Bakso Iga", imageUrl, price: 15000, quantity: 10, totalPrice: 150000 },
-        { id: "asdasd-asdasdasd-asdasdasd", storeName: "Pondok Bakso", menuName: "Bakso Iga", imageUrl, price: 15000, quantity: 10, totalPrice: 150000 },
+    const data = [{
+        id: "asdasd-asdasdasd-asdasdasd",
+        storeName: "Pondok Bakso",
+        menuName: "Bakso Iga",
+        imageUrl,
+        price: 15000,
+        quantity: 10,
+        totalPrice: 150000
+      },
+      {
+        id: "asdasd-asdasdasd-asdasdasd",
+        storeName: "Pondok Bakso",
+        menuName: "Bakso Iga",
+        imageUrl,
+        price: 15000,
+        quantity: 10,
+        totalPrice: 150000
+      },
+      {
+        id: "asdasd-asdasdasd-asdasdasd",
+        storeName: "Pondok Bakso",
+        menuName: "Bakso Iga",
+        imageUrl,
+        price: 15000,
+        quantity: 10,
+        totalPrice: 150000
+      },
+      {
+        id: "asdasd-asdasdasd-asdasdasd",
+        storeName: "Pondok Bakso",
+        menuName: "Bakso Iga",
+        imageUrl,
+        price: 15000,
+        quantity: 10,
+        totalPrice: 150000
+      },
+      {
+        id: "asdasd-asdasdasd-asdasdasd",
+        storeName: "Pondok Bakso",
+        menuName: "Bakso Iga",
+        imageUrl,
+        price: 15000,
+        quantity: 10,
+        totalPrice: 150000
+      },
     ];
     const userDetailForm = document.getElementById('user-form-detail');
     const menuButton = document.getElementById('menu-button');
@@ -783,5 +827,5 @@
   </script>
 
 </body>
-</html>
 
+</html>

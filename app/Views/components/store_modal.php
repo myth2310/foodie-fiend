@@ -15,7 +15,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="w-full">
             <div class="mb-4">
-              <input name="name" placeholder="Nama Lengkap" type="text" class="w-full p-2 border-2 text-center border-gray-300 rounded mt-1" required>
+              <input name="name" placeholder="Nama Pemilik/Owner" type="text" class="w-full p-2 border-2 text-center border-gray-300 rounded mt-1" required>
               </div>
               <div class="mb-4">
                 <input name="email" placeholder="Email" type="email" class="w-full p-2 border-2 text-center border-gray-300 rounded mt-1" required>
@@ -35,7 +35,10 @@
               <input name="file" placeholder="file" type="file" accept=".jpg,.jpeg,.png" class="w-full px-2 py-1.5 border-2 text-center border-gray-300 rounded mt-1" required>
             </div>
             <div class="mb-4">
-              <textarea name="store_address" placeholder="Alamat toko" id="" cols="30" rows="4" class="h-full w-full p-2 border-2 border-gray-300 rounded mt-1" required></textarea>
+            <input style="display: none;" id="longitude" name="longitude" type="text" readonly class="w-full p-2 border-2 text-center border-gray-300 rounded mt-1">
+            <input style="display: none;" id="latitude" name="latitude" type="text" readonly class="w-full p-2 border-2 text-center border-gray-300 rounded mt-1">
+            <div id="map" class="w-full h-64 rounded-lg mb-4"></div>
+              <textarea name="address" placeholder="Alamat toko" id="address" cols="30" rows="4" class="h-full w-full p-2 border-2 border-gray-300 rounded mt-1" required></textarea>
             </div>
           </div>
         </div>
@@ -46,3 +49,37 @@
       </p>
     </div>
   </div>
+
+  <script>
+  const map = L.map('map').setView([-6.8737575, 109.0855475], 13);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors'
+  }).addTo(map);
+
+  let marker;
+
+  map.on('click', function(e) {
+    const {
+      lat,
+      lng
+    } = e.latlng;
+    document.getElementById('latitude').value = lat;
+    document.getElementById('longitude').value = lng;
+    fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`)
+      .then(response => response.json())
+      .then(data => {
+        const address = data.display_name || "Alamat tidak ditemukan";
+
+        document.getElementById('address').value = address;
+
+        if (marker) {
+          marker.setLatLng([lat, lng]).bindPopup(address).openPopup();
+        } else {
+          marker = L.marker([lat, lng]).addTo(map).bindPopup(address).openPopup();
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching address:', error);
+      });
+  });
+</script> 

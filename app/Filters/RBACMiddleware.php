@@ -25,10 +25,18 @@ class RBACMiddleware implements FilterInterface
      */
     public function before(RequestInterface $request, $arguments = null)
     {
-        if (session()->get('role') == 'user') {
+        $role = session()->get('role');
+    
+        // Arahkan pengguna dengan role 'user' ke halaman dashboard khusus user
+        if ($role == 'user') {
             return redirect()->to('/user/dashboard');
         }
+        // Jika role tidak sesuai, arahkan ke halaman akses ditolak atau homepage
+        elseif (!in_array($role, ['admin', 'store'])) {
+            return redirect()->to('/')->with('error', 'Anda tidak memiliki izin untuk mengakses halaman ini.');
+        }
     }
+    
 
     /**
      * Allows After filters to inspect and modify the response

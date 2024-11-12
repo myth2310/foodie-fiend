@@ -4,6 +4,9 @@ namespace App\Controllers;
 
 use App\Models\MenuModel;
 use App\Models\OrderModel;
+use App\Models\UserModel;
+use App\Models\CategoryModel;
+use App\Models\StoreModel;
 
 class DashboardController extends BaseController
 {
@@ -11,7 +14,10 @@ class DashboardController extends BaseController
     protected $menuController;
     protected $orderController;
     protected $store_id;
-
+    protected $categoryModel;
+    protected $userModel;
+    protected $orderModel;
+    protected $storeModel;
 
 
     public function __construct()
@@ -19,6 +25,10 @@ class DashboardController extends BaseController
         $this->categoryController = new CategoryController();
         $this->menuController = new MenuController();
         $this->orderController = new OrderController();
+        $this->categoryModel = new CategoryModel();
+        $this->userModel = new UserModel();
+        $this->orderModel = new OrderModel();
+        $this->storeModel = new StoreModel();
         $store = session()->get('store_id');
         if (is_string($store)) {
             $this->store_id = $store;
@@ -31,22 +41,29 @@ class DashboardController extends BaseController
             return redirect()->route('home');
         }
 
-        $menus = $this->menuController->getAllByStoreId($this->store_id);
-        $categories = $this->categoryController->getAllByStoreId($this->store_id);
+        $storeId = session()->get('user_id');
+        $menus = $this->menuController->getAllByStoreId($storeId);
 
+        $store = $this->userModel->getUserWithStore($storeId);
+
+        if (!$store) {
+            session()->setFlashdata('swal_error', 'Data store tidak ditemukan.');
+            return redirect()->back();
+        }
 
         return view('pages/dashboard', ['data' => [
             'menus' => $menus,
-            'categories' => $categories,
+            'store' => $store,
         ]]);
     }
+
 
     public function menu(): string
     {
         $menuController = new MenuController();
         $categoryController = new CategoryController();
         $menus = $menuController->getAllByStoreId($this->store_id);
-        $categories = $categoryController->getAllByStoreId($this->store_id);
+        $categories = $this->categoryModel->findAll();
 
         return view('pages/menu', [
             'page' => 'Menu',
@@ -67,25 +84,158 @@ class DashboardController extends BaseController
             'data' => $categories,
         ]);
     }
+    public function detailOrder($id): string
+    {
+        $orderModel = new OrderModel();
+        $orderDetails = $orderModel->getDetailOrder($id);
+        return view('pages/detail_order', [
+            'orderDetails' => $orderDetails
+        ]);
+    }
 
     public function profile(): string
     {
-        return view('pages/profile', ['page' => 'Profil']);
+        $storeId = session()->get('user_id');
+        $store = $this->storeModel->getStoreWithUser($storeId);
+
+        return view('pages/profile', [
+            'store' => $store,
+        ]);
     }
+
+    public function downloadKTP($storeId)
+    {
+        $ktpStore = $this->storeModel->getStoreWithUser($storeId);
+        return $this->response->download($ktpStore->ktp_url, null)
+            ->setFileName('KTP_' . $storeId . '.png');
+    }
+
 
     public function order(): string
     {
         $orderModel = new OrderModel();
-        $perPage = 5;  // Jumlah data per halaman
-    
+        $perPage = 5;
+
         $orders = $orderModel->getOrdersByStoreId($this->store_id, $perPage);
-        $pager = $orderModel->pager;  
-    
+        $pager = $orderModel->pager;
+
         return view('pages/order', [
             'page' => 'Pesanan',
             'orders' => $orders,
-            'pager' => $pager  // Kirimkan pager ke view
+            'pager' => $pager
         ]);
     }
-    
+
+
+    // ADMIN CONTROLLER
+    public function dashboard()
+    {
+        return view('admin\dashboard_admin.php');
+    }
+    public function mitra()
+    {
+        $userModel = new UserModel();
+        $perPage = 5;
+
+        $store = $userModel->getStore($this->store_id, $perPage);
+        $pager = $userModel->pager;
+
+
+        return view('admin/mitra.php', [
+            'page' => 'Pesanan',
+            'store' => $store,
+            'pager' => $pager
+        ]);
+    }
+
+
+    public function haversineDistance($lat1, $lon1, $lat2, $lon2)
+    {
+        $earthRadius = 6371;
+
+        $dLat = deg2rad($lat2 - $lat1);
+        $dLon = deg2rad($lon2 - $lon1);
+
+        $a = sin($dLat / 2) * sin($dLat / 2) +
+            cos(deg2rad($lat1)) * cos(deg2rad($lat2)) *
+            sin($dLon / 2) * sin($dLon / 2);
+
+        $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+
+        $distance = $earthRadius * $c;
+
+        return $distance;
+    }
+
+    public function detail($id)
+    {
+        $userModel = new UserModel();
+        $data = $userModel->getUmkmById($id);
+
+        $customerLat = -6.8737575;
+        $customerLon = 109.0855475;
+
+        $umkmLat = -6.869123;
+        $umkmLon = 109.100958;
+        $distance = $this->haversineDistance($customerLat, $customerLon, $umkmLat, $umkmLon);
+        $ratePerKm = 1000;
+
+        $totalHarga = $distance * $ratePerKm;
+
+        return view('admin/detail_mitra', [
+            'umkm' => $data,
+            'distance' => $distance,
+            'totalHarga' => $totalHarga
+        ]);
+    }
+
+    public function viewPdf($fileUrl)
+    {
+        
+        $fileUrl = urldecode($fileUrl);
+        if (filter_var($fileUrl, FILTER_VALIDATE_URL) === false) {
+            return "Link PDF tidak valid.";
+        }
+        return view('admin/view_pdf', ['fileUrl' => $fileUrl]);
+    }
+
+    public function verify($storeId)
+    {
+        $store = $this->userModel->find($storeId);
+
+        if ($store) {
+            if ($store->is_verif == 1) {
+                return $this->response->setJSON(['success' => false, 'message' => 'UMKM sudah terverifikasi']);
+            }
+            $updated = $this->userModel->update($storeId, ['is_verif' => 1]);
+
+            if ($updated) {
+                $this->sendVerificationEmail($store->email);
+
+                return $this->response->setJSON(['success' => true, 'message' => 'UMKM berhasil diverifikasi']);
+            } else {
+                return $this->response->setJSON(['success' => false, 'message' => 'Gagal memverifikasi UMKM']);
+            }
+        } else {
+            return $this->response->setJSON(['success' => false, 'message' => 'UMKM tidak ditemukan']);
+        }
+    }
+
+    private function sendVerificationEmail($email)
+    {
+        // Mengatur email
+        $emailService = \Config\Services::email();
+
+        $emailService->setFrom('no-reply@yourdomain.com', 'Admin');
+        $emailService->setTo($email);
+        $emailService->setSubject('Akun UMKM Anda Telah Terverifikasi');
+        $emailService->setMessage('Halo, Akun UMKM Anda telah berhasil diverifikasi. Terima kasih telah bergabung.');
+
+        if ($emailService->send()) {
+            return true;
+        } else {
+            log_message('error', 'Email verification failed: ' . $emailService->printDebugger());
+            return false;
+        }
+    }
 }

@@ -22,7 +22,7 @@ class CategoryController extends BaseController
 
     public function getAllByStoreId($store_id)
     {
-        $categories = $this->categoryModel->where('store_id', $store_id)->findAll();
+        $categories = $this->categoryModel->findAll();
         $totalCategory = count($categories);
         $data = [
             'categories' => $categories,

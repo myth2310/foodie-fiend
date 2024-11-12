@@ -77,7 +77,7 @@ class MenuModel extends Model
 
     public function getMenuWithStore($menu_id)
     {
-        return $this->select('menus.*, stores.name as store_name')
+        return $this->select('menus.*,stores.user_id as stores_id, stores.name as store_name')
             ->join('stores', 'menus.store_id = stores.id')
             ->where('menus.id', $menu_id)
             ->first();
@@ -147,14 +147,13 @@ class MenuModel extends Model
     $ratings = [];
 
     for ($i = 1; $i <= 5; $i++) {
-        // Hitung jumlah menu berdasarkan rating bulat
+    
         $menuCount = $this->select('menus.id')
             ->join('reviews', 'reviews.menu_id = menus.id')
             ->groupBy('menus.id')
-            ->having('FLOOR(AVG(reviews.rating))', $i) // Rating dibulatkan ke bawah
+            ->having('FLOOR(AVG(reviews.rating))', $i) 
             ->countAllResults();
 
-        // Ambil gambar acak dari menu dengan rating sesuai
         $randomMenu = $this->select('menus.image_url')
             ->join('reviews', 'reviews.menu_id = menus.id')
             ->groupBy('menus.id')
@@ -162,7 +161,6 @@ class MenuModel extends Model
             ->orderBy('RAND()')
             ->first();
 
-        // Simpan data jumlah dan gambar
         $ratings["rating_{$i}"] = [
             'count' => $menuCount,
             'image' => $randomMenu ? $randomMenu->image_url : null,

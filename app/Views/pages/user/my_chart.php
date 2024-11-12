@@ -20,11 +20,11 @@
     </div>
     Pesanan Saya
   </a>
-  <a href="/user/dashboard/setting" class="flex items-center py-2.5 px-4 rounded-lg transition duration-200 hover:font-semibold hover:bg-white hover:shadow-lg hover:text-gray-500" id="setting-link">
+  <a href="/recommendations" class="flex items-center py-2.5 px-4 rounded-lg transition duration-200 hover:font-semibold hover:bg-white hover:shadow-lg hover:text-gray-500" id="setting-link">
     <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-center text-white bg-gray-500 stroke-0 text-center xl:p-2.5">
-      <i class="fas fa-cog"></i>
+      <i class="fa-solid fa-bowl-food"></i>
     </div>
-    Pengaturan
+    Jelajah UMKM
   </a>
   <a href="/logout" class="flex items-center py-2.5 px-4 rounded-lg transition duration-200 hover:font-semibold hover:bg-white hover:shadow-lg hover:text-gray-500" id="logout-link">
     <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-center text-white bg-red-500 stroke-0 text-center xl:p-2.5">
@@ -57,7 +57,6 @@ foreach ($data as $item) {
     <p class="text-orange-500 text-lg">Keranjang Saya</p>
   </div>
 
- 
   <div id="forms" class="mt-4 mx-4">
     <div id="menu-form" class="profile-form">
       <div id="chartContainer" class="h-screen overflow-y-auto">
@@ -70,7 +69,7 @@ foreach ($data as $item) {
             <div class="mt-4 shadow-sm">
               <div class="flex px-6 py-4 bg-white rounded-md">
                 <div class="flex items-center w-full space-x-6">
-                  <span class="font-semibold text-gray-800"><?= $storeData['store_name'] ?></span>
+                  <span class="font-semibold text-gray-800 capitalize"><?= $storeData['store_name'] ?></span>
                   <a href="<?= base_url('/stores/' . $store_id) ?>" class="text-gray-500 hover:text-gray-700">
                     <div class="px-4 py-2 hover:bg-gray-100 transition ease-in-out duration-300 rounded-md items-center border">
                       <i class="fas fa-store"></i>
@@ -85,8 +84,14 @@ foreach ($data as $item) {
                   <div class="flex items-center w-full">
                     <img class="w-16 h-16 rounded-md" src="<?= $item->menu_img ?>" alt="Item image">
                     <div class="ml-4">
-                      <h4><?= $item->menu_name ?></h4>
-                      <p>x<?= $item->quantity ?></p>
+                      <h4 class="capitalize"><?= $item->menu_name ?></h4>
+                      <!-- <p>x <?= $item->quantity ?></p> -->
+                      <div class="flex items-center mt-3">
+                        <button type="button" class="decrement-btn px-4 mr-2 bg-red-500 text-white rounded-l-md hover:bg-red-700 focus:outline-none transition duration-300 ease-in-out transform hover:scale-105 shadow-md active:scale-95" data-item-id="<?= $item->id ?>">-</button>
+                        <input type="number" class="quantity-input w-16 border-t border-b text-center focus:outline-none" min="1" value="<?= $item->quantity ?>" data-item-id="<?= $item->id ?>">
+                        <button type="button" class="increment-btn px-4 ml-2  bg-green-500 text-white rounded-r-md hover:bg-green-700 focus:outline-none transition duration-300 ease-in-out transform hover:scale-105 shadow-md active:scale-95" data-item-id="<?= $item->id ?>">+</button>
+
+                      </div>
                     </div>
                   </div>
                   <div class="flex font-semibold justify-center items-center space-x-1 text-orange-400">
@@ -102,8 +107,10 @@ foreach ($data as $item) {
                   <span class="text-lg font-semibold text-orange-500">Rp. <?= number_format($storeData['total_price'], 0, ',', '.') ?></span>
                 </div>
 
-                <form action="<?= base_url('/checkout') ?>" method="post">
+                <!-- Form Checkout -->
+                <form action="<?= base_url('/checkout') ?>" method="post" class="checkout-form">
                   <input type="hidden" name="store_id" value="<?= $store_id ?>">
+                  <input type="hidden" name="stores_id" value="<?= $item->stores_id ?>">
                   <?php foreach ($storeData['items'] as $item): ?>
                     <input type="hidden" name="menu_id[]" value="<?= $item->menu_id ?>">
                     <input type="hidden" name="quantity[]" value="<?= $item->quantity ?>">
@@ -114,7 +121,7 @@ foreach ($data as $item) {
                     <input type="hidden" name="image_url[]" value="<?= $item->menu_img ?>">
                   <?php endforeach; ?>
 
-                  <button type="submit" class="px-4 py-2 bg-blue-500 transition ease-in-out duration-300 hover:bg-blue-700 rounded-md text-white text-base font-medium">
+                  <button type="button" class="px-4 py-2 bg-blue-500 transition ease-in-out duration-300 hover:bg-blue-700 rounded-md text-white text-base font-medium checkout-button">
                     Checkout Keranjang
                   </button>
                 </form>
@@ -127,5 +134,92 @@ foreach ($data as $item) {
     </div>
   </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  $(document).ready(function() {
+    $('.checkout-button').on('click', function(e) {
+      e.preventDefault();
+
+      const userAddress = "<?= session()->get('address') ?>";
+      const form = $(this).closest('form');
+      if (!userAddress) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Lengkapi Profil',
+          text: 'Lengkapi profil Anda terlebih dahulu untuk melakukan pemesanan.',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#fbbf24'
+        });
+      } else {
+        Swal.fire({
+          title: 'Konfirmasi Checkout',
+          text: "Apakah Anda yakin ingin melanjutkan checkout?",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Ya, Checkout!',
+          cancelButtonText: 'Batal'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            form.submit();
+          }
+        });
+      }
+    });
+  });
+</script>
+
+<script>
+  $(document).ready(function() {
+    $('.increment-btn').on('click', function() {
+      const quantityInput = $(this).siblings('.quantity-input');
+      const currentQuantity = parseInt(quantityInput.val());
+      const itemId = quantityInput.data('item-id');
+
+      const newQuantity = currentQuantity + 1;
+      quantityInput.val(newQuantity);
+
+      updateQuantity(itemId, newQuantity);
+    });
+
+    $('.decrement-btn').on('click', function() {
+      const quantityInput = $(this).siblings('.quantity-input');
+      const currentQuantity = parseInt(quantityInput.val());
+      const itemId = quantityInput.data('item-id');
+
+      const newQuantity = Math.max(1, currentQuantity - 1);
+      quantityInput.val(newQuantity);
+
+      updateQuantity(itemId, newQuantity);
+    });
+
+    function updateQuantity(itemId, newQuantity) {
+      $.ajax({
+        url: '<?= base_url('chart/update') ?>',
+        method: 'POST',
+        data: {
+          item_id: itemId,
+          quantity: newQuantity
+        },
+        success: function(response) {
+          console.log(response);
+          if (response.success) {
+            const itemTotalPrice = response.item_price * newQuantity;
+            $(`[data-item-id="${itemId}"]`).closest('.cart-item').find('.item-total-price').text(new Intl.NumberFormat('id-ID').format(itemTotalPrice));
+
+            $('#total-price').text(new Intl.NumberFormat('id-ID').format(response.new_total_price));
+            location.reload();
+          }
+        },
+        error: function(error) {
+          console.log("Error updating quantity:", error);
+        }
+      });
+    }
+  });
+</script>
 
 <?= $this->endSection() ?>

@@ -51,6 +51,7 @@ class UserController extends BaseController
     {
         $user_id = session()->get('user_id');
         $data = $this->chartModel->getAllChartWithMenu($user_id);
+    
         return view('pages/user/my_chart', ['data' => $data]);
     }
 
@@ -61,6 +62,7 @@ class UserController extends BaseController
 
 
         $my_order = $this->orderModel->getAllOrdersWithMenus($user_id, $orderStatus);
+
         $pager = $this->orderModel->pager;
 
         $data = [
@@ -88,7 +90,7 @@ class UserController extends BaseController
         return view('pages/signup');
     }
 
-        public function store()
+    public function store()
     {
         $this->user->name = $this->request->getPost('name');
         $this->user->email = $this->request->getPost('email');
@@ -96,7 +98,6 @@ class UserController extends BaseController
         $this->user->profile = 'https://res.cloudinary.com/beta7x/image/upload/v1720840088/610-6104451_image-placeholder-png-user-profile-placeholder-image-png-removebg-preview_bccniu.png';
         $this->user->setPassword($this->request->getPost('password'));
 
-        // Buat token untuk verifikasi pengguna
         $token = bin2hex(random_bytes(16));
         $this->user->verification_token = $token;
 
@@ -116,89 +117,76 @@ class UserController extends BaseController
                 break;
         }
 
-        // if (!$this->emailController->sendVerification($data->email, $data->name, $token)) {
-        //     session()->setFlashdata('error', 'Gagal mengirim email verifikasi.');
-        //     return redirect()->to('/')->with('errors', ['Gagal mengirim email verifikasi']);
-        // }
-
-        session()->setFlashdata('success', 'Pengguna berhasil dibuat dan email verifikasi berhasil terkirim!');
+        session()->setFlashdata('success', 'Pengguna berhasil dibuat!');
         return redirect()->to('/');
     }
 
-    // public function store()
-    // {
-    //     $userModel = new UserModel();
-    //     $user = new UserEntity();
 
-    //     $user->name = $this->request->getPost('name');
-    //     $user->email = $this->request->getPost('email');
-    //     $user->phone = $this->request->getPost('phone');
-    //     $user->role = $this->request->getPost('role');
-    //     $user->role = 'store';
-    //     $user->profile = 'https://res.cloudinary.com/beta7x/image/upload/v1720840088/610-6104451_image-placeholder-png-user-profile-placeholder-image-png-removebg-preview_bccniu.png';
-    //     $password = $this->request->getPost('password');
-    //     $user->setPassword($password);
-
-    //     if (!$userModel->insert($user)) {
-    //         $errors = $userModel->errors(); 
-
-            
-    //         $errorMessages = implode("<br>", $errors);
-
-    //         // Redirect dengan flashdata error
-    //         return redirect()->back()->withInput()->with('error', $errorMessages);
-    //     }
-
-    //     return redirect()->to('/')->with('success', 'Pengguna berhasil dibuat');
-    // }
-
-
-
-    // Fungsi untuk menampilkan halaman edit user
     public function edit($id)
     {
         $modelModel = new UserModel();
         $user = $modelModel->find($id);
-
-        // Jika tidak ada user berdasarkan Id maka akan dikembalikan ke halaman semula
         if (!$user) {
             return redirect()->back()->with('error', 'Pengguna tidak ditemukan');
         }
-
         return view('users/edit', ['user' => $user]);
     }
 
-    // Fungsi untuk update data user di database
+
+    // public function update($id)
+    // {
+    //     $user = $this->userModel->find($id);
+
+    //     if (!$user) {
+    //         return redirect()->back()->with('errors', ['Pengguna tidak ditemukan']);
+    //     }
+
+    //     $data = $this->request->getPost();
+    //     if (empty($data['password'])) {
+    //         unset($data['password']);
+    //     }
+
+    //     // Assign data ke UserEntity
+    //     $userEntity = new UserEntity($data);
+
+    //     if (isset($data['password'])) {
+    //         $userEntity->setPassword($data['password']);
+    //     }
+
+    //     if (!$this->userModel->save($userEntity)) {
+    //         return redirect()->back()->withInput()->with('errors', $this->userModel->errors());
+    //     }
+
+    //     return redirect()->to('/users')->with('message', 'Pengguna berhasil diperbarui');
+    // }
+
+
     public function update($id)
     {
-        $user = $this->userModel->find($id);
+      
+        $userModel = new UserModel();
+        $name = $this->request->getPost('name');
+        $address = $this->request->getPost('address');
+        $latitude = $this->request->getPost('latitude');
+        $longitude = $this->request->getPost('longitude');
 
-        if (!$user) {
-            return redirect()->back()->with('errors', ['Pengguna tidak ditemukan']);
+        $updateData = [
+            'name' => $name,
+            'address' => $address,
+            'lat' => $latitude,
+            'long' => $longitude,
+        ];
+
+        // Cek apakah update berhasil
+        if ($userModel->update($id, $updateData)) {
+            // Update session dengan data terbaru
+            session()->set($updateData);
+            return redirect()->back()->with('success', 'Data berhasil diperbarui.');
+        } else {
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat memperbarui data.');
         }
-
-        $data = $this->request->getPost();
-        // Jika password tidak diisi, hapus dari data untuk menghindari penggantian dengan password kosong
-        if (empty($data['password'])) {
-            unset($data['password']);
-        }
-
-        // Assign data ke UserEntity
-        $userEntity = new UserEntity($data);
-
-        if (isset($data['password'])) {
-            $userEntity->setPassword($data['password']);
-        }
-
-        // Validasi dan update
-        if (!$this->userModel->save($userEntity)) {
-            return redirect()->back()->withInput()->with('errors', $this->userModel->errors());
-        }
-
-        return redirect()->to('/users')->with('message', 'Pengguna berhasil diperbarui');
     }
 
-    // Fungsi verifikasi email pengguna
     public function verificate($token)
     {
         $user = $this->userModel->where('verification_token', $token)->first();
@@ -223,7 +211,7 @@ class UserController extends BaseController
             return redirect()->to('/')->with('errors', ['Gagal verifikasi email pengguna']);
         }
     }
-    
+
     public function setSession($data, $with_storeId = false)
     {
         $session_data = [
@@ -231,6 +219,9 @@ class UserController extends BaseController
             'name' => $data->name,
             'email' => $data->email,
             'phone' => $data->phone,
+            'lat' => $data->lat,
+            'long' => $data->long,
+            'address' => $data->address,
             'role' => $data->role,
             'profile' => $data->profile,
             'is_verif' => $data->is_verif,
@@ -239,6 +230,7 @@ class UserController extends BaseController
         if ($with_storeId) {
             $store_id = $this->storeModel->where('user_id', $data->id)->first();
             $session_data['store_id'] = $store_id->id;
+            $session_data['user_id'] = $store_id->user_id;
         }
 
         session()->set($session_data);

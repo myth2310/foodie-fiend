@@ -7,8 +7,8 @@
                 </a>
                 <div class="flex flex-col justify-between w-full">
                     <a href="<?= base_url('menus/' . $menu['id']) ?>" class="mb-2">
-                        <p class="text-lg font-semibold text-slate-800"><?= $menu['name'] ?? "Menu Pertama" ?></p>
-                        <h5 class="text-base tracking-tight text-slate-500"><?= $menu['store_name'] ?? "Menu Pertama" ?></h5>
+                        <p class="text-lg font-semibold text-slate-800 capitalize"><?= $menu['name'] ?? "Menu Pertama" ?></p>
+                        <h5 class="text-base tracking-tight text-slate-500 capitalize"><?= $menu['store_name'] ?? "Menu Pertama" ?></h5>
                     </a>
                     <div class="flex items-center mb-1">
                         <?php for ($i = 1; $i <= 4; $i++): ?>

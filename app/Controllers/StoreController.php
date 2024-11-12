@@ -40,37 +40,41 @@ class StoreController extends BaseController
     public function getAllStore()
     {
         $storeModel = new StoreModel();
-        $stores = $storeModel->orderBy('RAND()')->findAll();
-        
+        $stores = $storeModel->select('stores.*, users.name as user_name, users.email')
+            ->join('users', 'users.id = stores.user_id')
+            ->where('users.is_verif', 1)
+            ->where('users.role', 'store')
+            ->orderBy('RAND()')
+            ->findAll();
+
+
         $totalStore = count($stores);
-    
+
+
         $data = [
             'stores' => $stores,
-            'totalStore' => $totalStore, 
+            'totalStore' => $totalStore,
         ];
-    
+
         return $data;
     }
-    
 
-    // Fungsi untuk menampilkan detail toko
+
+
     public function detail($id)
     {
+
         $storeModel = new StoreModel();
         $menuModel = new MenuModel();
-        $categoryController = new CategoryController();
-    
         $user_id = session()->get('user_id');
         $charts = $this->chartModel->getAllChartWithMenu($user_id);
 
-        $store = $storeModel->find($id);
-      
-        $dataMenu = $this->reviewModel->getMenusWithRatingFromStoreId($id);
-     
 
-        $categories = $categoryController->getByStoreId($id);
+        $store = $storeModel->where('id', $id)->first();
+
+        $dataMenu = $this->reviewModel->getMenusWithRatingFromStoreId($id);
         $menu = $menuModel->getMenusByStore($id);
-   
+
         if (!$store) {
             session()->setFlashdata('errors', ['Toko tidak ditemukan']);
             return redirect()->to('/');
@@ -78,7 +82,6 @@ class StoreController extends BaseController
 
         return view('pages/store', [
             'menus' => $menu,
-            'categories' => $categories,
             'hero_img' => $store->image_url,
             'charts' => $charts,
             'title' => $store->name,
@@ -86,34 +89,37 @@ class StoreController extends BaseController
         ]);
     }
 
-    // Fungsi untuk buat toko baru
+
     public function create()
     {
         $userModel = new UserModel();
         $storeModel = new StoreModel();
         $user = new UserEntity();
         $store = new StoreEntity();
-    
+
         $db = db_connect();
         $db->transStart();
-    
+
         try {
             $user->name = $this->request->getPost('name');
             $user->email = $this->request->getPost('email');
             $user->phone = $this->request->getPost('phone');
+            $user->lat = $this->request->getPost('latitude');
+            $user->long = $this->request->getPost('longitude');
+            $user->address = $this->request->getPost('address');
             $user->role = 'store';
             $password = $this->request->getPost('password');
             $user->profile = 'https://res.cloudinary.com/beta7x/image/upload/v1720840088/610-6104451_image-placeholder-png-user-profile-placeholder-image-png-removebg-preview_bccniu.png';
-    
+
             $user->setPassword($password);
             $userModel->insert($user);
-    
+
             $userId = $userModel->getInsertID();
             $store->generateUUID();
             $store->user_id = $userId;
             $store->name = $this->request->getPost('store_name');
-            $store->address = $this->request->getPost('store_address');
-            
+            $store->address = $this->request->getPost('address');
+
             $file = $this->request->getFile('file');
             if ($file->isValid() && !$file->hasMoved()) {
                 $filePath = $file->getTempName();
@@ -121,49 +127,125 @@ class StoreController extends BaseController
                 $uploadResult = $uploadHelper->upload($filePath);
                 $store->image_url = $uploadResult['secure_url'];
             }
-    
+
             $storeModel->save($store);
-    
+
             $db->transComplete();
-    
+
             if ($db->transStatus() === false) {
                 $userErrors = $userModel->errors();
                 $storeErrors = $storeModel->errors();
                 $errors = array_merge($userErrors['errors'], $storeErrors['error']);
-    
+
                 session()->setFlashdata('error', 'Terjadi kesalahan dalam penyimpanan data.');
                 return redirect()->back()->withInput()->with('errors', $errors);
             }
-    
+
             session()->setFlashdata('success', 'Pengguna berhasil dibuat!');
             return redirect()->to('/');
-    
         } catch (Exception $err) {
             $db->transRollback();
             session()->setFlashdata('error', 'Terjadi kesalahan: ' . $err->getMessage());
             return redirect()->back()->with('errors', $err->getLine());
         }
     }
+
+
+    public function downloadTemplateSurat()
+    {
+        $filePath = APPPATH . 'Views/surat_ketersediaan_mitra.pdf';
+
+        if (file_exists($filePath)) {
+            return $this->response->download($filePath, null)->setFileName('Template_Surat_Mitra_UMKM.pdf');
+        } else {
+            session()->setFlashdata('error', 'File template tidak ditemukan.');
+            return redirect()->back();
+        }
+    }
+
+
+    public function update($id)
+    {
+        $userModel = new UserModel();
+        $storeModel = new StoreModel();
+        $user = $userModel->find($id);
+        if (!$user) {
+            session()->setFlashdata('swal_error', 'User tidak ditemukan.');
+            return redirect()->back();
+        }
     
+        $store = $storeModel->where('user_id', $id)->first();
+        if (!$store) {
+            session()->setFlashdata('swal_error', 'Data toko tidak ditemukan.');
+            return redirect()->back();
+        }
+    
+        $db = db_connect();
+        $db->transStart();
+    
+        try {
+            $newName = $this->request->getPost('name');
+            if ($user->name !== $newName) {
+                $user->name = $newName;
+                $userModel->save($user);
+            }
+
+            $file = $this->request->getFile('ktp_url');
+            if ($file->isValid() && !$file->hasMoved()) {
+                $filePath = $file->getTempName();
+                $uploadHelper = new CloudinaryHelper();
+                $uploadResult = $uploadHelper->upload($filePath);
+                if ($uploadResult) {
+                    $store->ktp_url = $uploadResult['secure_url'];
+                    $storeModel->save($store);
+                }
+            }
+    
+            $umkm = $this->request->getFile('umkm_letter');
+            if ($umkm->isValid() && !$umkm->hasMoved()) { 
+                $filePath = $umkm->getTempName();
+                $uploadHelper = new CloudinaryHelper();
+                $uploadResult = $uploadHelper->upload($filePath);
+                if ($uploadResult) {
+                    $store->umkm_letter = $uploadResult['secure_url'];
+                    $storeModel->save($store);
+                }
+            }
+    
+            $db->transComplete();
+    
+            if ($db->transStatus() === false) {
+                session()->setFlashdata('swal_error', 'Terjadi kesalahan dalam pembaruan data.');
+                return redirect()->back()->withInput();
+            }
+    
+            session()->setFlashdata('swal_success', 'Data pengguna berhasil diperbarui!');
+            return redirect()->to('/dashboard');
+        } catch (Exception $err) {
+            $db->transRollback();
+            session()->setFlashdata('swal_error', 'Terjadi kesalahan: ' . $err->getMessage());
+            return redirect()->back()->withInput();
+        }
+    }
     
 
     // Fungsi untuk update toko
-    public function update($id)
-    {
-        $storeModel = new StoreModel();
-        $store = $storeModel->find($id);
-        
-        if (!$store) {
-            return redirect()->back()->with('errors', ['Toko tidak dapat ditemukan']);
-        }
-        
-        $data = $this->request->getPost();
-        $storeEntity = new StoreEntity($data);
+    // public function update($id)
+    // {
+    //     $storeModel = new StoreModel();
+    //     $store = $storeModel->find($id);
 
-        if (!$storeModel->update($id, $storeEntity->toArray())) {
-            return redirect()->back()->withInput()->with('errors', $storeModel->errors());
-        }
+    //     if (!$store) {
+    //         return redirect()->back()->with('errors', ['Toko tidak dapat ditemukan']);
+    //     }
 
-        return redirect()->to('/stores')->with('messages', ['Update toko berhasil']);
-    }
+    //     $data = $this->request->getPost();
+    //     $storeEntity = new StoreEntity($data);
+
+    //     if (!$storeModel->update($id, $storeEntity->toArray())) {
+    //         return redirect()->back()->withInput()->with('errors', $storeModel->errors());
+    //     }
+
+    //     return redirect()->to('/stores')->with('messages', ['Update toko berhasil']);
+    // }
 }

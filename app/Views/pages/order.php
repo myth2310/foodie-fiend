@@ -24,6 +24,7 @@
                 <th class="px-6 py-3 text-center">Total Harga</th>
                 <th class="px-6 py-3 text-center">Status Pembayaran</th>
                 <th class="px-6 py-3 text-center">Status Pengantaran</th>
+                <th class="px-6 py-3 text-center"></th>
               </tr>
             </thead>
             <tbody id="menuTable" class="divide-y divide-gray-200 bg-white">
@@ -38,32 +39,37 @@
                     </td>
                     <td class="px-6 py-4 text-center text-gray-700">
                       <?= esc($order->quantity) ?>
+
                     </td>
                     <td class="px-6 py-4 text-center text-gray-700 font-semibold">
                       Rp <?= number_format($order->total_price, 0, ',', '.') ?>
                     </td>
                     <td class="px-6 py-4 text-center">
-                      <span class="px-3 py-1 rounded-md 
-              <?= $order->status === 'Belum Dibayar' ? 'bg-red-500' : 'bg-green-500' ?> 
-              text-white">
+                      <span class="px-3 py-1 rounded-md capitalize
+    <?= $order->status === 'Belum Dibayar' ? 'bg-red-500' : 'bg-green-500' ?> 
+    text-white">
                         <?= esc($order->status) ?>
                       </span>
                     </td>
                     <td class="px-6 py-4 text-center">
-                      <form action="<?= base_url('orders/update-status/' . $order->id) ?>" method="post">
+                      <form action="<?= base_url('dashboard/update-delivery-status/' . $order->id) ?>" method="post" id="statusForm_<?= $order->id ?>">
                         <input type="hidden" name="<?= csrf_token() ?>" value="<?= csrf_hash() ?>" />
                         <select name="status_pengantaran"
-                          class="px-3 py-1 border rounded-md bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                          class="px-3 py-1 border rounded-md bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                          onchange="document.getElementById('statusForm_<?= $order->id ?>').submit();">
                           <option value="">-- Pilih Status Pengiriman --</option>
-                          <option value="Sedang Dimasak" <?= $order->status_pengantaran === 'Sedang Dimasak' ? 'selected' : '' ?>>Sedang Dimasak</option>
-                          <option value="Sedang Diantar" <?= $order->status_pengantaran === 'Sedang Diantar' ? 'selected' : '' ?>>Sedang Diantar</option>
-                          <option value="Selesai" <?= $order->status_pengantaran === 'Selesai' ? 'selected' : '' ?>>Selesai</option>
+                          <option value="dimasak" <?= $order->delivery_status === 'dimasak' ? 'selected' : '' ?>>Sedang Dimasak</option>
+                          <option value="diantar" <?= $order->delivery_status === 'diantar' ? 'selected' : '' ?>>Sedang Diantar</option>
+                          <option value="selesai" <?= $order->delivery_status === 'selesai' ? 'selected' : '' ?>>Selesai</option>
                         </select>
-                        <button type="submit"
-                          class="ml-2 bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1 rounded-md">
-                          Ubah
-                        </button>
                       </form>
+                    </td>
+
+                    <td>
+                      <a href="<?= base_url('dashboard/detail-order/' . $order->id) ?>"
+                        class="ml-2 bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-2 rounded-md shadow-lg transform transition duration-200 hover:scale-105 focus:ring-4 focus:ring-yellow-300">
+                        <i class="fa-solid fa-circle-info mx-2"></i> Detail Pesanan
+                      </a>
                     </td>
                   </tr>
                 <?php endforeach ?>
@@ -77,19 +83,40 @@
             </tbody>
           </table>
           <div style="float: right" class="mb-10">
-          <?= $pager->links('default', 'custom_pager') ?>
-        </div>
-
-        
-
-
-
-
+            <?= $pager->links('default', 'custom_pager') ?>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    <?php if (session()->getFlashdata('swal_success')): ?>
+      Swal.fire({
+        icon: 'success',
+        title: 'Berhasil!',
+        text: '<?= session()->getFlashdata('swal_success'); ?>',
+      });
+    <?php endif; ?>
+
+    <?php if (session()->getFlashdata('swal_error')): ?>
+      Swal.fire({
+        icon: 'error',
+        title: 'Gagal!',
+        text: '<?= session()->getFlashdata('swal_error'); ?>',
+      });
+    <?php endif; ?>
+  });
+</script>
+
+
 <?= $this->endSection() ?>
 
 <?= $this->section('footer') ?>

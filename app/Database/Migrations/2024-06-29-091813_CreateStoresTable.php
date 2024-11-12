@@ -27,6 +27,12 @@ class CreateStoresTable extends Migration
             'image_url' => [
                 'type' => 'TEXT',
             ],
+            'ktp_url' => [
+                'type' => 'TEXT',
+            ],
+            'umkm_letter' => [
+                'type' => 'TEXT',
+            ],
             'is_delete' => [
                 'type' => 'TINYINT',
                 'constraint' => 1,

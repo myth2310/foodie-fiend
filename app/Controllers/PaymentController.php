@@ -25,66 +25,67 @@ class PaymentController extends BaseController
     }
 
 
-    public function create($data)
-{
-    foreach ($data as $item) {
-        
-        $total_price = $item['price'] * $item['quantity'];
-        $order_id = Uuid::uuid7()->toString();
+    public function create($data, $grandTotal)
+    {
+        $grandTotal = round($grandTotal); 
+        foreach ($data as $item) {
 
-        // Data pesanan
-        $order_data = [
-            'user_id' => session()->get('user_id'),
-            'order_id' => $order_id,
-            'store_id' => $item['store_id'],
-            'menu_id' => $item['menu_id'],
-            'quantity' => $item['quantity'],
-            'price' => $item['price'],
-            'total_price' => $total_price,
-            'status' => 'pending',
-        ];
+            $total_price = $item['price'] * $item['quantity'];
+            $order_id = Uuid::uuid7()->toString();
 
-        $order = new OrderEntity($order_data);
-        $this->orderModel->save($order);
+            // Data pesanan
+            $order_data = [
+                'user_id' => session()->get('user_id'),
+                'order_id' => $order_id,
+                'store_id' => $item['store_id'],
+                'menu_id' => $item['menu_id'],
+                'quantity' => $item['quantity'],
+                'price' => $item['price'],
+                'total_price' => $total_price,
+                'status' => 'selesai',
+            ];
 
-        // Data transaksi untuk Midtrans
-        $transaction_detail = [
-            'order_id' => $order_id,
-            'gross_amount' => $total_price,
-        ];
-        $customer_detail = [
-            'first_name' => session()->get('name'),
-            'email' => session()->get('email'),
-            'phone' => session()->get('phone'),
-        ];
-        $transaction_data = [
-            'transaction_details' => $transaction_detail,
-            'customer_details' => $customer_detail,
-            'callbacks' => [
-                'finish' => base_url('/'),
-            ],
-        ];
+            $order = new OrderEntity($order_data);
+            $this->orderModel->save($order);
 
-        $transactionData = [
-            'order_id' => $order_id,
-            'transaction_id' => null,
-            'gross_amount' => $total_price,
-            'transaction_status' => 'pending',
-            'payment_type' => null,
-            'transaction_time' => null,
-            'fraud_status' => null,
-            'customer_name' => $customer_detail['first_name'],
-            'customer_email' => $customer_detail['email'],
-            'customer_phone' => $customer_detail['phone'],
-        ];
+            // Data transaksi untuk Midtrans
+            $transaction_detail = [
+                'order_id' => $order_id,
+                'gross_amount' => $grandTotal,
+            ];
+            $customer_detail = [
+                'first_name' => session()->get('name'),
+                'email' => session()->get('email'),
+                'phone' => session()->get('phone'),
+            ];
+            $transaction_data = [
+                'transaction_details' => $transaction_detail,
+                'customer_details' => $customer_detail,
+                'callbacks' => [
+                    'finish' => base_url('/'),
+                ],
+            ];
 
-        $transactionEntity = new TransactionEntity($transactionData);
-        $this->transactionModel->insert($transactionEntity);
+            $transactionData = [
+                'order_id' => $order_id,
+                'transaction_id' => null,
+                'gross_amount' => $total_price,
+                'transaction_status' => 'selesai',
+                'payment_type' => null,
+                'transaction_time' => null,
+                'fraud_status' => null,
+                'customer_name' => $customer_detail['first_name'],
+                'customer_email' => $customer_detail['email'],
+                'customer_phone' => $customer_detail['phone'],
+            ];
+
+            $transactionEntity = new TransactionEntity($transactionData);
+            $this->transactionModel->insert($transactionEntity);
+        }
+
+        // Kembalikan token untuk transaksi
+        return $this->midtrans->getSnapToken($transaction_data);
     }
-
-    // Kembalikan token untuk transaksi
-    return $this->midtrans->getSnapToken($transaction_data);
-}
 
 
 
