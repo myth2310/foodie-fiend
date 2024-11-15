@@ -14,6 +14,8 @@ class OrderEntity extends Entity
         'quantity' => null,
         'price' => null,
         'total_price' => null,
+        'delivery_fee' => null,
+        'application_fee' => null,
         'status' => null,
     ];
     protected $datamap = [];

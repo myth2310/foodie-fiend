@@ -26,11 +26,9 @@
         <input name="phone" placeholder="Nomor telepon" type="text" class="w-full p-2 border-2 text-center border-gray-300 rounded mt-1">
       </div>
       <div class="mb-5">
-        <input name="password" placeholder="Password" type="password" class="w-full p-2 border-2 text-center border-gray-300 rounded mt-1">
+        <input id="password" name="password" placeholder="Password" type="password" class="w-full p-2 border-2 text-center border-gray-300 rounded mt-1" required>
+        
       </div>
-
-
-
       <button type="submit" class="bg-yellow-500 hover:bg-yellow-600 ease-in-out duration-150 text-white font-semibold px-4 py-2 rounded w-full mt-2 mb-6">Register</button>
     </form>
     <p class="font-normal">Sudah punya akun?
@@ -42,49 +40,3 @@
 
 
 
-<!-- Input untuk Latitude dan Longitude -->
-<!-- <div class="mb-4">
-  <input id="latitude" name="latitude" type="text" readonly class="w-full p-2 border-2 text-center border-gray-300 rounded mt-1">
-</div>
-<div class="mb-4">
-  <input id="longitude" name="longitude" type="text" readonly class="w-full p-2 border-2 text-center border-gray-300 rounded mt-1">
-</div>
-<div class="mb-4">
-  <label>Alamat:</label>
-  <input id="address" name="address" type="text" readonly class="w-full p-2 border-2 text-center border-gray-300 rounded mt-1">
-</div>
-<div id="map" class="w-full h-64 rounded-lg mb-4"></div>
-
-<script>
-  const map = L.map('map').setView([-6.8737575, 109.0855475], 13);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© OpenStreetMap contributors'
-  }).addTo(map);
-
-  let marker;
-
-  map.on('click', function(e) {
-    const {
-      lat,
-      lng
-    } = e.latlng;
-    document.getElementById('latitude').value = lat;
-    document.getElementById('longitude').value = lng;
-    fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`)
-      .then(response => response.json())
-      .then(data => {
-        const address = data.display_name || "Alamat tidak ditemukan";
-
-        document.getElementById('address').value = address;
-
-        if (marker) {
-          marker.setLatLng([lat, lng]).bindPopup(address).openPopup();
-        } else {
-          marker = L.marker([lat, lng]).addTo(map).bindPopup(address).openPopup();
-        }
-      })
-      .catch(error => {
-        console.error('Error fetching address:', error);
-      });
-  });
-</script> -->

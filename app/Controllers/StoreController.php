@@ -104,9 +104,6 @@ class StoreController extends BaseController
             $user->name = $this->request->getPost('name');
             $user->email = $this->request->getPost('email');
             $user->phone = $this->request->getPost('phone');
-            $user->lat = $this->request->getPost('latitude');
-            $user->long = $this->request->getPost('longitude');
-            $user->address = $this->request->getPost('address');
             $user->role = 'store';
             $password = $this->request->getPost('password');
             $user->profile = 'https://res.cloudinary.com/beta7x/image/upload/v1720840088/610-6104451_image-placeholder-png-user-profile-placeholder-image-png-removebg-preview_bccniu.png';
@@ -165,68 +162,77 @@ class StoreController extends BaseController
 
 
     public function update($id)
-    {
-        $userModel = new UserModel();
-        $storeModel = new StoreModel();
-        $user = $userModel->find($id);
-        if (!$user) {
-            session()->setFlashdata('swal_error', 'User tidak ditemukan.');
-            return redirect()->back();
-        }
-    
-        $store = $storeModel->where('user_id', $id)->first();
-        if (!$store) {
-            session()->setFlashdata('swal_error', 'Data toko tidak ditemukan.');
-            return redirect()->back();
-        }
-    
-        $db = db_connect();
-        $db->transStart();
-    
-        try {
-            $newName = $this->request->getPost('name');
-            if ($user->name !== $newName) {
-                $user->name = $newName;
-                $userModel->save($user);
-            }
+{
+    $userModel = new UserModel();
+    $storeModel = new StoreModel();
+    $user = $userModel->find($id);
 
-            $file = $this->request->getFile('ktp_url');
-            if ($file->isValid() && !$file->hasMoved()) {
-                $filePath = $file->getTempName();
-                $uploadHelper = new CloudinaryHelper();
-                $uploadResult = $uploadHelper->upload($filePath);
-                if ($uploadResult) {
-                    $store->ktp_url = $uploadResult['secure_url'];
-                    $storeModel->save($store);
-                }
+    if (!$user) {
+        session()->setFlashdata('swal_error', 'User tidak ditemukan.');
+        return redirect()->back();
+    }
+
+    $store = $storeModel->where('user_id', $id)->first();
+    if (!$store) {
+        session()->setFlashdata('swal_error', 'Data toko tidak ditemukan.');
+        return redirect()->back();
+    }
+
+    $db = db_connect();
+    $db->transStart();
+
+    try {
+        $newName = $this->request->getPost('name');
+        $lat = $this->request->getPost('latitude');
+        $long = $this->request->getPost('longitude');
+        $address = $this->request->getPost('address');
+        
+        if ($user->name !== $newName || $user->lat !== $lat || $user->long !== $long || $user->address !== $address) {
+            $user->name = $newName;
+            $user->lat = $lat;
+            $user->long = $long;
+            $user->address = $address;
+            $userModel->save($user);
+        }
+        $store->address = $address;
+        $file = $this->request->getFile('ktp_url');
+        if ($file->isValid() && !$file->hasMoved()) {
+            $filePath = $file->getTempName();
+            $uploadHelper = new CloudinaryHelper();
+            $uploadResult = $uploadHelper->upload($filePath);
+            if ($uploadResult) {
+                $store->ktp_url = $uploadResult['secure_url'];
             }
-    
-            $umkm = $this->request->getFile('umkm_letter');
-            if ($umkm->isValid() && !$umkm->hasMoved()) { 
-                $filePath = $umkm->getTempName();
-                $uploadHelper = new CloudinaryHelper();
-                $uploadResult = $uploadHelper->upload($filePath);
-                if ($uploadResult) {
-                    $store->umkm_letter = $uploadResult['secure_url'];
-                    $storeModel->save($store);
-                }
+        }
+
+        $umkm = $this->request->getFile('umkm_letter');
+        if ($umkm->isValid() && !$umkm->hasMoved()) { 
+            $filePath = $umkm->getTempName();
+            $uploadHelper = new CloudinaryHelper();
+            $uploadResult = $uploadHelper->upload($filePath);
+            if ($uploadResult) {
+                $store->umkm_letter = $uploadResult['secure_url'];
             }
-    
-            $db->transComplete();
-    
-            if ($db->transStatus() === false) {
-                session()->setFlashdata('swal_error', 'Terjadi kesalahan dalam pembaruan data.');
-                return redirect()->back()->withInput();
-            }
-    
-            session()->setFlashdata('swal_success', 'Data pengguna berhasil diperbarui!');
-            return redirect()->to('/dashboard');
-        } catch (Exception $err) {
-            $db->transRollback();
-            session()->setFlashdata('swal_error', 'Terjadi kesalahan: ' . $err->getMessage());
+        }
+
+        $storeModel->save($store);
+
+        $db->transComplete();
+
+        if ($db->transStatus() === false) {
+            session()->setFlashdata('swal_error', 'Terjadi kesalahan dalam pembaruan data.');
             return redirect()->back()->withInput();
         }
+
+        session()->setFlashdata('swal_success', 'Data pengguna berhasil diperbarui!');
+        return redirect()->to('/dashboard');
+    } catch (Exception $err) {
+        $db->transRollback();
+        session()->setFlashdata('swal_error', 'Terjadi kesalahan: ' . $err->getMessage());
+        return redirect()->back()->withInput();
     }
+}
+
     
 
     // Fungsi untuk update toko

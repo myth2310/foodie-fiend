@@ -70,12 +70,13 @@
                                         <?= esc($orderDetails->delivery_status) ?>
                                     </span>
                                 </p>
+                            <?php else: ?>
+                                <p class="text-gray-600">
+                                    <span class="px-3 py-1 rounded-md capitalize bg-yellow-500 text-white">
+                                       Menunggu Persetujuan Anda
+                                    </span>
+                                </p>
                             <?php endif; ?>
-
-
-
-
-
                             <script>
                                 const latUser = <?= session()->get('lat') ?>;
                                 const longUser = <?= session()->get('long') ?>;

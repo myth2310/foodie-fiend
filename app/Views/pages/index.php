@@ -15,6 +15,8 @@
   <?= $this->include('components/footer') ?>
 <?= $this->endSection() ?>
 
+
+
 <?= $this->section('scripts') ?>
     <script src="<?= base_url('assets/js/navbar.js') ?>"></script>
     <script src="<?= base_url('assets/js/chartDropDown.js') ?>"></script>

@@ -55,6 +55,7 @@ if ($isVerif == 0 && is_null($ktpUrl) && is_null($umkmLetter)) : ?>
 <?php endif; ?>
 
 <!-- Modal Structure -->
+<!-- Modal -->
 <div class="fixed inset-0 flex items-center justify-center z-50" id="profileFormModal" style="display:none;">
   <div class="modal-overlay absolute inset-0 bg-gray-600 opacity-50"></div>
   <div class="modal-container bg-white w-11/12 md:w-1/2 rounded-lg z-10 p-8">
@@ -76,7 +77,11 @@ if ($isVerif == 0 && is_null($ktpUrl) && is_null($umkmLetter)) : ?>
           </div>
           <div class="mb-4">
             <label for="address" class="block text-gray-700">Alamat</label>
-            <input type="text" name="address" value="<?= session()->get('address') ?>" class="mt-2 p-2 w-full border rounded-md" readonly />
+            <p class="text-sm text-gray-600 mb-2">Klik pada peta untuk memilih lokasi UMKM Anda. Lokasi dan alamat akan terisi secara otomatis.</p>
+            <div id="map" class="w-full h-64 rounded-lg mb-4"></div>
+            <input style="display: none;" id="latitude" name="latitude" type="text" readonly class="w-full p-2 border-2 text-center border-gray-300 rounded mt-1">
+            <input style="display: none;" id="longitude" name="longitude" type="text" readonly class="w-full p-2 border-2 text-center border-gray-300 rounded mt-1">
+            <textarea id="address" placeholder="Masukan Alamat" name="address" rows="3" class="w-full mt-1 px-4 py-2 bg-gray-100 rounded-md text-gray-800" readonly required><?= session()->get('address') ?></textarea>
           </div>
         </div>
 
@@ -112,6 +117,14 @@ if ($isVerif == 0 && is_null($ktpUrl) && is_null($umkmLetter)) : ?>
     </div>
   </div>
 </div>
+
+<style>
+  #map {
+    height: 300px;
+    /* Tinggi peta */
+    width: 100%;
+  }
+</style>
 
 <div class="w-full px-6 py-6 mx-auto">
   <div class="flex flex-wrap -mx-3">
@@ -177,50 +190,70 @@ if ($isVerif == 0 && is_null($ktpUrl) && is_null($umkmLetter)) : ?>
       </div>
     </div>
   </div>
-
-  <!-- cards row 3 -->
-  <!-- <div class="flex flex-wrap mt-6 -mx-3">
-    <div class="w-full max-w-full px-3 mt-0 mb-6 lg:mb-0 lg:w-7/12 lg:flex-none">
-      <div class="relative flex flex-col min-w-0 break-words bg-white border-0 border-solid shadow-xl border-black-125 rounded-2xl bg-clip-border">
-        <div class="p-4 pb-0 mb-0 rounded-t-4">
-          <div class="flex justify-between">
-            <h6 class="mb-2">Daftar Menu</h6>
-          </div>
-        </div>
-        <div class="overflow-x-auto">
-          <table class="items-center w-full mb-4 align-top border-collapse border-gray-200">
-            <tbody>
-              <?php foreach ($menus['menus'] as $menu): ?>
-                <tr>
-                  <td class="p-2 align-middle bg-transparent border-b w-3/10 whitespace-nowrap">
-                    <div class="flex items-center px-2 py-1">
-                      <div>
-                        <img class="h-8 w-8 bg-cover rounded-lg" src="<?= $menu->image_url ?>" alt="Country flag" />
-                      </div>
-                      <div class="ml-6">
-                        <p class="mb-0 text-xs font-semibold leading-tight"><?= $menu->name ?></p>
-                        <h6 class="mb-0 text-sm leading-normal"><?= $menu->description ?></h6>
-                      </div>
-                    </div>
-                  </td>
-                  <td class="p-2 align-middle bg-transparent border-b whitespace-nowrap">
-                    <div class="text-center">
-                      <p class="mb-0 text-xs font-semibold leading-tight">Harga:</p>
-                      <h6 class="mb-0 text-sm leading-normal"><?= $menu->price ?></h6>
-                    </div>
-                  </td>
-
-                </tr>
-              <?php endforeach ?>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-
-  </div> -->
 </div>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+
+<style>
+  #map {
+    height: 300px;
+    /* atau sesuai kebutuhan */
+    width: 100%;
+  }
+</style>
+
+
+<script>
+  let map;
+  let marker;
+
+  document.getElementById('profileFormModal').addEventListener('click', function() {
+    // Tampilkan modal
+    document.getElementById('profileFormModal').style.display = 'flex';
+
+    // Inisialisasi peta setelah modal terbuka
+    if (!map) {
+      map = L.map('map').setView([-6.8737575, 109.0855475], 13);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+      }).addTo(map);
+
+      // Pindahkan kode event klik di sini agar peta hanya terinisialisasi satu kali
+      map.on('click', function(e) {
+        const {
+          lat,
+          lng
+        } = e.latlng;
+        document.getElementById('latitude').value = lat;
+        document.getElementById('longitude').value = lng;
+        fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`)
+          .then(response => response.json())
+          .then(data => {
+            const address = data.display_name || "Alamat tidak ditemukan";
+            document.getElementById('address').value = address;
+            if (marker) {
+              marker.setLatLng([lat, lng]).bindPopup(address).openPopup();
+            } else {
+              marker = L.marker([lat, lng]).addTo(map).bindPopup(address).openPopup();
+            }
+          })
+          .catch(error => console.error('Error fetching address:', error));
+      });
+    }
+
+    // Perbarui ukuran peta setelah modal benar-benar terbuka
+    setTimeout(() => {
+      map.invalidateSize();
+    }, 300);
+  });
+
+  // Tutup modal
+  document.getElementById('closeModal').addEventListener('click', function() {
+    document.getElementById('profileFormModal').style.display = 'none';
+  });
+</script>
 
 
 <script>

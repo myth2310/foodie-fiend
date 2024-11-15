@@ -25,14 +25,13 @@ class PaymentController extends BaseController
     }
 
 
-    public function create($data, $grandTotal)
+    public function create($data, $grandTotal, $applicationFee, $shippingCost)
     {
-        $grandTotal = round($grandTotal); 
+        $grandTotal = round($grandTotal);
         foreach ($data as $item) {
-
             $total_price = $item['price'] * $item['quantity'];
             $order_id = Uuid::uuid7()->toString();
-
+    
             // Data pesanan
             $order_data = [
                 'user_id' => session()->get('user_id'),
@@ -41,13 +40,16 @@ class PaymentController extends BaseController
                 'menu_id' => $item['menu_id'],
                 'quantity' => $item['quantity'],
                 'price' => $item['price'],
+                'shipping_cost' => $shippingCost,
                 'total_price' => $total_price,
                 'status' => 'selesai',
+                'application_fee' => $applicationFee,
             ];
 
+    
             $order = new OrderEntity($order_data);
             $this->orderModel->save($order);
-
+    
             // Data transaksi untuk Midtrans
             $transaction_detail = [
                 'order_id' => $order_id,
@@ -65,7 +67,7 @@ class PaymentController extends BaseController
                     'finish' => base_url('/'),
                 ],
             ];
-
+    
             $transactionData = [
                 'order_id' => $order_id,
                 'transaction_id' => null,
@@ -78,15 +80,13 @@ class PaymentController extends BaseController
                 'customer_email' => $customer_detail['email'],
                 'customer_phone' => $customer_detail['phone'],
             ];
-
+    
             $transactionEntity = new TransactionEntity($transactionData);
             $this->transactionModel->insert($transactionEntity);
         }
-
-        // Kembalikan token untuk transaksi
+    
         return $this->midtrans->getSnapToken($transaction_data);
     }
-
 
 
     //     public function create($data)

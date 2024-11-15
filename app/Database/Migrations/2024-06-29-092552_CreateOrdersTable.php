@@ -43,6 +43,14 @@ class CreateOrdersTable extends Migration
                 'type' => 'DECIMAL',
                 'constraint' => '10,2',
             ],
+            'shipping_cost' => [
+                'type' => 'DECIMAL',
+                'constraint' => '10,2',
+            ],
+            'application_fee' => [
+                'type' => 'DECIMAL',
+                'constraint' => '10,2',
+            ],
             'status' => [
                 'type' => 'ENUM',
                 'constraint' => ['ditunda', 'diproses', 'selesai', 'dibatalkan', 'kadaluwarsa'],

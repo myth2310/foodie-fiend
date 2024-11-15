@@ -32,15 +32,12 @@ class StoreModel extends Model
     // Validation
     protected $validationRules      = [
         'name' => 'required',
-        'address' => 'required',
     ];
     protected $validationMessages   = [
         'name' => [
             'required' => 'Nama UMKM tidak boleh kosong.',
         ],
-        'address' => [
-            'required' => 'Alamat UMKM tidak boleh kosong.',
-        ],
+
     ];
     protected $skipValidation       = false;
     protected $cleanValidationRules = true;

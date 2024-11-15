@@ -34,9 +34,15 @@
 
                         <div class="mb-4">
                             <label class="font-medium">Status:</label>
-                            <p class="<?= $umkm->is_verify == 1 ? 'text-red-600' : 'text-green-600'; ?>">
-                                <?= $umkm->is_verify == 0 ? 'Sudah Terkonfirmasi' : 'Menunggu Konfirmasi'; ?>
-                            </p>
+                            <?php if ($umkm->is_verify == 1): ?>
+                                <p class="text-green-600">
+                                    Sudah Terkonfirmasi
+                                </p>
+                            <?php else: ?>
+                                <p class="text-red-600">
+                                    Belum Terkonfirmasi
+                                </p>
+                            <?php endif; ?>
                         </div>
 
                         <div class="mb-4">

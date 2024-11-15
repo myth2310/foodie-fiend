@@ -83,6 +83,7 @@
           </div>
           <div>
             <label for="address" class="block text-gray-700">Alamat</label>
+            <p class="text-sm text-gray-600 mb-2">Klik pada peta untuk memilih lokasi Anda. Lokasi dan alamat akan terisi secara otomatis.</p>
             <input style="display: none;" id="latitude" name="latitude" type="text" readonly class="w-full p-2 border-2 text-center border-gray-300 rounded mt-1">
             <input style="display: none;" id="longitude" name="longitude" type="text" readonly class="w-full p-2 border-2 text-center border-gray-300 rounded mt-1">
             <textarea id="address" placeholder="Masukan Alamat" name="address" rows="3" class="w-full mt-1 px-4 py-2 bg-gray-100 rounded-md text-gray-800" readonly><?= session()->get('address') ?></textarea>

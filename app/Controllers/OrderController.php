@@ -87,7 +87,6 @@ class OrderController extends BaseController
             'use_chart_button' => false,
             'use_hero_text' => true,
         ];
-
         return view('pages/my_order', $data);
     }
 
@@ -223,6 +222,7 @@ class OrderController extends BaseController
         $user_id = session()->get('user_id');
         $charts_id = $this->request->getPost('charts_id');
 
+        // Menghitung biaya pengiriman berdasarkan jarak
         $userModel = new UserModel();
         $store_maps = $userModel->getUserId($stores_id);
         $users_maps = $userModel->getUserId($user_id);
@@ -236,6 +236,7 @@ class OrderController extends BaseController
         $shippingCost = $distance * $ratePerKm;
         $applicationFee = 2000;
 
+        // Menghitung total harga pesanan
         $grandTotal = 0;
         if (is_array($menu_id)) {
             foreach ($menu_id as $index => $menu) {
@@ -281,8 +282,7 @@ class OrderController extends BaseController
         }
 
         try {
-            // Pass grandTotal to the payment controller for snapToken generation
-            $snapToken = $this->paymentController->create($data, $grandTotal);
+            $snapToken = $this->paymentController->create($data, $grandTotal, $applicationFee, $shippingCost);
         } catch (\Exception $e) {
             log_message('error', 'Gagal mendapatkan Snap Token: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Gagal mendapatkan Snap Token');
@@ -305,6 +305,8 @@ class OrderController extends BaseController
                 'image_url' => $item['image_url'],
                 'snapToken' => $snapToken,
                 'charts_id' => $item['charts_id'],
+                'application_fee' => $applicationFee,
+                'shipping_cost' => $shippingCost,
             ];
         }
 
@@ -353,15 +355,18 @@ class OrderController extends BaseController
             $session->setFlashdata('error', 'Pesanan gagal disimpan: ' . $e->getMessage());
             return redirect()->back();
         }
+
+
     }
 
 
-    public function updateDeliveryStatus($orderId) {
+    public function updateDeliveryStatus($orderId)
+    {
         $newStatus = $this->request->getPost('status_pengantaran');
-        
+
         $orderModel = new OrderModel();
         $order = $orderModel->find($orderId);
-    
+
         if ($order) {
             $order->delivery_status = $newStatus;
             $orderModel->save($order);
@@ -370,9 +375,9 @@ class OrderController extends BaseController
             return redirect()->back()->with('swal_error', 'Pesanan tidak ditemukan.');
         }
     }
-    
 
-    
+
+
     public function getAllOrders($user_id, $order_status)
     {
         return $this->orderModel->getAllOrdersWithMenus($user_id, $order_status);

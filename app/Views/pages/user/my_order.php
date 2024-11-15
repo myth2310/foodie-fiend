@@ -128,10 +128,21 @@
               <?php endfor; ?>
 
 
-              <div class="flex justify-between mt-4 font-semibold text-lg">
-                <span>Total Harga:</span>
-                <span>Rp. <?= number_format($grand_total, 0, ',', '.'); ?></span> <!-- Menampilkan grand total -->
+           
+              <div class="flex justify-between mt-4 text-sm font-medium">
+                <span>Biaya Pengiriman :</span>
+                <span>Rp. <?= number_format($item->shipping_cost, 0, ',', '.'); ?></span>
               </div>
+              <div class="flex justify-between mt-4 text-sm font-medium">
+                <span>Biaya Aplikasi :</span>
+                <span>Rp. <?= number_format($item->application_fee, 0, ',', '.'); ?></span>
+              </div>
+              <div class="flex justify-between mt-4 text-xl font-semibold">
+                <span>Total Harga :</span>
+                <?php $total = $grand_total + $item->shipping_cost + $item->application_fee?>
+                <span>Rp. <?= number_format($total, 0, ',', '.'); ?></span>
+              </div>
+
               <span class="mt-4">Status Delivery:</span>
               <div class="flex items-center space-x-2 mt-2">
                 <?php if ($item->delivery_status === null) : ?>
@@ -143,7 +154,7 @@
                   <p class="capitalize text-green-600">Pesanan Selesai / Diterima</p>
 
                 <?php elseif ($item->delivery_status == 'diantar') : ?>
-                 <i class="fa-solid fa-truck-fast" style="color: #db9b0f;"></i>
+                  <i class="fa-solid fa-truck-fast" style="color: #db9b0f;"></i>
                   <p class="capitalize text-orange-600">Sedang Diantar</p>
 
                 <?php elseif ($item->delivery_status == 'dimasak') : ?>
