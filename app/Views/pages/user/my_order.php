@@ -78,18 +78,13 @@
                 <?php endif; ?>
 
                 <?php if ($item->delivery_status === 'selesai') : ?>
-                  <a href="#" class="text-white text-base font-medium">
+                  <a href="/ratings/<?= $item->menu_id ?>" class="text-white text-base font-medium">
                     <div class="px-4 py-2 bg-orange-500 transition ease-in-out duration-300 hover:bg-orange-700 rounded-md">
                       <p>Beri Ulasan</p>
                     </div>
                   </a>
                 <?php endif; ?>
 
-                <!-- <a href="/ratings/<?= $item->menu_id ?>" class="text-white text-base font-medium">
-                  <div class="px-4 py-2 bg-orange-500 transition ease-in-out duration-300 hover:bg-orange-700 rounded-md">
-                    <p>Beri Ulasan</p>
-                  </div>
-                </a> -->
 
               </div>
             </div>
