@@ -25,14 +25,17 @@ class CreateUsersTable extends Migration
             'address' => [
                 'type' => 'VARCHAR',
                 'constraint' => '255',
+                'null' => true,
             ],
             'lat' => [
                 'type' => 'DECIMAL',
                 'constraint' => '10,8',
+                'null' => true,
             ],
             'long' => [
                 'type' => 'DECIMAL',
                 'constraint' => '11,8',
+                'null' => true,
             ],            
             'phone' => [
                 'type' => 'VARCHAR',

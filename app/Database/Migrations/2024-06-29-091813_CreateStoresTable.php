@@ -23,6 +23,7 @@ class CreateStoresTable extends Migration
             ],
             'address' => [
                 'type' => 'TEXT',
+                'null' => true,
             ],
             'image_url' => [
                 'type' => 'TEXT',
