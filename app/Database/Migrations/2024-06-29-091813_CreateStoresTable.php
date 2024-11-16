@@ -30,9 +30,11 @@ class CreateStoresTable extends Migration
             ],
             'ktp_url' => [
                 'type' => 'TEXT',
+                'null' => true,
             ],
             'umkm_letter' => [
                 'type' => 'TEXT',
+                'null' => true,
             ],
             'is_delete' => [
                 'type' => 'TINYINT',
