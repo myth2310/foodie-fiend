@@ -1,6 +1,6 @@
 <?php
  $menu = $data['menu'];
- $categories = $data['category']['categories'];
+ $categories = $data['category'];
 //   dd($menu->image_url);
  ?>
 

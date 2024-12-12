@@ -46,7 +46,8 @@
               <input type="text" name="image_url" value="<?= $data->image_url ?>" class="hidden">
               <input type="text" name="store_id" value="<?= $data->store_id ?>" class="hidden">
               <label for="quantity-input" class="block mb-2 text-sm font-medium text-gray-900">Atur jumlah pesan:</label>
-              <div class="relative flex items-center max-w-[8rem]">
+
+              <div class="relative flex items-center  max-w-[8rem]">
                 <button type="button" id="decrement-button" class="bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-s-lg p-3 h-11 focus:ring-gray-100 focus:ring-2 focus:outline-none">
                   <svg class="w-3 h-3 text-gray-900" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h16" />
@@ -59,6 +60,12 @@
                   </svg>
                 </button>
               </div>
+
+              <div class="relative mt-4">
+                <label for="order-note" class="block mb-2 text-sm font-medium text-gray-700">Catatan Pesanan</label>
+                <textarea id="order-note" name="order_note" rows="4" class="w-full px-3 py-2 text-sm border rounded-md border-gray-300 bg-gray-50 focus:ring-yellow-500 focus:border-yellow-500 resize-none" placeholder="Tambahkan catatan untuk pesanan..." style="width: 450px;" require></textarea>
+              </div>
+
             </form>
 
           </div>

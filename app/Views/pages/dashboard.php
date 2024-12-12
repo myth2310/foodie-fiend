@@ -1,8 +1,3 @@
-<?php
-$menus = $data['menus'];
-$totalMenu = $data['menus']['totalMenu'];
-
-?>
 
 <?= $this->extend('layouts/dashboard') ?>
 <?= $this->section('sidebar') ?>
@@ -127,6 +122,14 @@ if ($isVerif == 0 && is_null($ktpUrl) && is_null($umkmLetter)) : ?>
 </style>
 
 <div class="w-full px-6 py-6 mx-auto">
+
+<div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-6  mb-6 rounded-lg shadow-lg">
+    <p class="text-3xl font-bold mb-2">Total Pendapatan</p>
+       <p class="text-4xl font-extrabold">Rp. <?= number_format($data['totalPendapatan'], 0, ',', '.') ?></p>
+</div>
+
+
+
   <div class="flex flex-wrap -mx-3">
     <div class="w-full max-w-full px mb-6 sm:w-1/2 sm:flex-none xl:mb-0 xl:w-1/4">
       <div class="relative flex flex-col min-w-0 break-words bg-white shadow-xl rounded-2xl bg-clip-border">
@@ -135,33 +138,12 @@ if ($isVerif == 0 && is_null($ktpUrl) && is_null($umkmLetter)) : ?>
             <div class="flex-none w-2/3 max-w-full px-3">
               <div>
                 <p class="mb-0 font-sans text-sm font-semibold leading-normal uppercase">Total Menu</p>
-                <h5 class="mb-2 font-bold"><?= $totalMenu ?? 0 ?></h5>
+                <h5 class="mb-2 font-bold"><?=$data['totalMenu'] ?></h5>
               </div>
             </div>
             <div class="px-3 text-right basis-1/3">
               <div class="inline-block w-12 h-12 text-center rounded-full bg-gradient-to-tl from-blue-500 to-violet-500">
                 <i class="ni leading-none ni-money-coins text-lg relative top-3.5 text-white"></i>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- card2 -->
-    <div class="w-full max-w-full px-3 mb-6 sm:w-1/2 sm:flex-none xl:mb-0 xl:w-1/4">
-      <div class="relative flex flex-col min-w-0 break-words bg-white shadow-xl rounded-2xl bg-clip-border">
-        <div class="flex-auto p-4">
-          <div class="flex flex-row -mx-3">
-            <div class="flex-none w-2/3 max-w-full px-3">
-              <div>
-                <p class="mb-0 font-sans text-sm font-semibold leading-normal uppercase">Total Kategori</p>
-                <h5 class="mb-2 font-bold"><?= $totalCategory ?? 0 ?></h5>
-              </div>
-            </div>
-            <div class="px-3 text-right basis-1/3">
-              <div class="inline-block w-12 h-12 text-center rounded-full bg-gradient-to-tl from-emerald-500 to-teal-400">
-                <i class="ni leading-none ni-paper-diploma text-lg relative top-3.5 text-white"></i>
               </div>
             </div>
           </div>
@@ -177,7 +159,7 @@ if ($isVerif == 0 && is_null($ktpUrl) && is_null($umkmLetter)) : ?>
             <div class="flex-none w-2/3 max-w-full px-3">
               <div>
                 <p class="mb-0 font-sans text-sm font-semibold leading-normal uppercase">Pesanan</p>
-                <h5 class="mb-2 font-bold"><?= $orderTotal ?? 0 ?></h5>
+                <h5 class="mb-2 font-bold"><?= $data['totalTransaksi'] ?></h5>
               </div>
             </div>
             <div class="px-3 text-right basis-1/3">

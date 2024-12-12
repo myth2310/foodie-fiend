@@ -9,11 +9,13 @@ use App\Models\ChartModel;
 use App\Models\MenuModel;
 use App\Models\ReviewModel;
 use App\Models\StoreModel;
+use App\Models\CategoryModel;
 
 class MenuController extends BaseController
 {
     protected $menu;
     protected $menuModel;
+    protected $categoryModel;
     protected $storeModel;
     protected $chartModel;
     protected $reviewModel;
@@ -22,6 +24,7 @@ class MenuController extends BaseController
     public function __construct()
     {
         $this->menu = new MenuEntity();
+        $this->categoryModel = new CategoryModel();
         $this->menuModel = new MenuModel();
         $this->storeModel = new StoreModel();
         $this->chartModel = new ChartModel();
@@ -98,9 +101,11 @@ class MenuController extends BaseController
 
     public function edit($menu_id)
     {
-        $categoryController = new CategoryController();
+        $categoryModel = new CategoryModel();
 
-        $categories = $categoryController->getAllByStoreId(session()->get('store_id')->id);
+        $categories = $categoryModel->findAll();
+
+
         $data = $this->menuModel->find($menu_id);
 
         return view('pages/menu_edit', [

@@ -40,11 +40,37 @@ class DashboardController extends BaseController
         if (session()->get('role') != 'store') {
             return redirect()->route('home');
         }
+        $menuModel = new MenuModel();
 
         $storeId = session()->get('user_id');
+        $id_store = session()->get('store_id');
         $menus = $this->menuController->getAllByStoreId($storeId);
 
         $store = $this->userModel->getUserWithStore($storeId);
+
+        $totalMenu = $menuModel
+            ->where('store_id', $id_store)
+            ->countAllResults();
+
+
+        $orderModel = new OrderModel();
+
+        $totalTransaksi = $orderModel
+            ->where('store_id', $id_store)
+            ->countAllResults();
+
+        $orderModel = new OrderModel();
+
+        $totalPendapatan = $orderModel
+            ->where('store_id', $id_store)
+            ->where('status', 'selesai')
+            ->where('delivery_status', 'selesai')
+            ->selectSum('total_price', 'sum_price')
+            ->selectSum('shipping_cost', 'sum_shipping')
+            ->get()
+            ->getRow();
+
+        $totalPendapatan = $totalPendapatan->sum_price + $totalPendapatan->sum_shipping;
 
         if (!$store) {
             session()->setFlashdata('swal_error', 'Data store tidak ditemukan.');
@@ -54,6 +80,9 @@ class DashboardController extends BaseController
         return view('pages/dashboard', ['data' => [
             'menus' => $menus,
             'store' => $store,
+            'totalMenu' => $totalMenu,
+            'totalTransaksi' => $totalTransaksi,
+            'totalPendapatan' => $totalPendapatan,
         ]]);
     }
 
@@ -130,8 +159,33 @@ class DashboardController extends BaseController
     // ADMIN CONTROLLER
     public function dashboard()
     {
-        return view('admin\dashboard_admin.php');
+        $userModel = new UserModel();
+
+        $totalMitra = $userModel
+            ->where('role', 'store')
+            ->where('is_verif', 1)
+            ->countAllResults();
+
+        $totalPengajuan = $userModel
+            ->where('role', 'store')
+            ->where('is_verif', 0)
+            ->countAllResults();
+
+        $orderModel = new OrderModel();
+
+        $totalTransaksi = $orderModel->countAllResults();
+        $totalPendapatan = $orderModel->selectSum('application_fee')->get()->getRow()->application_fee;
+
+        $data = [
+            'totalMitra' => $totalMitra,
+            'totalPengajuan' => $totalPengajuan,
+            'totalTransaksi' => $totalTransaksi,
+            'totalPendapatan' => $totalPendapatan
+        ];
+
+        return view('admin/dashboard_admin.php', $data);
     }
+
     public function mitra()
     {
         $userModel = new UserModel();
@@ -142,10 +196,34 @@ class DashboardController extends BaseController
 
 
         return view('admin/mitra.php', [
-            'page' => 'Pesanan',
+            'page' => 'Mitra UMKM',
             'store' => $store,
+            'title' => 'Halaman Mitra UMKM',
             'pager' => $pager
         ]);
+    }
+
+    public function detailTrnsaksi($id)
+    {
+        $orderModel = new OrderModel();
+        $orderDetails = $orderModel->getDetailOrder($id);
+        return view('admin/detail_transaksi', [
+            'orderDetails' => $orderDetails
+        ]);
+    }
+
+    public function transaksi()
+    {
+        $orderModel = new OrderModel();
+
+        $perPage = 10;
+        $orders = $orderModel->getOrders($perPage);
+
+        $pager = $orderModel->pager;
+        return view('admin/transaksi', [
+            'page' => 'Transakai Pemesanan',  
+            'orders' => $orders,  
+            'pager' => $pager]);
     }
 
 
@@ -191,7 +269,7 @@ class DashboardController extends BaseController
 
     public function viewPdf($fileUrl)
     {
-        
+
         $fileUrl = urldecode($fileUrl);
         if (filter_var($fileUrl, FILTER_VALIDATE_URL) === false) {
             return "Link PDF tidak valid.";

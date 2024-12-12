@@ -9,6 +9,7 @@
 <?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" integrity="sha512-5Hs3dF2AEPkpNAR7UiOHba+lRSJNeM2ECkwxUIxC1Q/FLycGTbNapWXB4tP889k5T5Ju8fs4b1P5z/iB4nMfSQ==" crossorigin="anonymous" referrerpolicy="no-referrer" /> 
 <div class="relative flex flex-col min-w-0 mb-6 break-words bg-white border-0 border-transparent border-solid shadow-xl rounded-2xl bg-clip-border">
     <div class="flex justify-between items-center p-6 pb-0 mb-4 border-b-0 border-b-solid rounded-t-2xl border-b-transparent">
         <h6>Daftar Mitra UMKM</h6>
@@ -43,17 +44,17 @@
 
                             <td class="px-6 py-3 text-center align-middle bg-transparent border-b text-sm text-slate-700">
                                 <a href="<?= base_url('admin/dashboard/umkm/detail/' . $item->store_id); ?>" class="inline-block px-5 py-2.5 text-white bg-black rounded-lg hover:bg-gray-800">
-                                    <i class="fas fa-check"></i>&nbsp;&nbsp;Detail UMKM
+                                <i class="fa-solid fa-circle-exclamation"></i>&nbsp;&nbsp;Detail UMKM
                                 </a>
 
                                 <?php if ($item->is_verif == 0): ?>
                                     <button type="button" onclick="confirmVerification('<?= $item->store_id; ?>', '<?= htmlspecialchars($item->name); ?>')" class="inline-block px-5 py-2.5 text-white bg-gradient-to-tl from-green-600 to-green-400 rounded-lg hover:-translate-y-px">
-                                        <i class="fas fa-check"></i>&nbsp;&nbsp;Konfirmasi UMKM
+                                        <i class="fas fa-check"></i>
                                     </button>
                                 <?php endif; ?>
 
                                 <button type="button" class="inline-block px-5 py-2.5 text-white bg-gradient-to-tl from-red-600 to-red-400 rounded-lg hover:-translate-y-px">
-                                    <i class="fas fa-trash"></i>&nbsp;&nbsp;Delete
+                                    <i class="fas fa-trash"></i>
                                 </button>
                             </td>
                         </tr>

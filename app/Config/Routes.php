@@ -40,6 +40,8 @@ $routes->group('/admin/dashboard', function ($routes) {
     $routes->get('/', 'DashboardController::dashboard'); 
     $routes->get('download-ktp/(:any)', 'DashboardController::downloadKTP/$1'); 
     $routes->get('mitra', 'DashboardController::mitra'); 
+    $routes->get('detail-transaksi/(:any)', 'DashboardController::detailTrnsaksi/$1'); 
+    $routes->get('transaksi', 'DashboardController::transaksi'); 
     $routes->get('umkm/detail/(:any)', 'DashboardController::detail/$1'); 
     $routes->post('umkm/verify/(:any)', 'DashboardController::verify/$1');
     $routes->get('umkm/view-pdf/(:any)', 'DashboardController::viewPdf/$1');

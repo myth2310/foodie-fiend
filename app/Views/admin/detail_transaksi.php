@@ -11,7 +11,6 @@
 <?= $this->section('content') ?>
 
 
-
 <div class="relative flex flex-col min-w-0 mb-6 break-words bg-white border-0 shadow-xl rounded-2xl">
     <div class="flex-auto px-0 pt-0 pb-2">
         <div id="menuContent" class="p-0 overflow-x-auto">
@@ -34,8 +33,9 @@
                             <label class="font-medium">No Hp:</label>
                             <p><?= esc($orderDetails->phone) ?></p>
                         </div>
+                       
                         <div class="mb-8">
-                            <label class="font-medium">Alamat:</label>
+                            <label class="font-medium">Alamat Penerima :</label>
                             <p><?= esc($orderDetails->address) ?></p>
                         </div>
 
@@ -57,12 +57,9 @@
                                     </span>
                                 </p>
                             <?php elseif ($orderDetails->delivery_status === 'diantar'): ?>
-                                <a  href="#"
-                                    id="routeButton" target="_blank"
-                                    class="mb-2 mt-10 bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-md shadow-lg transform transition duration-200 hover:scale-105 focus:ring-4 focus:ring-blue-300">
-                                    <i class="fas fa-shipping-fast"></i> Kirim Pesanan
-                                </a>
-                                <p class="mt-4">Klik di sini untuk memulai proses pengiriman dan navigasi ke tujuan menggunakan Maps.</p>
+                                <span class="px-3 py-1 rounded-md capitalize bg-green-500 text-white">
+                                        <?= esc($orderDetails->delivery_status) ?>
+                                    </span>
 
                             <?php elseif ($orderDetails->delivery_status === 'selesai'): ?>
                                 <p class="text-gray-600">
@@ -92,6 +89,8 @@
         </div>
     </div>
 </div>
+
+
 <?= $this->endSection() ?>
 
 <?= $this->section('footer') ?>

@@ -34,7 +34,6 @@
     <p class="font-normal">Sudah punya akun?
       <button onclick="openAndCloseModal('loginModal', 'registerModal');" class="font-semibold text-yellow-600 hover:text-yellow-400 duration-150 ease-in-out">Masuk</button>
     </p>
-
   </div>
 </div>
 

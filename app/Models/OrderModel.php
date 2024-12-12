@@ -147,5 +147,23 @@ class OrderModel extends Model
 
         return $orderDetail;
     }
+
+    public function getOrders($perPage = 5)
+    {
+        return $this->select('
+                    orders.id, 
+                    orders.total_price, 
+                    orders.status, 
+                    orders.quantity, 
+                    orders.created_at, 
+                    orders.delivery_status, 
+                    menus.name AS menu_name, 
+                    users.name AS customer_name
+                ')
+            ->join('menus', 'menus.id = orders.menu_id')
+            ->join('users', 'users.id = orders.user_id')
+            ->orderBy('orders.created_at', 'DESC')
+            ->paginate($perPage);  
+    }
     
 }

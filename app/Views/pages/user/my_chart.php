@@ -82,7 +82,7 @@ foreach ($data as $item) {
               <?php foreach ($storeData['items'] as $item): ?>
                 <div class="flex px-6 py-4 bg-white rounded-md">
                   <div class="flex items-center w-full">
-                    <img class="w-16 h-16 rounded-md" src="<?= $item->menu_img ?>" alt="Item image">
+                    <img class="w-20 h-20 rounded-md" src="<?= $item->menu_img ?>" alt="Item image">
                     <div class="ml-4">
                       <h4 class="capitalize"><?= $item->menu_name ?></h4>
                       <!-- <p>x <?= $item->quantity ?></p> -->
@@ -90,7 +90,10 @@ foreach ($data as $item) {
                         <button type="button" class="decrement-btn px-4 mr-2 bg-red-500 text-white rounded-l-md hover:bg-red-700 focus:outline-none transition duration-300 ease-in-out transform hover:scale-105 shadow-md active:scale-95" data-item-id="<?= $item->id ?>">-</button>
                         <input type="number" class="quantity-input w-16 border-t border-b text-center focus:outline-none" min="1" value="<?= $item->quantity ?>" data-item-id="<?= $item->id ?>">
                         <button type="button" class="increment-btn px-4 ml-2  bg-green-500 text-white rounded-r-md hover:bg-green-700 focus:outline-none transition duration-300 ease-in-out transform hover:scale-105 shadow-md active:scale-95" data-item-id="<?= $item->id ?>">+</button>
-
+                      </div>
+                      <div class="relative mt-4">
+                        <label for="order-note" class="block mb-2 text-sm font-medium text-gray-700">Catatan Pesanan</label>
+                        <textarea id="order-note" name="order_note" rows="2" class="w-full px-3 py-2 text-sm border rounded-md border-gray-300 bg-gray-50 focus:ring-yellow-500 focus:border-yellow-500 resize-none" placeholder="Tambahkan catatan untuk pesanan..." style="width: 450px;" require></textarea>
                       </div>
                     </div>
                   </div>
