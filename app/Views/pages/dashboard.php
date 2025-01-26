@@ -84,11 +84,13 @@ if ($isVerif == 0 && is_null($ktpUrl) && is_null($umkmLetter)) : ?>
         <div class="step mt-2" id="step2" style="display:none;">
           <div class="mb-4">
             <label for="ktp" class="block text-gray-700">Upload KTP</label>
-            <input type="file" name="ktp_url" accept="image/*,application/pdf" class="mt-2 p-2 w-full border rounded-md" required />
+            <input type="file" name="ktp_url" accept="image/*" class="mt-2 p-2 w-full border rounded-md" required />
+            <p>Upload File Dalam Bentuk Gambar JPG/PNG</p>
           </div>
           <div class="mb-4">
             <label for="umkm_letter" class="block text-gray-700">Surat Mitra UMKM</label>
-            <input type="file" name="umkm_letter" accept="image/*,application/pdf" class="mt-2 p-2 w-full border rounded-md" required />
+            <input type="file" name="umkm_letter" accept="image/*" class="mt-2 p-2 w-full border rounded-md" required />
+            <p>Scan Surat Ketersediaan Dalam Bentuk Gambar JPG/PNG</p>
             <a href="<?= base_url('dashboard/download-template-surat') ?>"
               class="text-blue-500 mt-2 inline-block">
               Unduh Template Surat Ketersediaan Mitra UMKM

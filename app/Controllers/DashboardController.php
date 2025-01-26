@@ -299,6 +299,22 @@ class DashboardController extends BaseController
         }
     }
 
+
+    public function delete($storeId)
+    {
+        $store = $this->userModel->find($storeId);
+        if ($store) {
+            if ($this->userModel->delete($storeId)) {
+                return redirect()->back()->with('success', 'Data berhasil dihapus.');
+            } else {
+                return redirect()->back()->with('error', 'Gagal menghapus data.');
+            }
+        } else {
+            return redirect()->back()->with('error', 'Data tidak ditemukan.');
+        }
+    }
+    
+
     private function sendVerificationEmail($email)
     {
         // Mengatur email

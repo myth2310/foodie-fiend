@@ -51,7 +51,7 @@ class UserController extends BaseController
     {
         $user_id = session()->get('user_id');
         $data = $this->chartModel->getAllChartWithMenu($user_id);
-    
+
         return view('pages/user/my_chart', ['data' => $data]);
     }
 
@@ -92,11 +92,30 @@ class UserController extends BaseController
 
     public function store()
     {
-        $this->user->name = $this->request->getPost('name');
-        $this->user->email = $this->request->getPost('email');
-        $this->user->phone = $this->request->getPost('phone');
+        // Ambil data dari input
+        $name = $this->request->getPost('name');
+        $email = $this->request->getPost('email');
+        $phone = $this->request->getPost('phone');
+        $password = $this->request->getPost('password');
+
+
+        $existingEmail = $this->userModel->where('email', $email)->first();
+        if ($existingEmail) {
+            session()->setFlashdata('error', 'Email sudah terdaftar. Silakan gunakan email lain.');
+            return redirect()->back()->withInput();
+        }
+
+        $existingPhone = $this->userModel->where('phone', $phone)->first();
+        if ($existingPhone) {
+            session()->setFlashdata('error', 'Nomor HP sudah terdaftar. Silakan gunakan nomor HP lain.');
+            return redirect()->back()->withInput();
+        }
+
+        $this->user->name = $name;
+        $this->user->email = $email;
+        $this->user->phone = $phone;
         $this->user->profile = 'https://res.cloudinary.com/beta7x/image/upload/v1720840088/610-6104451_image-placeholder-png-user-profile-placeholder-image-png-removebg-preview_bccniu.png';
-        $this->user->setPassword($this->request->getPost('password'));
+        $this->user->setPassword($password);
 
         $token = bin2hex(random_bytes(16));
         $this->user->verification_token = $token;
@@ -108,6 +127,7 @@ class UserController extends BaseController
         }
 
         $data = $this->userModel->where('email', $this->user->email)->first();
+
         switch ($data->role) {
             case 'store':
                 $this->setSession($data, true);
@@ -116,10 +136,10 @@ class UserController extends BaseController
                 $this->setSession($data);
                 break;
         }
-
         session()->setFlashdata('success', 'Pengguna berhasil dibuat!');
         return redirect()->to('/');
     }
+
 
 
     public function edit($id)
@@ -163,7 +183,7 @@ class UserController extends BaseController
 
     public function update($id)
     {
-      
+
         $userModel = new UserModel();
         $name = $this->request->getPost('name');
         $address = $this->request->getPost('address');

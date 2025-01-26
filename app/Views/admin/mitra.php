@@ -32,7 +32,8 @@
                                 <?= htmlspecialchars($item->name); ?>
                             </td>
                             <td class="px-6 py-3 text-left align-middle bg-transparent border-b text-sm text-slate-700">
-                                <?= htmlspecialchars($item->address); ?>
+                            <?= htmlspecialchars($item->address) ? htmlspecialchars($item->address) : ' <span class="text-yellow-500">Data belum ditambahkan</span>'; ?>
+
                             </td>
                             <td class="px-6 py-3 text-left align-middle bg-transparent border-b text-sm">
                                 <?php if ($item->is_verif == 1): ?>
@@ -53,7 +54,7 @@
                                     </button>
                                 <?php endif; ?>
 
-                                <button type="button" class="inline-block px-5 py-2.5 text-white bg-gradient-to-tl from-red-600 to-red-400 rounded-lg hover:-translate-y-px">
+                                <button type="button"  onclick="deleteStore('<?= $item->store_id; ?>', '<?= htmlspecialchars($item->name); ?>')" class="inline-block px-5 py-2.5 text-white bg-gradient-to-tl from-red-600 to-red-400 rounded-lg hover:-translate-y-px">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </td>
@@ -102,6 +103,41 @@
                     })
                     .catch(error => {
                         Swal.fire("Error", "Terjadi kesalahan dalam memverifikasi UMKM", "error");
+                    });
+            }
+        });
+    }
+</script>
+
+<script>
+    function deleteStore(storeId, storeName) {
+        Swal.fire({
+            title: `Hapus ${storeName}?`,
+            text: "Anda yakin ingin menghapus UMKM ini?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Ya, hapus!",
+            cancelButtonText: "Batal",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`<?= base_url('admin/dashboard/umkm/delete'); ?>/${storeId}`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire("Berhasil", data.message, "success").then(() => {
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire("Gagal", data.message, "error");
+                        }
+                    })
+                    .catch(error => {
+                        Swal.fire("Error", "Terjadi kesalahan dalam menghapus UMKM", "error");
                     });
             }
         });

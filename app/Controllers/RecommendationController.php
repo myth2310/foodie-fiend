@@ -86,4 +86,21 @@ class RecommendationController extends BaseController
 
         return view('pages/recommendation_rating', ['output' => $output]);
     }
+
+
+    public function search() {
+        $user_id = session()->get('user_id'); 
+        $search_query = $this->request->getGet('query'); 
+        $recommended_menu_ids = $this->menuModel->getRecommendedMenuIds($user_id);
+
+        $all_menus = $this->menuModel->getMenusAll();
+        $recommended_menus = array_filter($all_menus, function ($menu) use ($recommended_menu_ids, $search_query) {
+            return in_array($menu['id'], $recommended_menu_ids) && 
+                   stripos($menu['name'], $search_query) !== false;
+        });
+        $data['menus'] = $recommended_menus;
+        dd($data['menus']);
+        return view('pages/search_results', $data);
+    }
+    
 }

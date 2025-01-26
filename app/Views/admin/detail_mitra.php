@@ -30,11 +30,12 @@
                         <div class="mb-4">
                             <label class="font-medium">Email:</label>
                             <p><?= htmlspecialchars($umkm->email); ?></p>
+                           
                         </div>
 
                         <div class="mb-4">
                             <label class="font-medium">Status:</label>
-                            <?php if ($umkm->is_verify == 1): ?>
+                            <?php if (htmlspecialchars($umkm->is_verif) == 1): ?>
                                 <p class="text-green-600">
                                     Sudah Terkonfirmasi
                                 </p>
@@ -43,6 +44,7 @@
                                     Belum Terkonfirmasi
                                 </p>
                             <?php endif; ?>
+
                         </div>
 
                         <div class="mb-4">
@@ -62,7 +64,7 @@
                         </div>
                         <div class="mb-4">
                             <label class="font-medium">UMKM Letter:</label>
-                            <a href="<?= base_url('admin/dashboard/umkm/view-pdf/' . urlencode($umkm->umkm_letter)); ?>" target="_blank" class="btn btn-primary">
+                            <a href="<?= $umkm->umkm_letter; ?>" target="_blank" class="text-blue-500 mt-2 inline-block ">
                                 Lihat Surat UMKM
                             </a>
                         </div>

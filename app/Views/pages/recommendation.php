@@ -9,14 +9,33 @@
 <!-- Main Content Staert -->
 <section>
   <div class="container mx-auto px-10 py-20 mt-10 mb-0">
-    <div class="flex mb-2">
+    <div class="flex justify-between items-center mb-4">
       <h2 class="text-2xl font-semibold text-gray-800">Rekomendasi Menu Rating</h2>
+      <!-- Input Pencarian
+      <form method="get" action="/recommendations/search" class="mb-6">
+        <div class="flex">
+            <input 
+                type="text" 
+                name="query" 
+                placeholder="Cari menu..." 
+                value="<?= isset($_GET['query']) ? esc($_GET['query']) : '' ?>" 
+                class="w-full px-4 py-2 border rounded-lg"
+            >
+            <button type="submit" class="ml-2 px-4 py-2 bg-blue-500 text-white rounded-lg">
+                Cari
+            </button>
+        </div>
+    </form> -->
     </div>
     <div class="flex flex-wrap">
       <!-- Card Rating  -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 p-4">
+      <div 
+        id="menu-container" 
+        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 p-4">
         <?php foreach ($menus_ratings as $rating_key => $rating_data): ?>
-          <div class="bg-white shadow-xl dark:shadow-dark-xl rounded-2xl overflow-hidden">
+          <div 
+            class="menu-item bg-white shadow-xl dark:shadow-dark-xl rounded-2xl overflow-hidden" 
+            data-menu-name="menu rating <?= substr($rating_key, -1) ?>">
             <a href="<?= base_url('recommendations/rating/' . substr($rating_key, -1)) ?>">
               <div class="h-48 w-full">
                 <img src="<?= !empty($rating_data['image']) ? $rating_data['image'] : 'https://images.squarespace-cdn.com/content/v1/61709486e77e1d27c181981c/1695741276685-XWI9NVDGPAOSWY1U4C3Q/Urbanspace+Pearl_Sweets+and+Savory.jpg' ?>"
@@ -46,6 +65,7 @@
     </div>
   </div>
 </section>
+
 <!-- Main Content End -->
 <!-- Recommendation Start -->
 <section>

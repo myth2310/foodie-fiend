@@ -15,6 +15,7 @@ $routes->group('/recommendations', function ($routes) {
     $routes->get('', 'RecommendationController::index');
     $routes->get('rating/(:num)', 'RecommendationController::rating/$1');
     $routes->get('invoke', 'RecommendationController::invokePython');
+    $routes->get('search', 'RecommendationController::search');
 });
 
 $routes->group('/dashboard', function ($routes) {
@@ -42,6 +43,7 @@ $routes->group('/admin/dashboard', function ($routes) {
     $routes->get('mitra', 'DashboardController::mitra'); 
     $routes->get('detail-transaksi/(:any)', 'DashboardController::detailTrnsaksi/$1'); 
     $routes->get('transaksi', 'DashboardController::transaksi'); 
+    $routes->post('umkm/delete/(:any)', 'DashboardController::delete/$1'); 
     $routes->get('umkm/detail/(:any)', 'DashboardController::detail/$1'); 
     $routes->post('umkm/verify/(:any)', 'DashboardController::verify/$1');
     $routes->get('umkm/view-pdf/(:any)', 'DashboardController::viewPdf/$1');
