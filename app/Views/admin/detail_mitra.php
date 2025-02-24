@@ -138,14 +138,14 @@
 
 
 <script>
-    const map = L.map('map').setView([-6.8479853, 109.1113338], 13);
+    const map = L.map('map').setView([<?= htmlspecialchars($umkm->lat); ?>,<?= htmlspecialchars($umkm->long); ?>], 13);
 
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
 
-    L.marker([-6.8479853, 109.1113338]).addTo(map)
+    L.marker([<?= htmlspecialchars($umkm->lat); ?>,<?= htmlspecialchars($umkm->long); ?>]).addTo(map)
         .bindPopup('<b><?= htmlspecialchars($umkm->name); ?></b><br /><?= htmlspecialchars($umkm->address); ?>')
         .openPopup();
 </script>
