@@ -100,7 +100,7 @@ class MenuModel extends Model
             ->join('reviews', 'reviews.menu_id = menus.id', 'left')
             ->groupBy('menus.id')
             ->findAll();
-
+    
         $all_menus_array = array_map(function ($menu) {
             return [
                 'id' => $menu->id,
@@ -111,35 +111,46 @@ class MenuModel extends Model
                 'average_rating' => $menu->average_rating,
             ];
         }, $all_menus);
-
-        if ($user_id) {
-            $ch = curl_init();
-            $api_url = 'http://127.0.0.1:5000/api/recommendation/' . $user_id;
-            curl_setopt($ch, CURLOPT_URL, $api_url);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            $response = curl_exec($ch);
-
-            if (curl_errno($ch)) {
-                throw new Exception('cURL error: ' . curl_error($ch));
-            }
-
-            curl_close($ch);
-
-            $recommended_menu_ids = json_decode($response, true);
-            if (!is_array($recommended_menu_ids)) {
-
-                $recommended_menu_ids = [];
-            }
-            $recommended_menus = array_filter($all_menus_array, function ($menu) use ($recommended_menu_ids) {
-                return in_array($menu['id'], $recommended_menu_ids);
-            });
-
-            return $recommended_menus;
+    
+        if (!$user_id) {
+            // Tidak login, return menu random
+            shuffle($all_menus_array);
+            return $all_menus_array;
         }
-
-        return $all_menus_array;
+    
+        // Ambil rekomendasi dari Flask
+        $ch = curl_init();
+        $api_url = 'http://127.0.0.1:5000/api/recommendation/' . $user_id;
+        curl_setopt($ch, CURLOPT_URL, $api_url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $response = curl_exec($ch);
+    
+        if (curl_errno($ch)) {
+            curl_close($ch);
+            return $all_menus_array; // fallback semua menu
+        }
+    
+        curl_close($ch);
+        $recommended_menu_ids = json_decode($response, true);
+    
+        if (!is_array($recommended_menu_ids) || empty($recommended_menu_ids)) {
+            shuffle($all_menus_array); // fallback jika kosong
+            return $all_menus_array;
+        }
+    
+        $recommended_menus = array_filter($all_menus_array, function ($menu) use ($recommended_menu_ids) {
+            return in_array($menu['id'], $recommended_menu_ids);
+        });
+    
+        // Urutkan sesuai urutan rekomendasi
+        $menu_id_index = array_flip($recommended_menu_ids);
+        usort($recommended_menus, function ($a, $b) use ($menu_id_index) {
+            return $menu_id_index[$a['id']] <=> $menu_id_index[$b['id']];
+        });
+    
+        return $recommended_menus;
     }
-
+    
 
 
     public function countMenusWithRating()

@@ -47,7 +47,7 @@
     <div id="menu-form" class="profile-form">
       <div id="allMenusContainer" class="h-screen overflow-y-auto">
         <?php foreach ($data as $item): ?>
-          <div class="mt-4 shadow-sm mb-2">
+          <div class="shadow-sm" style="margin-bottom: 15px;">
             <div class="flex px-6 py-4 bg-white rounded-md">
               <div class="flex items-center w-full space-x-6">
                 <span class="font-semibold text-gray-800 capitalize"><?= $item->store_name ?></span>
@@ -121,9 +121,6 @@
                 <?php $grand_total += (float)$total_prices[$i];
                 ?>
               <?php endfor; ?>
-
-
-           
               <div class="flex justify-between mt-4 text-sm font-medium">
                 <span>Biaya Pengiriman :</span>
                 <span>Rp. <?= number_format($item->shipping_cost, 0, ',', '.'); ?></span>
@@ -134,7 +131,7 @@
               </div>
               <div class="flex justify-between mt-4 text-xl font-semibold">
                 <span>Total Harga :</span>
-                <?php $total = $grand_total + $item->shipping_cost + $item->application_fee?>
+                <?php $total = $grand_total + $item->shipping_cost + $item->application_fee ?>
                 <span>Rp. <?= number_format($total, 0, ',', '.'); ?></span>
               </div>
 
@@ -161,11 +158,11 @@
             </div>
             </span>
           </div>
+        <?php endforeach; ?>
       </div>
-    <?php endforeach; ?>
-    <div style="float: right">
-      <?= $pager->links('default', 'custom_pager') ?>
-    </div>
+      <div style="float: right">
+        <?= $pager->links('default', 'custom_pager') ?>
+      </div>
     </div>
 
   </div>

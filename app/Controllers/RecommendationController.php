@@ -44,9 +44,7 @@ class RecommendationController extends BaseController
         // $dataChart = $this->chartModel->getAllChartWithMenu($user_id);
         // $recommendation = $this->get_recommendations($user_id);
         $ratings = $this->menuModel->countMenusWithRating();
-      
         $recommended_menus = $this->menuModel->getMenusAll($user_id);
-        
         $charts = $this->chartModel->getAllChartWithMenu($user_id);
 
         $data = [
