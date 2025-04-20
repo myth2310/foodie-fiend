@@ -21,6 +21,10 @@ class CreateReviewsTable extends Migration
                 'type' => 'CHAR',
                 'constraint' => 36,
             ],
+            'order_id' => [
+                'type' => 'CHAR',
+                'constraint' => 36,
+            ],
             'review' => [
                 'type' => 'TEXT',
             ],
@@ -50,6 +54,7 @@ class CreateReviewsTable extends Migration
         $this->forge->addPrimaryKey('id');
         $this->forge->addForeignKey('user_id', 'users', 'id');
         $this->forge->addForeignKey('menu_id', 'menus', 'id');
+        $this->forge->addForeignKey('order_id', 'orders', 'id');
         $this->forge->createTable('reviews', true);
     }
 

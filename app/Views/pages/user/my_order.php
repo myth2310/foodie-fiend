@@ -43,129 +43,101 @@
     <a id="rejectOrderButton" href="/user/dashboard/order?status=dibatalkan" class="text-gray-500 transition-all duration-150 ease-in-out hover:text-orange-500" data-target="dibatalkan-form">Dibatalkan</a>
   </nav>
 
-  <div id="forms" class="mt-4 mx-4">
-    <div id="menu-form" class="profile-form">
-      <div id="allMenusContainer" class="h-screen overflow-y-auto">
-        <?php foreach ($data as $item): ?>
-          <div class="shadow-sm" style="margin-bottom: 15px;">
-            <div class="flex px-6 py-4 bg-white rounded-md">
-              <div class="flex items-center w-full space-x-6">
-                <span class="font-semibold text-gray-800 capitalize"><?= $item->store_name ?></span>
-                <a href="/stores/<?= $item->store_id ?>" class="text-gray-500 hover:text-gray-700">
-                  <div class="px-4 py-2 hover:bg-gray-100 transition ease-in-out duration-300 rounded-md items-center border">
-                    <i class="fas fa-store"></i>
-                    <span>Kunjungi Toko</span>
-                  </div>
-                </a>
-              </div>
-              <div class="flex justify-end items-center w-1/2 space-x-6">
-                <?php if ($item->status === 'ditunda') : ?>
-                  <div class="flex items-center space-x-2 text-yellow-600">
-                    <i class="fa-solid fa-clock" style="color: #FFD43B;"></i>
-                    <p class="capitalize">Pesanan Pending</p>
-                  </div>
-                <?php elseif ($item->status === 'selesai') : ?>
-                  <div class="flex items-center space-x-2 text-green-600">
-                    <i class="fa-solid fa-check" style="color: #2cc94b;"></i>
-                    <p class="capitalize">Pesanan Telah dibayar</p>
-                  </div>
+  <div class="mt-4 mx-4">
+  <div class="space-y-6">
+    <?php foreach ($data as $item): ?>
+      <div class="bg-white rounded-xl shadow-md p-4 border border-gray-100">
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-4">
+          <div class="text-base font-semibold text-gray-800"><?= $item->store_name ?></div>
+          <a href="/stores/<?= $item->store_id ?>" class="text-sm text-blue-500 hover:underline">
+            <i class="fas fa-store mr-1"></i> Kunjungi Toko
+          </a>
+        </div>
 
-                <?php else : ?>
-                  <div class="flex items-center space-x-2 text-red-600">
-                    <i class="fas fa-times-circle"></i>
-                    <p class="capitalize">Pesanan Batal</p>
-                  </div>
-                <?php endif; ?>
+        <!-- Status -->
+        <div class="flex justify-between text-xs text-gray-500 mb-3">
+          <span class="mb-2">Tanggal Pesanan: <?= date('d F Y', strtotime($item->created_at)); ?></span>
+          <span class="capitalize font-medium
+            <?= $item->status === 'ditunda' ? 'text-yellow-600' :
+                ($item->status === 'selesai' ? 'text-green-600' : 'text-red-500') ?>">
+            <i class="<?= $item->status === 'ditunda' ? 'fa-solid fa-clock' :
+                       ($item->status === 'selesai' ? 'fa-solid fa-check-circle' : 'fas fa-times-circle') ?>"></i>
+            <?= $item->status === 'ditunda' ? 'Pending' :
+                ($item->status === 'selesai' ? 'Selesai' : 'Dibatalkan') ?>
+          </span>
+        </div>
 
-                <?php if ($item->delivery_status === 'selesai') : ?>
-                  <a href="/ratings/<?= $item->menu_id ?>" class="text-white text-base font-medium">
-                    <div class="px-4 py-2 bg-orange-500 transition ease-in-out duration-300 hover:bg-orange-700 rounded-md">
-                      <p>Beri Ulasan</p>
-                    </div>
-                  </a>
-                <?php endif; ?>
+        <!-- Item List -->
+        <?php
+          $menu_imgs = explode(',', $item->menu_imgs);
+          $menu_names = explode(',', $item->menu_names);
+          $prices = explode(',', $item->price);
+          $total_prices = explode(',', $item->total_price);
+          $quantities = explode(',', $item->quantity);
+          $grand_total = 0;
+        ?>
 
-
-              </div>
+        <?php for ($i = 0; $i < count($menu_names); $i++): ?>
+          <div class="flex items-center mb-3">
+            <img src="<?= $menu_imgs[$i] ?>" class="w-14 h-14 rounded-lg object-cover border" alt="Menu">
+            <div class="ml-3 flex-1">
+              <p class="text-sm font-medium text-gray-700"><?= $menu_names[$i] ?></p>
+              <p class="text-xs text-gray-500">x<?= $quantities[$i] ?? 1 ?></p>
             </div>
-            <hr>
-            <div class="flex px-6 py-6 bg-white rounded-md">
-              <div class="flex items-center w-full">
-                <span class="text-gray-600">Tanggal Pesanan : <?= date('d F Y', strtotime($item->created_at)); ?></span>
-              </div>
+            <div class="text-sm font-semibold text-orange-500">
+              Rp <?= number_format((float)$total_prices[$i], 0, ',', '.') ?>
             </div>
-            <div class="flex flex-col px-6 py-6 bg-white rounded-md">
-              <?php
-
-              $menu_imgs = explode(',', $item->menu_imgs);
-              $menu_names = explode(',', $item->menu_names);
-              $prices = explode(',', $item->price);
-              $total_prices = explode(',', $item->total_price);
-              $quantities = explode(',', $item->quantity);
-              $grand_total = 0;
-              ?>
-
-              <?php for ($i = 0; $i < count($menu_names); $i++): ?>
-                <div class="flex items-center mb-2">
-
-                  <img class="w-16 h-16 rounded-md" src="<?= $menu_imgs[$i] ?>" alt="<?= $menu_names[$i] ?>">
-                  <div class="ml-4">
-                    <h4><?= $menu_names[$i] ?></h4>
-                    <p>x<?= isset($quantities[$i]) ? $quantities[$i] : 1; ?></p>
-                  </div>
-                  <div class="flex font-semibold justify-center items-center space-x-1 text-orange-400 ml-auto">
-                    <span>Rp.</span>
-                    <span><?php echo number_format((float)$total_prices[$i], 0, ',', '.'); ?></span>
-                  </div>
-                </div>
-                <?php $grand_total += (float)$total_prices[$i];
-                ?>
-              <?php endfor; ?>
-              <div class="flex justify-between mt-4 text-sm font-medium">
-                <span>Biaya Pengiriman :</span>
-                <span>Rp. <?= number_format($item->shipping_cost, 0, ',', '.'); ?></span>
-              </div>
-              <div class="flex justify-between mt-4 text-sm font-medium">
-                <span>Biaya Aplikasi :</span>
-                <span>Rp. <?= number_format($item->application_fee, 0, ',', '.'); ?></span>
-              </div>
-              <div class="flex justify-between mt-4 text-xl font-semibold">
-                <span>Total Harga :</span>
-                <?php $total = $grand_total + $item->shipping_cost + $item->application_fee ?>
-                <span>Rp. <?= number_format($total, 0, ',', '.'); ?></span>
-              </div>
-
-              <span class="mt-4">Status Delivery:</span>
-              <div class="flex items-center space-x-2 mt-2">
-                <?php if ($item->delivery_status === null) : ?>
-                  <i class="fa-solid fa-person" style="color: #f1c40f;"></i>
-                  <p class="capitalize text-yellow-600">Menunggu Konfirmasi dari Toko</p>
-
-                <?php elseif ($item->delivery_status == 'selesai') : ?>
-                  <i class="fa-solid fa-check" style="color: #27ae60;"></i>
-                  <p class="capitalize text-green-600">Pesanan Selesai / Diterima</p>
-
-                <?php elseif ($item->delivery_status == 'diantar') : ?>
-                  <i class="fa-solid fa-truck-fast" style="color: #db9b0f;"></i>
-                  <p class="capitalize text-orange-600">Sedang Diantar</p>
-
-                <?php elseif ($item->delivery_status == 'dimasak') : ?>
-                  <i class="fa-solid fa-bowl-rice" style="color: #2980b9;"></i>
-                  <p class="capitalize text-blue-600">Sedang Dimasak</p>
-                <?php endif; ?>
-              </div>
-
-            </div>
-            </span>
           </div>
-        <?php endforeach; ?>
-      </div>
-      <div style="float: right">
-        <?= $pager->links('default', 'custom_pager') ?>
-      </div>
-    </div>
+          <?php $grand_total += (float)$total_prices[$i]; ?>
+        <?php endfor; ?>
 
+        <!-- Biaya -->
+        <div class="mt-3 text-sm text-gray-600 space-y-1 border-t pt-3">
+          <div class="flex justify-between"><span>Biaya Pengiriman</span><span>Rp <?= number_format($item->shipping_cost, 0, ',', '.') ?></span></div>
+          <div class="flex justify-between"><span>Biaya Aplikasi</span><span>Rp <?= number_format($item->application_fee, 0, ',', '.') ?></span></div>
+          <div class="flex justify-between font-semibold text-base text-gray-800">
+            <span>Total</span>
+            <span>Rp <?= number_format($grand_total + $item->shipping_cost + $item->application_fee, 0, ',', '.') ?></span>
+          </div>
+        </div>
+
+        <!-- Status Pengiriman -->
+        <div class="mt-3 flex items-center text-sm">
+          <?php if ($item->delivery_status === null): ?>
+            <i class="fa-solid fa-person text-yellow-500 mr-2"></i>
+            <span class="text-yellow-600">Menunggu Konfirmasi</span>
+          <?php elseif ($item->delivery_status === 'selesai'): ?>
+            <i class="fa-solid fa-check text-green-600 mr-2"></i>
+            <span class="text-green-600">Pesanan Diterima</span>
+          <?php elseif ($item->delivery_status === 'diantar'): ?>
+            <i class="fa-solid fa-truck-fast text-orange-500 mr-2"></i>
+            <span class="text-orange-500">Sedang Diantar</span>
+          <?php elseif ($item->delivery_status === 'dimasak'): ?>
+            <i class="fa-solid fa-bowl-rice text-blue-500 mr-2"></i>
+            <span class="text-blue-500">Sedang Dimasak</span>
+          <?php endif; ?>
+        </div>
+
+        <!-- Tombol Ulasan -->
+        <?php if ($item->delivery_status === 'selesai' && $item->has_review == 0): ?>
+          <div class="mt-4">
+            <a href="/ratings/<?= $item->menu_id ?>?order_id=<?= $item->order_id ?>"
+               class="inline-block bg-orange-500 hover:bg-orange-600 text-white text-sm px-4 py-2 rounded-md transition">
+              Beri Ulasan
+            </a>
+          </div>
+        <?php endif; ?>
+      </div>
+    <?php endforeach; ?>
+
+    <!-- Pagination -->
+    <div class="flex justify-end pt-4">
+      <?= $pager->links('default', 'custom_pager') ?>
+    </div>
   </div>
+</div>
+
 </div>
 </div>
 <?= $this->endSection() ?>

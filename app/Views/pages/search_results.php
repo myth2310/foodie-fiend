@@ -1,19 +1,40 @@
-<div class="container mx-auto px-10 py-20">
-    <h2 class="text-2xl font-semibold text-gray-800 mb-4">Hasil Pencarian</h2>
+<?= $this->extend('layouts/base') ?>
+<?= $this->section('content') ?>
+<?= $this->include('partial/preloader') ?>
+<?= $this->include('components/navbar') ?>
+<?= $this->include('components/dropdown_chart') ?>
+<?= $this->include('components/login_modal') ?>
+<?= $this->include('components/register_modal') ?>
 
-    <?php if (empty($menus)): ?>
-        <p>Tidak ada menu yang cocok dengan pencarian Anda.</p>
-    <?php else: ?>
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-            <?php foreach ($menus as $menu): ?>
-                <div class="bg-white shadow-xl rounded-2xl overflow-hidden">
-                    <img src="<?= $menu['image'] ?>" alt="<?= $menu['name'] ?>" class="h-48 w-full object-cover">
-                    <div class="p-4">
-                        <h3 class="font-semibold text-lg"><?= $menu['name'] ?></h3>
-                        <p class="text-gray-600"><?= $menu['description'] ?></p>
-                    </div>
-                </div>
-            <?php endforeach; ?>
-        </div>
-    <?php endif; ?>
-</div>
+<section style="padding-top: 100px;">
+  <div id="menuCard" class="container mx-auto px-10 mt-0">
+    <div class="flex">
+      <h2 class="text-2xl font-semibold text-gray-800">Hasil Pencarian Anda</h2>
+    </div>
+    <?= $this->include('components/menu_card') ?>
+  </div>
+</section>
+
+
+<?= $this->endSection() ?>
+
+<?= $this->section('footer') ?>
+<?= $this->include('components/footer') ?>
+<?= $this->endSection() ?>
+
+<?= $this->section('scripts') ?>
+<script src="<?= base_url('assets/js/recommendation.js') ?>"></script>
+<script src="<?= base_url('assets/js/chartDropDown.js') ?>"></script>
+<script src="<?= base_url('assets/js/modalAuthForm.js') ?>"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const loaded = true;
+    const loaderElement = document.getElementById('loader');
+    if (loaded) {
+      setTimeout(() => {
+        loaderElement.style.display = 'none';
+      }, 500);
+    }
+  });
+</script>
+<?= $this->endSection() ?>

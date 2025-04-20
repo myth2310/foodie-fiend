@@ -52,6 +52,7 @@
       </div>
 
       <form action="/user/dashboard/review" method="POST">
+        <input type="hidden" name="order_id" value="<?= esc($order_id) ?>">
         <input type="hidden" name="menu_id" value="<?= esc($product->id) ?>">
         <div class="mb-4">
           <label class="block text-gray-700">Bintang Rating</label>

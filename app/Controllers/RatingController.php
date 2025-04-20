@@ -23,12 +23,14 @@ class RatingController extends BaseController
     
         $userId = $session->get('user_id'); 
         $menuId = $this->request->getPost('menu_id'); 
+        $orderId = $this->request->getPost('order_id'); 
         $rating = $this->request->getPost('rating');
         $review = $this->request->getPost('ulasan');
     
         $data = [
             'user_id' => $userId,
             'menu_id' => $menuId,
+            'order_id' => $orderId,
             'rating' => $rating,
             'review' => $review,
         ];
@@ -45,8 +47,13 @@ class RatingController extends BaseController
 
     public function getProductData($menu_id)
     {
+        $order_id = $this->request->getGet('order_id');
         $product = $this->menuModel->find($menu_id);
-        return view('pages/user/ratings', ['product' => $product]);
-
+        
+        return view('pages/user/ratings', [
+            'product' => $product,
+            'order_id' => $order_id
+        ]);
     }
+    
 }

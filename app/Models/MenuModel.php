@@ -182,30 +182,31 @@ class MenuModel extends Model
     }
 
 
-    public function getRecommendedMenuIds($user_id) {
+    public function getRecommendedMenuIds($user_id)
+    {
         $api_url = 'http://127.0.0.1:5000/api/recommendation/' . $user_id;
-
-        // cURL untuk mengambil data dari API
+    
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $api_url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 5); // Maks. 5 detik
         $response = curl_exec($ch);
-
+    
         if (curl_errno($ch)) {
             log_message('error', 'cURL error: ' . curl_error($ch));
             return [];
         }
-
+    
         curl_close($ch);
-
-        // Decode respons API
+    
         $recommended_menu_ids = json_decode($response, true);
-
+    
         if (!is_array($recommended_menu_ids)) {
             return [];
         }
-
+    
         return $recommended_menu_ids;
     }
+    
 
 }

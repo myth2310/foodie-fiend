@@ -14,7 +14,7 @@ class ReviewModel extends Model
     protected $returnType       = ReviewEntity::class;
     protected $useSoftDeletes   = true;
     protected $protectFields    = true;
-    protected $allowedFields    = ['id', 'user_id', 'menu_id', 'review', 'rating'];
+    protected $allowedFields    = ['id', 'user_id', 'menu_id','order_id', 'review', 'rating'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;

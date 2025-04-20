@@ -86,19 +86,38 @@ class RecommendationController extends BaseController
     }
 
 
-    public function search() {
-        $user_id = session()->get('user_id'); 
-        $search_query = $this->request->getGet('query'); 
+    public function search()
+    {
+        $user_id = session()->get('user_id');
+        $search_query = $this->request->getGet('query');
+    
+        // Ambil ID rekomendasi dari API Python
         $recommended_menu_ids = $this->menuModel->getRecommendedMenuIds($user_id);
-
+    
+        // Ambil semua menu dari database
         $all_menus = $this->menuModel->getMenusAll();
-        $recommended_menus = array_filter($all_menus, function ($menu) use ($recommended_menu_ids, $search_query) {
-            return in_array($menu['id'], $recommended_menu_ids) && 
-                   stripos($menu['name'], $search_query) !== false;
-        });
-        $data['menus'] = $recommended_menus;
-        dd($data['menus']);
+    
+        // Pisahkan menu yang direkomendasikan dan sesuai query
+        $recommended_menus = [];
+        $non_recommended_menus = [];
+    
+        foreach ($all_menus as $menu) {
+            $nameMatch = stripos($menu['name'], $search_query) !== false;
+    
+            if ($nameMatch && in_array($menu['id'], $recommended_menu_ids)) {
+                $recommended_menus[] = $menu;
+            } elseif ($nameMatch) {
+                $non_recommended_menus[] = $menu;
+            }
+        }
+    
+        // Gabungkan: rekomendasi dulu, baru yang lain
+        $data['menus'] = array_merge($recommended_menus, $non_recommended_menus);
+    
         return view('pages/search_results', $data);
     }
+    
+
+    
     
 }

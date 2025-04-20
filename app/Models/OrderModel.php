@@ -88,34 +88,38 @@ class OrderModel extends Model
     // }
 
     public function getAllOrdersWithMenus($user_id, $order_status, $perPage = 2)
-    {
-        $this->select(
+{
+    $this->select(
             'orders.created_at, 
-                   GROUP_CONCAT(orders.menu_id) as menu_id, 
-                   GROUP_CONCAT(menus.image_url) as menu_imgs, 
-                   GROUP_CONCAT(menus.name) as menu_names, 
-                   GROUP_CONCAT(orders.price) as price, 
-                   GROUP_CONCAT(orders.total_price) as total_price, 
-                   GROUP_CONCAT(orders.quantity) as quantity, 
-                   GROUP_CONCAT(orders.status) as status, 
-                   GROUP_CONCAT(orders.delivery_status) as delivery_status, 
-                   GROUP_CONCAT(orders.shipping_cost) as shipping_cost, 
-                   GROUP_CONCAT(orders.application_fee) as application_fee, 
-                   stores.name as store_name',
+             GROUP_CONCAT(orders.menu_id) as menu_id, 
+             GROUP_CONCAT(orders.id) as order_id, 
+             GROUP_CONCAT(menus.image_url) as menu_imgs, 
+             GROUP_CONCAT(menus.name) as menu_names, 
+             GROUP_CONCAT(orders.price) as price, 
+             GROUP_CONCAT(orders.total_price) as total_price, 
+             GROUP_CONCAT(orders.quantity) as quantity, 
+             GROUP_CONCAT(orders.status) as status, 
+             GROUP_CONCAT(orders.delivery_status) as delivery_status, 
+             GROUP_CONCAT(orders.shipping_cost) as shipping_cost, 
+             GROUP_CONCAT(orders.application_fee) as application_fee, 
+             stores.name as store_name,
+             GROUP_CONCAT(CASE WHEN reviews.order_id IS NOT NULL THEN 1 ELSE 0 END) as has_review'
         )
-            ->join('menus', 'menus.id = orders.menu_id')
-            ->join('stores', 'stores.id = orders.store_id')
-            ->where('orders.user_id', $user_id);
+        ->join('menus', 'menus.id = orders.menu_id')
+        ->join('stores', 'stores.id = orders.store_id')
+        ->join('reviews', 'reviews.order_id = orders.id', 'left') // LEFT JOIN dengan tabel reviews
+        ->where('orders.user_id', $user_id);
 
-        if (!is_null($order_status)) {
-            $this->where('orders.status', $order_status);
-        }
-
-        $this->orderBy('orders.created_at', 'DESC');
-
-        return $this->groupBy('orders.created_at, stores.name')
-            ->paginate($perPage);
+    if (!is_null($order_status)) {
+        $this->where('orders.status', $order_status);
     }
+
+    $this->orderBy('orders.created_at', 'DESC');
+
+    return $this->groupBy('orders.created_at, stores.name')
+        ->paginate($perPage);
+}
+
 
     public function getOrdersByStoreId($store_id, $perPage = 5)
     {
