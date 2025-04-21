@@ -91,13 +91,14 @@ class RecommendationController extends BaseController
         $user_id = session()->get('user_id');
         $search_query = $this->request->getGet('query');
     
-        // Ambil ID rekomendasi dari API Python
+        // Ambil chart dan ID menu yang direkomendasikan
+        $charts = $this->chartModel->getAllChartWithMenu($user_id);
         $recommended_menu_ids = $this->menuModel->getRecommendedMenuIds($user_id);
     
         // Ambil semua menu dari database
         $all_menus = $this->menuModel->getMenusAll();
     
-        // Pisahkan menu yang direkomendasikan dan sesuai query
+        // Filter menu berdasarkan pencarian dan rekomendasi
         $recommended_menus = [];
         $non_recommended_menus = [];
     
@@ -111,11 +112,19 @@ class RecommendationController extends BaseController
             }
         }
     
-        // Gabungkan: rekomendasi dulu, baru yang lain
-        $data['menus'] = array_merge($recommended_menus, $non_recommended_menus);
+        $merged_menus = array_merge($recommended_menus, $non_recommended_menus);
+    
+        $data = [
+            'title' => "Pencarian Menu | Foodie Fiend",
+            'charts' => $charts,
+            'menus' => $merged_menus,
+            'use_chart_button' => false,
+            'use_hero_text' => true,
+        ];
     
         return view('pages/search_results', $data);
     }
+    
     
 
     
