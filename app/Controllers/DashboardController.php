@@ -299,20 +299,32 @@ class DashboardController extends BaseController
         }
     }
 
-
-    public function delete($storeId)
+    public function delete($id)
     {
-        $store = $this->userModel->find($storeId);
-        if ($store) {
-            if ($this->userModel->delete($storeId)) {
-                return redirect()->back()->with('success', 'Data berhasil dihapus.');
-            } else {
-                return redirect()->back()->with('error', 'Gagal menghapus data.');
-            }
-        } else {
-            return redirect()->back()->with('error', 'Data tidak ditemukan.');
+        $user = $this->userModel->withDeleted()->find($id);
+        
+        if (!$user) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'User tidak ditemukan.'
+            ]);
         }
+    
+        if ($this->userModel->delete($id, true)) {
+            return $this->response->setJSON([
+                'success' => true,
+                'message' => 'UMKM berhasil dihapus.'
+            ]);
+        }
+    
+        return $this->response->setJSON([
+            'success' => false,
+            'message' => 'Gagal menghapus UMKM.'
+        ]);
     }
+    
+    
+    
     
 
     private function sendVerificationEmail($email)

@@ -45,8 +45,13 @@ class CreateChartsTable extends Migration
             ],
         ]);
         $this->forge->addPrimaryKey('id');
-        $this->forge->addForeignKey('user_id', 'users', 'id');
-        $this->forge->addForeignKey('menu_id', 'menus', 'id');
+        // $this->forge->addForeignKey('user_id', 'users', 'id');
+        // $this->forge->addForeignKey('menu_id', 'menus', 'id');
+
+        $this->forge->addForeignKey('user_id', 'users', 'id', 'CASCADE', 'CASCADE');
+        $this->forge->addForeignKey('menu_id', 'menus', 'id', 'CASCADE', 'CASCADE');
+        $this->forge->addForeignKey('store_id', 'stores', 'id', 'CASCADE', 'CASCADE');
+
         $this->forge->createTable('charts', true);
     }
 

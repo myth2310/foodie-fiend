@@ -23,7 +23,7 @@ class CreateOrdersTable extends Migration
             ],
             'store_id' => [
                 'type' => 'CHAR',
-                'constraint' => 36, 
+                'constraint' => 36,
             ],
             'menu_id' => [
                 'type' => 'CHAR',
@@ -80,9 +80,13 @@ class CreateOrdersTable extends Migration
         ]);
 
         $this->forge->addPrimaryKey('id');
-        $this->forge->addForeignKey('user_id', 'users', 'id');
-        $this->forge->addForeignKey('store_id', 'stores', 'id');
-        $this->forge->addForeignKey('menu_id', 'menus', 'id');
+        // $this->forge->addForeignKey('user_id', 'users', 'id');
+        // $this->forge->addForeignKey('store_id', 'stores', 'id');
+        // $this->forge->addForeignKey('menu_id', 'menus', 'id');
+        $this->forge->addForeignKey('user_id', 'users', 'id', 'CASCADE', 'CASCADE');
+        $this->forge->addForeignKey('store_id', 'stores', 'id', 'CASCADE', 'CASCADE');
+        $this->forge->addForeignKey('menu_id', 'menus', 'id', 'CASCADE', 'CASCADE');
+
         $this->forge->createTable('orders', true);
     }
 

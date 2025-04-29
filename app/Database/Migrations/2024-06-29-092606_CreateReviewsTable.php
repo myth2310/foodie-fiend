@@ -52,9 +52,15 @@ class CreateReviewsTable extends Migration
         ]);
 
         $this->forge->addPrimaryKey('id');
-        $this->forge->addForeignKey('user_id', 'users', 'id');
-        $this->forge->addForeignKey('menu_id', 'menus', 'id');
-        $this->forge->addForeignKey('order_id', 'orders', 'id');
+        // $this->forge->addForeignKey('user_id', 'users', 'id');
+        // $this->forge->addForeignKey('menu_id', 'menus', 'id');
+        // $this->forge->addForeignKey('order_id', 'orders', 'id');
+
+        $this->forge->addForeignKey('user_id', 'users', 'id', 'CASCADE', 'CASCADE');
+        $this->forge->addForeignKey('menu_id', 'menus', 'id', 'CASCADE', 'CASCADE');
+        $this->forge->addForeignKey('order_id', 'orders', 'id', 'CASCADE', 'CASCADE');
+
+
         $this->forge->createTable('reviews', true);
     }
 

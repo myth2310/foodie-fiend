@@ -56,8 +56,10 @@ class CreateMenusTable extends Migration
         ]);
 
         $this->forge->addPrimaryKey('id');
-        $this->forge->addForeignKey('store_id', 'stores', 'id');
+        // $this->forge->addForeignKey('store_id', 'stores', 'id');
+        $this->forge->addForeignKey('store_id', 'stores', 'id', 'CASCADE', 'CASCADE');
         $this->forge->createTable('menus', true);
+
     }
 
     public function down()

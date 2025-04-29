@@ -57,8 +57,10 @@ class CreateStoresTable extends Migration
         ]);
 
         $this->forge->addPrimaryKey('id');
-        $this->forge->addForeignKey('user_id', 'users', 'id');
+        // $this->forge->addForeignKey('user_id', 'users', 'id');
+        $this->forge->addForeignKey('user_id', 'users', 'id', 'CASCADE', 'CASCADE');
         $this->forge->createTable('stores', true);
+
     }
 
     public function down()
