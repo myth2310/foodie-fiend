@@ -14,7 +14,7 @@ class OrderModel extends Model
     protected $returnType       = OrderEntity::class;
     protected $useSoftDeletes   = true;
     protected $protectFields    = true;
-    protected $allowedFields    = ['id', 'user_id', 'order_id', 'store_id', 'menu_id', 'quantity', 'price', 'total_price','shipping_cost','application_fee', 'status','delivery_status'];
+    protected $allowedFields    = ['id', 'user_id', 'order_id', 'store_id', 'menu_id', 'quantity', 'price', 'total_price','shipping_cost','application_fee', 'status','delivery_status','delivery_proof'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -100,6 +100,7 @@ class OrderModel extends Model
              GROUP_CONCAT(orders.quantity) as quantity, 
              GROUP_CONCAT(orders.status) as status, 
              GROUP_CONCAT(orders.delivery_status) as delivery_status, 
+             GROUP_CONCAT(orders.delivery_proof) as delivery_proof, 
              GROUP_CONCAT(orders.shipping_cost) as shipping_cost, 
              GROUP_CONCAT(orders.application_fee) as application_fee, 
              stores.name as store_name,
@@ -130,6 +131,7 @@ class OrderModel extends Model
                     orders.quantity, 
                     orders.created_at, 
                     orders.delivery_status, 
+                    orders.delivery_proof, 
                     menus.name AS menu_name, 
                     users.name AS customer_name
                 ')

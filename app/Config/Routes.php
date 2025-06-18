@@ -34,17 +34,17 @@ $routes->group('/dashboard', function ($routes) {
     $routes->get('download-template-surat', 'StoreController::downloadTemplateSurat');
     $routes->post('update/store/(:any)', 'StoreController::update/$1');
     $routes->post('update-delivery-status/(:any)', 'OrderController::updateDeliveryStatus/$1');
-
+    $routes->post('upload-proof/(:any)', 'OrderController::uploadProofImage/$1');
 });
 
 $routes->group('/admin/dashboard', function ($routes) {
-    $routes->get('/', 'DashboardController::dashboard'); 
-    $routes->get('download-ktp/(:any)', 'DashboardController::downloadKTP/$1'); 
-    $routes->get('mitra', 'DashboardController::mitra'); 
-    $routes->get('detail-transaksi/(:any)', 'DashboardController::detailTrnsaksi/$1'); 
-    $routes->get('transaksi', 'DashboardController::transaksi'); 
-    $routes->post('umkm/delete/(:any)', 'DashboardController::delete/$1'); 
-    $routes->get('umkm/detail/(:any)', 'DashboardController::detail/$1'); 
+    $routes->get('/', 'DashboardController::dashboard');
+    $routes->get('download-ktp/(:any)', 'DashboardController::downloadKTP/$1');
+    $routes->get('mitra', 'DashboardController::mitra');
+    $routes->get('detail-transaksi/(:any)', 'DashboardController::detailTrnsaksi/$1');
+    $routes->get('transaksi', 'DashboardController::transaksi');
+    $routes->post('umkm/delete/(:any)', 'DashboardController::delete/$1');
+    $routes->get('umkm/detail/(:any)', 'DashboardController::detail/$1');
     $routes->post('umkm/verify/(:any)', 'DashboardController::verify/$1');
     $routes->get('umkm/view-pdf/(:any)', 'DashboardController::viewPdf/$1');
 });
@@ -89,6 +89,7 @@ $routes->group('/user', function ($routes) {
     $routes->get('profile', 'UserController::profile', ['as' => 'profile']);
     $routes->get('edit/(:num)', 'UserController::edit/$1');
     $routes->post('update/(:segment)', 'UserController::update/$1');
+    $routes->post('order/selesai/(:segment)', 'OrderController::updateDeliveryStatusDone/$1');
 });
 
 // Shop group

@@ -7,6 +7,7 @@ use App\Entities\OrderEntity;
 use App\Models\ChartModel;
 use App\Models\MenuModel;
 use App\Models\OrderModel;
+use App\Helpers\CloudinaryHelper;
 use App\Models\UserModel;
 use CodeIgniter\HTTP\ResponseInterface;
 
@@ -18,6 +19,7 @@ class OrderController extends BaseController
     protected $chartModel;
     protected $storeController;
     protected $paymentController;
+    protected $uploadHelper;
 
     public function __construct()
     {
@@ -27,6 +29,7 @@ class OrderController extends BaseController
         $this->userModel = new UserModel();
         $this->storeController = new StoreController();
         $this->paymentController = new PaymentController();
+        $this->uploadHelper = new CloudinaryHelper();
     }
 
     public function create()
@@ -355,8 +358,6 @@ class OrderController extends BaseController
             $session->setFlashdata('error', 'Pesanan gagal disimpan: ' . $e->getMessage());
             return redirect()->back();
         }
-
-
     }
 
 
@@ -376,10 +377,53 @@ class OrderController extends BaseController
         }
     }
 
+    public function updateDeliveryStatusDone($orderId)
+    {
+        $orderModel = new OrderModel();
+        $order = $orderModel->find($orderId);
+
+        if ($order) {
+            $order->delivery_status = 'selesai';
+            $orderModel->save($order);
+            return redirect()->back()->with('swal_success', 'Status pengiriman berhasil diperbarui.');
+        } else {
+            return redirect()->back()->with('swal_error', 'Pesanan tidak ditemukan.');
+        }
+    }
+
 
 
     public function getAllOrders($user_id, $order_status)
     {
         return $this->orderModel->getAllOrdersWithMenus($user_id, $order_status);
+    }
+
+    public function uploadProofImage($orderId)
+    {
+        $orderModel = new OrderModel();
+        $order = $orderModel->find($orderId);
+
+        if (!$order) {
+            return redirect()->back()->with('swal_error', 'Pesanan tidak ditemukan.');
+        }
+
+        $file = $this->request->getFile('bukti_pengiriman');
+
+        if (!$file || !$file->isValid() || $file->hasMoved()) {
+            return redirect()->back()->with('swal_error', 'Gagal mengunggah bukti pengiriman.');
+        }
+
+        $filePath = $file->getTempName();
+        $uploadResult = $this->uploadHelper->upload($filePath);
+
+        if (!isset($uploadResult['secure_url'])) {
+            return redirect()->back()->with('swal_error', 'Gagal mengunggah gambar ke Cloudinary.');
+        }
+
+        $order->delivery_proof = $uploadResult['secure_url'];
+        $order->delivery_status = 'diterima';
+        $orderModel->save($order);
+
+        return redirect()->back()->with('swal_success', 'Bukti pengiriman berhasil diunggah dan status diperbarui.');
     }
 }

@@ -58,7 +58,13 @@ class CreateOrdersTable extends Migration
             ],
             'delivery_status' => [
                 'type' => 'ENUM',
-                'constraint' => ['dimasak', 'diantar', 'selesai'],
+                'constraint' => ['dimasak', 'diantar', 'diterima','selesai'],
+            ],
+            'delivery_proof' => [
+                'type' => 'VARCHAR',
+                'constraint' => 255,
+                'null' => true,
+                'comment' => 'Path atau URL bukti foto pengiriman',
             ],
             'is_delete' => [
                 'type' => 'TINYINT',
@@ -80,9 +86,6 @@ class CreateOrdersTable extends Migration
         ]);
 
         $this->forge->addPrimaryKey('id');
-        // $this->forge->addForeignKey('user_id', 'users', 'id');
-        // $this->forge->addForeignKey('store_id', 'stores', 'id');
-        // $this->forge->addForeignKey('menu_id', 'menus', 'id');
         $this->forge->addForeignKey('user_id', 'users', 'id', 'CASCADE', 'CASCADE');
         $this->forge->addForeignKey('store_id', 'stores', 'id', 'CASCADE', 'CASCADE');
         $this->forge->addForeignKey('menu_id', 'menus', 'id', 'CASCADE', 'CASCADE');

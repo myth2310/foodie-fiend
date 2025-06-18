@@ -51,7 +51,7 @@
                                             </span>
                                         </td>
                                         <td class="px-6 py-4 text-center">
-                                        <span class="px-3 py-1 rounded-md capitalize
+                                            <span class="px-3 py-1 rounded-md capitalize
     <?= $order->delivery_status === 'diantar' ? 'bg-red-500' : 'bg-green-500' ?> 
     text-white">
                                                 <?= esc($order->delivery_status) ?>
