@@ -11,6 +11,6 @@ class Cloudinary extends BaseConfig
     // public $apiSecret = '299daGdTlsgHlZ9sgvsy2krVBS4';
 
     public $cloudName = 'db9zbhhrg';
-    public $apiKey = '291861489813454';
-    public $apiSecret = '_vFffLciOi3R4TnWs_6mvDDDJl0';
+    public $apiKey = '389246277858918';
+    public $apiSecret = 'Pxv6OUhP6jOdIHLHcVp1VkwmXGo';
 }

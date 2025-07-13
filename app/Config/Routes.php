@@ -28,14 +28,22 @@ $routes->group('/dashboard', function ($routes) {
         $routes->get('', 'DashboardController::category', ['as' => 'category']);
         $routes->get('edit/(:any)', 'CategoryController::edit/$1');
     });
+    $routes->post('store/kurir', 'KurirController::store');
+    $routes->post('assign-kurir/(:segment)', 'KurirController::assignKurir/$1');
+    $routes->post('delete/kurir/(:segment)', 'KurirController::delete/$1');
+
+    
+    $routes->get('kurir', 'DashboardController::kurir', ['as' => 'kurir']);
+    $routes->get('create/kurir', 'DashboardController::formKurir', ['as' => 'formKurir']);
     $routes->get('profile', 'DashboardController::profile', ['as' => 'profile']);
     $routes->get('detail-order/(:any)', 'DashboardController::detailOrder/$1');
     $routes->get('order', 'DashboardController::order', ['as' => 'order']);
     $routes->get('download-template-surat', 'StoreController::downloadTemplateSurat');
     $routes->post('update/store/(:any)', 'StoreController::update/$1');
     $routes->post('update-delivery-status/(:any)', 'OrderController::updateDeliveryStatus/$1');
-    $routes->post('upload-proof/(:any)', 'OrderController::uploadProofImage/$1');
 });
+
+$routes->post('upload-proof/kurir/(:any)', 'KurirController::uploadProofImage/$1');
 
 $routes->group('/admin/dashboard', function ($routes) {
     $routes->get('/', 'DashboardController::dashboard');
@@ -136,3 +144,7 @@ $routes->group('ratings', function ($routes) {
 
 // Test email invoke
 $routes->post('email/invoke', 'EmailController::sendVerification');
+
+
+
+$routes->get('/kurir/dashboard', 'KurirController::index');

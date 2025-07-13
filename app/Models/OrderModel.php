@@ -14,7 +14,7 @@ class OrderModel extends Model
     protected $returnType       = OrderEntity::class;
     protected $useSoftDeletes   = true;
     protected $protectFields    = true;
-    protected $allowedFields    = ['id', 'user_id', 'order_id', 'store_id', 'menu_id', 'quantity', 'price', 'total_price','shipping_cost','application_fee', 'status','delivery_status','delivery_proof'];
+    protected $allowedFields    = ['id', 'user_id', 'order_id', 'store_id', 'kurir_id', 'menu_id', 'quantity', 'price', 'total_price', 'shipping_cost', 'application_fee', 'status', 'delivery_status', 'delivery_proof'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -88,8 +88,8 @@ class OrderModel extends Model
     // }
 
     public function getAllOrdersWithMenus($user_id, $order_status, $perPage = 2)
-{
-    $this->select(
+    {
+        $this->select(
             'orders.created_at, 
              GROUP_CONCAT(orders.menu_id) as menu_id, 
              GROUP_CONCAT(orders.id) as order_id, 
@@ -106,42 +106,43 @@ class OrderModel extends Model
              stores.name as store_name,
              GROUP_CONCAT(CASE WHEN reviews.order_id IS NOT NULL THEN 1 ELSE 0 END) as has_review'
         )
-        ->join('menus', 'menus.id = orders.menu_id')
-        ->join('stores', 'stores.id = orders.store_id')
-        ->join('reviews', 'reviews.order_id = orders.id', 'left') // LEFT JOIN dengan tabel reviews
-        ->where('orders.user_id', $user_id);
+            ->join('menus', 'menus.id = orders.menu_id')
+            ->join('stores', 'stores.id = orders.store_id')
+            ->join('reviews', 'reviews.order_id = orders.id', 'left') // LEFT JOIN dengan tabel reviews
+            ->where('orders.user_id', $user_id);
 
-    if (!is_null($order_status)) {
-        $this->where('orders.status', $order_status);
+        if (!is_null($order_status)) {
+            $this->where('orders.status', $order_status);
+        }
+
+        $this->orderBy('orders.created_at', 'DESC');
+
+        return $this->groupBy('orders.created_at, stores.name')
+            ->paginate($perPage);
     }
-
-    $this->orderBy('orders.created_at', 'DESC');
-
-    return $this->groupBy('orders.created_at, stores.name')
-        ->paginate($perPage);
-}
-
-
     public function getOrdersByStoreId($store_id, $perPage = 5)
     {
-        return $this->select('
-                    orders.id, 
-                    orders.total_price, 
-                    orders.status, 
-                    orders.quantity, 
-                    orders.created_at, 
-                    orders.delivery_status, 
-                    orders.delivery_proof, 
-                    menus.name AS menu_name, 
-                    users.name AS customer_name
-                ')
+        return $this
+            ->select([
+                'orders.id',
+                'orders.total_price',
+                'orders.status',
+                'orders.quantity',
+                'orders.created_at',
+                'orders.delivery_status',
+                'orders.delivery_proof',
+                'orders.kurir_id',
+                'menus.name AS menu_name',
+                'users.name AS customer_name',
+                'kurir_users.name AS kurir_name'
+            ])
             ->join('menus', 'menus.id = orders.menu_id')
-            ->join('users', 'users.id = orders.user_id')
+            ->join('users', 'users.id = orders.user_id') 
+            ->join('users AS kurir_users', 'kurir_users.id = orders.kurir_id', 'left') 
             ->where('orders.store_id', $store_id)
             ->orderBy('orders.created_at', 'DESC')
-            ->paginate($perPage);  
+            ->paginate($perPage);
     }
-
 
     public function getDetailOrder($id)
     {
@@ -169,7 +170,6 @@ class OrderModel extends Model
             ->join('menus', 'menus.id = orders.menu_id')
             ->join('users', 'users.id = orders.user_id')
             ->orderBy('orders.created_at', 'DESC')
-            ->paginate($perPage);  
+            ->paginate($perPage);
     }
-    
 }

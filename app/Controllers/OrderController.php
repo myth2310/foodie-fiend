@@ -225,7 +225,6 @@ class OrderController extends BaseController
         $user_id = session()->get('user_id');
         $charts_id = $this->request->getPost('charts_id');
 
-        // Menghitung biaya pengiriman berdasarkan jarak
         $userModel = new UserModel();
         $store_maps = $userModel->getUserId($stores_id);
         $users_maps = $userModel->getUserId($user_id);
@@ -239,7 +238,6 @@ class OrderController extends BaseController
         $shippingCost = $distance * $ratePerKm;
         $applicationFee = 2000;
 
-        // Menghitung total harga pesanan
         $grandTotal = 0;
         if (is_array($menu_id)) {
             foreach ($menu_id as $index => $menu) {
@@ -360,7 +358,6 @@ class OrderController extends BaseController
         }
     }
 
-
     public function updateDeliveryStatus($orderId)
     {
         $newStatus = $this->request->getPost('status_pengantaran');
@@ -391,39 +388,10 @@ class OrderController extends BaseController
         }
     }
 
-
-
     public function getAllOrders($user_id, $order_status)
     {
         return $this->orderModel->getAllOrdersWithMenus($user_id, $order_status);
     }
 
-    public function uploadProofImage($orderId)
-    {
-        $orderModel = new OrderModel();
-        $order = $orderModel->find($orderId);
-
-        if (!$order) {
-            return redirect()->back()->with('swal_error', 'Pesanan tidak ditemukan.');
-        }
-
-        $file = $this->request->getFile('bukti_pengiriman');
-
-        if (!$file || !$file->isValid() || $file->hasMoved()) {
-            return redirect()->back()->with('swal_error', 'Gagal mengunggah bukti pengiriman.');
-        }
-
-        $filePath = $file->getTempName();
-        $uploadResult = $this->uploadHelper->upload($filePath);
-
-        if (!isset($uploadResult['secure_url'])) {
-            return redirect()->back()->with('swal_error', 'Gagal mengunggah gambar ke Cloudinary.');
-        }
-
-        $order->delivery_proof = $uploadResult['secure_url'];
-        $order->delivery_status = 'diterima';
-        $orderModel->save($order);
-
-        return redirect()->back()->with('swal_success', 'Bukti pengiriman berhasil diunggah dan status diperbarui.');
-    }
+    
 }

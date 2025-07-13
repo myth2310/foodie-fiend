@@ -66,6 +66,8 @@ class AuthController extends BaseController
                     return redirect()->to('/dashboard');
                 } else if ($data->role == 'admin') {
                     return redirect()->to('/admin/dashboard');
+                } else if ($data->role == 'kurir') {
+                    return redirect()->to('/kurir/dashboard');
                 }
                 
                 return redirect()->route('home');

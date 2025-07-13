@@ -58,18 +58,6 @@
           <!-- Status -->
           <div class="flex justify-between text-xs text-gray-500 mb-3">
             <span class="mb-2">Tanggal Pesanan: <?= date('d F Y', strtotime($item->created_at)); ?></span>
-            <span class="capitalize font-medium
-  <?=
-        $item->status === 'ditunda' ? 'text-yellow-600' : ($item->delivery_status === 'selesai' ? 'text-green-600' : ($item->delivery_status === 'diterima' ? 'text-blue-600' : 'text-red-500')) ?>">
-
-              <i class="
-    <?=
-        $item->delivery_status === 'ditunda' ? 'fa-solid fa-clock' : ($item->delivery_status === 'selesai' ? 'fa-solid fa-check-circle' : ($item->delivery_status === 'diterima' ? 'fa-solid fa-box' : 'fas fa-times-circle')) ?>"></i>
-
-              <?=
-              $item->delivery_status === 'ditunda' ? 'Pending' : ($item->delivery_status === 'selesai' ? 'Selesai' : ($item->delivery_status === 'diterima' ? 'Diterima' : 'Dibatalkan')) ?>
-            </span>
-
           </div>
 
           <!-- Item List -->
@@ -141,7 +129,6 @@
                 </div>
 
               </div>
-
             <?php elseif ($item->delivery_status === 'dimasak'): ?>
               <i class="fa-solid fa-bowl-rice text-blue-500 mt-1"></i>
               <span class="text-blue-500">Sedang Dimasak</span>

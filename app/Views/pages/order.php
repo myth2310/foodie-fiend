@@ -52,53 +52,49 @@
                       </span>
                     </td>
                     <td class="px-6 py-4 text-center">
-                      <?php if ($order->delivery_status === 'diantar' && empty($order->bukti_pengiriman)): ?>
-                        <!-- Upload Bukti jika belum diupload -->
-                        <form action="<?= base_url('dashboard/upload-proof/' . $order->id) ?>" method="post" enctype="multipart/form-data" id="uploadForm_<?= $order->id ?>">
-                          <?= csrf_field() ?>
-                          <input
-                            type="file"
-                            name="bukti_pengiriman"
-                            accept="image/*"
-                            capture="environment"
-                            style="display: none"
-                            id="cameraInput_<?= $order->id ?>"
-                            onchange="document.getElementById('uploadForm_<?= $order->id ?>').submit();">
-                          <button type="button"
-                            onclick="document.getElementById('cameraInput_<?= $order->id ?>').click();"
-                            class="ml-2 bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-2 rounded-md">
-                            Ambil Foto & Upload
-                          </button>
-                        </form>
 
-                      <?php elseif ($order->delivery_status === 'diterima'): ?>
-                        <!-- Tampilkan bukti dengan modal -->
-                        <div class="flex flex-col items-center">
-                          <button
-                            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-md"
-                            onclick="openModal('<?= esc($order->delivery_proof) ?>', 'modal_<?= $order->id ?>', 'modalImage_<?= $order->id ?>')">
-                            Lihat Bukti
-                          </button>
+                      <?php if ($order->delivery_status === 'diterima' || $order->delivery_status === 'selesai'  && !empty($order->delivery_proof)): ?>
+                        <div class="mb-2 flex justify-center">
+                          <a href="<?= esc($order->delivery_proof) ?>" target="_blank">
+                            <img src="<?= esc($order->delivery_proof) ?>"
+                              alt="Bukti Pengiriman"
+                              class="rounded shadow object-cover"
+                              style="max-width: 100px; max-height: 100px;">
+                          </a>
                         </div>
-                        <!-- Modal Diperkecil -->
-                        <div id="modal_<?= $order->id ?>" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">
-                          <div class="bg-white p-2 rounded-md shadow-lg relative w-72">
-                            <img id="modalImage_<?= $order->id ?>" src="" alt="Bukti" class="w-full h-64 object-cover rounded">
-                          </div>
-                        </div>
+                        <p class="inline-block px-3 py-1 rounded-md bg-green-100 text-green-800 text-xs sm:text-sm">
+                          <?= esc($order->delivery_status) ?>
+                        </p>
 
-                      <?php elseif ($order->delivery_status === 'selesai'): ?>
-                        <!-- Status selesai -->
-                        <span class="px-3 py-1 rounded-md capitalize bg-green-500 text-white">Pesanan Selesai</span>
-                        
-                      </span>
+                      <?php elseif ($order->delivery_status === 'diantar'): ?>
+
+                        <?php if (!empty($order->kurir_id)): ?>
+                          <p class="inline-block px-3 py-1 rounded-md bg-blue-100 text-blue-800 text-xs sm:text-sm">
+                            Dalam Pengantaran Oleh : <?= esc($order->kurir_name ?? '-') ?>
+                          </p>
+                        <?php else: ?>
+                          <!-- Form assign kurir -->
+                          <form action="<?= base_url('dashboard/assign-kurir/' . $order->id) ?>" method="post" class="inline-block w-full sm:w-auto">
+                            <?= csrf_field() ?>
+                            <select name="kurir_id"
+                              class="w-full sm:w-auto px-2 py-1 border rounded-md bg-white text-gray-700 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                              onchange="this.form.submit()">
+                              <option value="">-- Pilih Kurir --</option>
+                              <?php foreach ($kurirs as $kurir): ?>
+                                <option value="<?= esc($kurir['user_id']) ?>" <?= (isset($order->kurir_id) && $order->kurir_id == $kurir['user_id']) ? 'selected' : '' ?>>
+                                  <?= esc($kurir['name']) ?> (<?= esc($kurir['contact']) ?>)
+                                </option>
+                              <?php endforeach; ?>
+                            </select>
+                          </form>
+                        <?php endif; ?>
 
                       <?php else: ?>
-                        <!-- Pilihan status jika belum diantar -->
-                        <form action="<?= base_url('dashboard/update-delivery-status/' . $order->id) ?>" method="post" id="statusForm_<?= $order->id ?>">
-                          <input type="hidden" name="<?= csrf_token() ?>" value="<?= csrf_hash() ?>" />
+                        <!-- Form update status pengiriman -->
+                        <form action="<?= base_url('dashboard/update-delivery-status/' . $order->id) ?>" method="post" id="statusForm_<?= $order->id ?>" class="inline-block w-full sm:w-auto">
+                          <?= csrf_field() ?>
                           <select name="status_pengantaran"
-                            class="px-3 py-1 border rounded-md bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            class="w-full sm:w-auto px-2 py-1 border rounded-md bg-white text-gray-700 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                             onchange="document.getElementById('statusForm_<?= $order->id ?>').submit();">
                             <option value="">-- Pilih Status Pengiriman --</option>
                             <option value="dimasak" <?= $order->delivery_status === 'dimasak' ? 'selected' : '' ?>>Sedang Dimasak</option>
@@ -106,8 +102,6 @@
                           </select>
                         </form>
                       <?php endif; ?>
-
-
 
                     </td>
 

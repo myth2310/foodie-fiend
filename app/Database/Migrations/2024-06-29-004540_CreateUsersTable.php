@@ -13,6 +13,11 @@ class CreateUsersTable extends Migration
                 'type' => 'CHAR',
                 'constraint' => 36,
             ],
+            'id_affiliate' => [
+                'type' => 'CHAR',
+                'constraint' => 36,
+                'null' => true,
+            ],
             'name' => [
                 'type' => 'VARCHAR',
                 'constraint' => '255'
@@ -51,7 +56,7 @@ class CreateUsersTable extends Migration
             ],
             'role' => [
                 'type' => 'ENUM',
-                'constraint' => ['user', 'admin', 'store'],
+                'constraint' => ['user', 'admin', 'store','kurir'],
                 'default' => 'user',
             ],
             'is_verif' => [

@@ -26,6 +26,7 @@
       $is_verif = session()->get('is_verif');
       $redirect_url_menu = ($is_verif == 0) ? base_url('dashboard') : base_url('dashboard/menu');
       $redirect_url_order = ($is_verif == 0) ? base_url('dashboard') : base_url('dashboard/order');
+      $redirect_url_kurir = ($is_verif == 0) ? base_url('dashboard') : base_url('dashboard/kurir');
       ?>
 
       <li class="mt-1.5 w-full">
@@ -45,6 +46,17 @@
           <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Pesanan</span>
         </a>
       </li>
+
+      <li class="mt-2 w-full">
+        <a href="<?= $redirect_url_kurir ?>"
+          class="flex items-center px-4 py-2 text-sm rounded-lg mx-2 transition-colors ease-in-out hover:bg-blue-100 hover:font-semibold hover:text-blue-700">
+          <div class="flex items-center justify-center h-8 w-8 rounded-lg bg-blue-50 text-blue-500">
+            <i class="fa-solid fa-motorcycle text-base"></i>
+          </div>
+          <span class="ml-3">Kurir</span>
+        </a>
+      </li>
+
 
 
       <!-- <li class="mt-1.5 w-full">
@@ -80,3 +92,4 @@
     </ul>
   </div>
 </aside>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">

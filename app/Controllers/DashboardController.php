@@ -6,6 +6,7 @@ use App\Models\MenuModel;
 use App\Models\OrderModel;
 use App\Models\UserModel;
 use App\Models\CategoryModel;
+use App\Models\KurirModel;
 use App\Models\StoreModel;
 
 class DashboardController extends BaseController
@@ -18,7 +19,7 @@ class DashboardController extends BaseController
     protected $userModel;
     protected $orderModel;
     protected $storeModel;
-
+    protected $kurirModel;
 
     public function __construct()
     {
@@ -29,6 +30,8 @@ class DashboardController extends BaseController
         $this->userModel = new UserModel();
         $this->orderModel = new OrderModel();
         $this->storeModel = new StoreModel();
+        $this->kurirModel = new KurirModel();
+
         $store = session()->get('store_id');
         if (is_string($store)) {
             $this->store_id = $store;
@@ -145,15 +148,27 @@ class DashboardController extends BaseController
         $orderModel = new OrderModel();
         $perPage = 5;
 
+        $affiliateId = session()->get('user_id');
+
+        $kurirs = $this->kurirModel
+            ->select('kurirs.*, users.name, users.email, users.phone as contact, users.profile as photo_url')
+            ->join('users', 'users.id = kurirs.user_id')
+            ->where('users.role', 'kurir')
+            ->where('kurirs.affiliate_id', $affiliateId) 
+            ->orderBy('kurirs.created_at', 'DESC')
+            ->findAll();
+
         $orders = $orderModel->getOrdersByStoreId($this->store_id, $perPage);
         $pager = $orderModel->pager;
 
         return view('pages/order', [
             'page' => 'Pesanan',
             'orders' => $orders,
+            'kurirs' => $kurirs,
             'pager' => $pager
         ]);
     }
+
 
 
     // ADMIN CONTROLLER
@@ -221,9 +236,10 @@ class DashboardController extends BaseController
 
         $pager = $orderModel->pager;
         return view('admin/transaksi', [
-            'page' => 'Transakai Pemesanan',  
-            'orders' => $orders,  
-            'pager' => $pager]);
+            'page' => 'Transakai Pemesanan',
+            'orders' => $orders,
+            'pager' => $pager
+        ]);
     }
 
 
@@ -302,30 +318,30 @@ class DashboardController extends BaseController
     public function delete($id)
     {
         $user = $this->userModel->withDeleted()->find($id);
-        
+
         if (!$user) {
             return $this->response->setJSON([
                 'success' => false,
                 'message' => 'User tidak ditemukan.'
             ]);
         }
-    
+
         if ($this->userModel->delete($id, true)) {
             return $this->response->setJSON([
                 'success' => true,
                 'message' => 'UMKM berhasil dihapus.'
             ]);
         }
-    
+
         return $this->response->setJSON([
             'success' => false,
             'message' => 'Gagal menghapus UMKM.'
         ]);
     }
-    
-    
-    
-    
+
+
+
+
 
     private function sendVerificationEmail($email)
     {
@@ -343,5 +359,27 @@ class DashboardController extends BaseController
             log_message('error', 'Email verification failed: ' . $emailService->printDebugger());
             return false;
         }
+    }
+
+    public function kurir(): string
+    {
+        $kurirs = $this->kurirModel
+            ->select('kurirs.*, users.name, users.email, users.phone as contact, users.profile as photo_url')
+            ->join('users', 'users.id = kurirs.user_id')
+            ->where('users.role', 'kurir')
+            ->orderBy('kurirs.created_at', 'DESC')
+            ->findAll();
+     
+
+        return view('pages/kurir', [
+            'title' => 'Kurir',
+            'kurirs' => $kurirs,
+        ]);
+    }
+
+
+    public function formKurir()
+    {
+        return view('pages/form_kurir.php');
     }
 }

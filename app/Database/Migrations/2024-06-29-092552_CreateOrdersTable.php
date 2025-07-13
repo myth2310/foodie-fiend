@@ -25,6 +25,10 @@ class CreateOrdersTable extends Migration
                 'type' => 'CHAR',
                 'constraint' => 36,
             ],
+            'kurir_id' => [
+                'type' => 'CHAR',
+                'constraint' => 36,
+            ],
             'menu_id' => [
                 'type' => 'CHAR',
                 'constraint' => 36,

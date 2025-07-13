@@ -1,0 +1,68 @@
+body {
+    background-color: #f0f4f8;
+}
+
+.nav-bottom {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    border-top: 1px solid #ddd;
+    display: flex;
+}
+
+.nav-bottom a {
+    flex: 1;
+    text-align: center;
+    padding: 0.5rem 0;
+    color: #333;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.nav-bottom a.active {
+    color: #eab308;
+    font-weight: 500;
+}
+
+.card-pesanan {
+    border-radius: 12px;
+}
+
+.status-badge {
+    font-size: 0.8rem;
+}
+
+.header {
+    background: linear-gradient(45deg, #eab308);
+    color: white;
+    padding: 1rem;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+}
+
+.logo-img {
+    height: 60px;
+    margin-right: 0.5rem;
+}
+
+.profile-img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid white;
+}
+
+.tips-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 1rem;
+}
+
+.income-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 1rem;
+}
