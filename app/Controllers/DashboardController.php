@@ -364,19 +364,18 @@ class DashboardController extends BaseController
     public function kurir(): string
     {
         $kurirs = $this->kurirModel
-            ->select('kurirs.*, users.name, users.email, users.phone as contact, users.profile as photo_url')
-            ->join('users', 'users.id = kurirs.user_id')
+            ->select('users.*,kurirs.*, users.name, users.email, users.phone as contact, users.profile as photo_url')
+            ->join('users', 'users.id = kurirs.user_id') 
             ->where('users.role', 'kurir')
-            ->orderBy('kurirs.created_at', 'DESC')
+            ->orderBy('users.created_at', 'DESC')
             ->findAll();
-     
-
+    
         return view('pages/kurir', [
             'title' => 'Kurir',
             'kurirs' => $kurirs,
         ]);
     }
-
+    
 
     public function formKurir()
     {
