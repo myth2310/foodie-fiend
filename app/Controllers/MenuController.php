@@ -57,18 +57,28 @@ class MenuController extends BaseController
 
     public function detail($menu_id)
     {
-        $reviews = $this->reviewModel->getReviewWithUser($menu_id);
         $user_id = session()->get('user_id');
+    
         $menu = $this->menuModel->getMenuWithStore($menu_id);
         $charts = $this->chartModel->getAllChartWithMenu($user_id);
+        $reviews = $this->reviewModel->getReviewWithUser($menu_id);
+        $ratingStats = $this->reviewModel->getAverageRating($menu_id);
+
+        $menubyStores = $this->menuModel->getMenuByStres($menu->store_id);
+
         $data = [
             'data' => $menu,
+            'stores_name' => $menu->store_name,
+            'menus' => $menubyStores,
             'charts' => $charts,
             'reviews' => $reviews,
+            'averageRating' => round($ratingStats->average ?? 0, 1),
+            'totalRating'   => $ratingStats->total ?? 0,
         ];
-
+    
         return view('pages/menu_detail', $data);
     }
+    
 
     public function create()
     {
@@ -84,15 +94,15 @@ class MenuController extends BaseController
             $filePath = $file->getTempName();
 
             // Upload file ke Cloudinary
-             $uploadResult = $this->uploadHelper->upload($filePath);
+            $uploadResult = $this->uploadHelper->upload($filePath);
 
             // Mendapatkan URL file yang diupload
             $this->menu->image_url = $uploadResult['secure_url'];
         }
-            
+
         if (!$this->menuModel->save($this->menu)) {
-                session()->setFlashdata('errors', $this->menuModel->errors());
-                return redirect()->back()->withInput();
+            session()->setFlashdata('errors', $this->menuModel->errors());
+            return redirect()->back()->withInput();
         }
 
         session()->setFlashdata('messages', ['Sukses tambah data']);
@@ -132,15 +142,15 @@ class MenuController extends BaseController
             $filePath = $file->getTempName();
 
             // Upload file ke Cloudinary
-             $uploadResult = $this->uploadHelper->upload($filePath);
+            $uploadResult = $this->uploadHelper->upload($filePath);
 
             // Mendapatkan URL file yang diupload
             $this->menu->image_url = $uploadResult['secure_url'];
         }
-            
-        if (!$this->menuModel->update($menu_id, $this->menu )) {
-                session()->setFlashdata('errors', $this->menuModel->errors());
-                return redirect()->back()->withInput();
+
+        if (!$this->menuModel->update($menu_id, $this->menu)) {
+            session()->setFlashdata('errors', $this->menuModel->errors());
+            return redirect()->back()->withInput();
         }
 
         session()->setFlashdata('messages', ['Berhasil perbarui data']);
@@ -174,6 +184,4 @@ class MenuController extends BaseController
     {
         return $this->menuModel->where('store_id', $store_id)->findAll();
     }
-
-   
 }

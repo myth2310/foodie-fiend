@@ -41,4 +41,9 @@ class Home extends BaseController
     {
         return view('pages/dasboard');
     }
+    
+    public function coba(){
+        return view('pages/coba');
+    }
+
 }

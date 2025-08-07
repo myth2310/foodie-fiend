@@ -78,7 +78,7 @@ class ChartController extends BaseController
 
         $cartModel = new ChartModel();
 
-        // Update the quantity in the database
+
         $cartModel->update($itemId, ['quantity' => $newQuantity]);
 
         return $this->response->setJSON([

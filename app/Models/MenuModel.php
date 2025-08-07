@@ -93,6 +93,18 @@ class MenuModel extends Model
             ->findAll();
     }
 
+    public function getMenuByStres($store_id)
+    {
+        return $this->select('menus.*, ROUND(AVG(reviews.rating), 1) as average_rating')
+            ->join('stores', 'stores.id = menus.store_id')
+            ->join('reviews', 'reviews.menu_id = menus.id', 'left')
+            ->where('menus.store_id', $store_id)
+            ->groupBy('menus.id')
+            ->asArray()
+            ->findAll();
+    }
+
+
     public function getMenusAll($user_id = null)
     {
         $all_menus = $this->select('menus.*, stores.name as name_stores, ROUND(AVG(reviews.rating), 1) as average_rating')
@@ -100,57 +112,59 @@ class MenuModel extends Model
             ->join('reviews', 'reviews.menu_id = menus.id', 'left')
             ->groupBy('menus.id')
             ->findAll();
-    
+
         $all_menus_array = array_map(function ($menu) {
             return [
                 'id' => $menu->id,
+                'store_id' => $menu->store_id,
                 'name' => $menu->name,
                 'image_url' => $menu->image_url,
                 'price' => $menu->price,
                 'store_name' => $menu->name_stores,
-                'average_rating' => $menu->average_rating,
+                'average_rating' => 0,
+                // 'average_rating' => $menu->average_rating,
             ];
         }, $all_menus);
-    
+
         if (!$user_id) {
             // Tidak login, return menu random
             shuffle($all_menus_array);
             return $all_menus_array;
         }
-    
+
         // Ambil rekomendasi dari Flask
         $ch = curl_init();
         $api_url = 'http://127.0.0.1:5000/api/recommendation/' . $user_id;
         curl_setopt($ch, CURLOPT_URL, $api_url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $response = curl_exec($ch);
-    
+
         if (curl_errno($ch)) {
             curl_close($ch);
             return $all_menus_array; // fallback semua menu
         }
-    
+
         curl_close($ch);
         $recommended_menu_ids = json_decode($response, true);
-    
+
         if (!is_array($recommended_menu_ids) || empty($recommended_menu_ids)) {
             shuffle($all_menus_array); // fallback jika kosong
             return $all_menus_array;
         }
-    
+
         $recommended_menus = array_filter($all_menus_array, function ($menu) use ($recommended_menu_ids) {
             return in_array($menu['id'], $recommended_menu_ids);
         });
-    
+
         // Urutkan sesuai urutan rekomendasi
         $menu_id_index = array_flip($recommended_menu_ids);
         usort($recommended_menus, function ($a, $b) use ($menu_id_index) {
             return $menu_id_index[$a['id']] <=> $menu_id_index[$b['id']];
         });
-    
+
         return $recommended_menus;
     }
-    
+
 
 
     public function countMenusWithRating()
@@ -185,28 +199,26 @@ class MenuModel extends Model
     public function getRecommendedMenuIds($user_id)
     {
         $api_url = 'http://127.0.0.1:5000/api/recommendation/' . $user_id;
-    
+
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $api_url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_TIMEOUT, 5); // Maks. 5 detik
         $response = curl_exec($ch);
-    
+
         if (curl_errno($ch)) {
             log_message('error', 'cURL error: ' . curl_error($ch));
             return [];
         }
-    
+
         curl_close($ch);
-    
+
         $recommended_menu_ids = json_decode($response, true);
-    
+
         if (!is_array($recommended_menu_ids)) {
             return [];
         }
-    
+
         return $recommended_menu_ids;
     }
-    
-
 }

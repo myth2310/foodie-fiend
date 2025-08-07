@@ -1,4 +1,3 @@
-
 <?= $this->extend('layouts/dashboard') ?>
 <?= $this->section('sidebar') ?>
 <?= $this->include('components/sidebar') ?>
@@ -10,6 +9,7 @@
 
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
@@ -38,22 +38,24 @@ $isVerif = $data['store']['is_verif'];
 $ktpUrl = $data['store']['ktp_url'];
 $umkmLetter = $data['store']['umkm_letter'];
 
-if ($isVerif == 0 && is_null($ktpUrl) && is_null($umkmLetter)) : ?>
+if ($isVerif == 1 && is_null($ktpUrl) && is_null($umkmLetter)) : ?>
   <div class="bg-red-100 border-l-4 border-yellow-500 text-yellow-700 p-4 ml-4 mb-4 rounded-lg">
     <p><strong class="font-bold">Information: </strong> Akun Anda belum diverifikasi. Segera lengkapi data profil UMKM untuk mengakses semua fitur.</p>
     <button type="button" class="bg-green-500 text-white p-2 mt-4 rounded-md" onclick="openModal()">Lengkapi Profil UMKM</button>
   </div>
-<?php elseif ($isVerif == 0) : ?>
+<?php elseif ($isVerif == 1) : ?>
   <div class="ml-3" style="background-color: #e0e951; border-radius: 10px; padding: 20px; ">
     <p><strong class="font-bold">Information: </strong> Akun Anda belum diverifikasi. Silakan tunggu proses verifikasi.</p>
   </div>
 <?php endif; ?>
 
-<!-- Modal Structure -->
-<!-- Modal -->
+
+<!-- Modal Form Profile -->
 <div class="fixed inset-0 flex items-center justify-center z-50" id="profileFormModal" style="display:none;">
   <div class="modal-overlay absolute inset-0 bg-gray-600 opacity-50"></div>
+
   <div class="modal-container bg-white w-11/12 md:w-1/2 rounded-lg z-10 p-8">
+
     <div class="modal-header flex justify-between items-center pb-4">
       <h5 class="text-xl font-semibold text-gray-800">Lengkapi Informasi Profil UMKM Anda</h5>
       <button type="button" class="text-gray-500" id="closeModal">&times;</button>
@@ -61,7 +63,8 @@ if ($isVerif == 0 && is_null($ktpUrl) && is_null($umkmLetter)) : ?>
     <div class="modal-body">
       <form id="profileForm" method="POST" enctype="multipart/form-data" action="<?= base_url('dashboard/update/store/' . session()->get('user_id')) ?>">
         <?= csrf_field() ?>
-        <div class="step mt-2" id="step1">
+        <!-- Step 1 -->
+        <div class="step" id="step1">
           <div class="mb-4">
             <label for="name" class="block text-gray-700">Nama Pemilik/Owner</label>
             <input type="text" name="name" value="<?= session()->get('name') ?>" class="mt-2 p-2 w-full border rounded-md" required />
@@ -74,28 +77,43 @@ if ($isVerif == 0 && is_null($ktpUrl) && is_null($umkmLetter)) : ?>
             <label for="address" class="block text-gray-700">Alamat</label>
             <p class="text-sm text-gray-600 mb-2">Klik pada peta untuk memilih lokasi UMKM Anda. Lokasi dan alamat akan terisi secara otomatis.</p>
             <div id="map" class="w-full h-64 rounded-lg mb-4"></div>
-            <input style="display: none;" id="latitude" name="latitude" type="text" readonly class="w-full p-2 border-2 text-center border-gray-300 rounded mt-1">
-            <input style="display: none;" id="longitude" name="longitude" type="text" readonly class="w-full p-2 border-2 text-center border-gray-300 rounded mt-1">
-            <textarea id="address" placeholder="Masukan Alamat" name="address" rows="3" class="w-full mt-1 px-4 py-2 bg-gray-100 rounded-md text-gray-800" readonly required><?= session()->get('address') ?></textarea>
+            <input type="hidden" id="latitude" name="latitude">
+            <input type="hidden" id="longitude" name="longitude">
+            <textarea id="address" name="address" rows="3" class="w-full mt-1 px-4 py-2 bg-gray-100 rounded-md text-gray-800" readonly required><?= session()->get('address') ?></textarea>
           </div>
         </div>
 
         <!-- Step 2 -->
-        <div class="step mt-2" id="step2" style="display:none;">
+        <div class="step" id="step2" style="display:none;">
           <div class="mb-4">
             <label for="ktp" class="block text-gray-700">Upload KTP</label>
             <input type="file" name="ktp_url" accept="image/*" class="mt-2 p-2 w-full border rounded-md" required />
-            <p>Upload File Dalam Bentuk Gambar JPG/PNG</p>
+            <p class="text-sm text-gray-500">Upload file dalam bentuk gambar JPG/PNG</p>
           </div>
+
           <div class="mb-4">
-            <label for="umkm_letter" class="block text-gray-700">Surat Mitra UMKM</label>
-            <input type="file" name="umkm_letter" accept="image/*" class="mt-2 p-2 w-full border rounded-md" required />
-            <p>Scan Surat Ketersediaan Dalam Bentuk Gambar JPG/PNG</p>
-            <a href="<?= base_url('dashboard/download-template-surat') ?>"
-              class="text-blue-500 mt-2 inline-block">
-              Unduh Template Surat Ketersediaan Mitra UMKM
-            </a>
+            <label class="block text-gray-700 mb-2">Surat Kesiapan Mitra</label>
+            <p class="text-gray-600 text-sm mb-4">
+              Dengan ini menyatakan kesiapan kami untuk bergabung sebagai mitra resmi Food Fiend.
+              Kami menyatakan bahwa kami adalah mitra asli yang berkomitmen untuk bekerja sama
+              dalam memenuhi standar dan ketentuan yang telah ditetapkan oleh Food Fiend, serta
+              menjaga kepercayaan dan integritas yang diberikan kepada kami.
+              <br><br>
+              Demikian surat ketersediaan ini kami buat dengan sebenar-benarnya untuk dipergunakan sebagaimana mestinya.
+            </p>
+
+            <canvas id="signatureCanvas" width="400" height="200" class="border border-gray-300 rounded-md"></canvas>
+            <p id="signatureError" class="text-red-500 text-sm mt-1 hidden">Tanda tangan wajib diisi.</p>
+            <div class="mt-2 flex gap-2 items-center">
+              <button type="button" class="px-4 py-2 bg-red-500 text-white rounded" onclick="clearCanvas()">Clear</button>
+              <label class="text-gray-700">Tanda Tangan Digital</label>
+            </div>
+     
+            <!-- Hidden input untuk tanda tangan base64 -->
+<input type="hidden" name="signature_base64" id="signature_base64">
+
           </div>
+
           <div class="mb-4 flex items-center">
             <input type="checkbox" id="confirmData" name="confirmData" class="mr-2" required>
             <label for="confirmData" class="text-gray-700">
@@ -104,10 +122,9 @@ if ($isVerif == 0 && is_null($ktpUrl) && is_null($umkmLetter)) : ?>
           </div>
         </div>
 
-        <!-- Navigation buttons -->
         <div class="flex justify-between pt-6">
-          <button type="button" class="btn-prev text-gray-500 bg-green-200 px-4 py-2 rounded-md" id="prevBtn" style="display:none;">Previous</button>
-          <button type="button" class="btn-next bg-blue-500 text-white px-4 py-2 rounded-md" id="nextBtn">Next</button>
+          <button type="button" class="bg-blue-500 text-white px-4 py-2 rounded-md" id="prevBtn" style="display:none;">Previous</button>
+          <button type="button" class="bg-blue-500 text-white px-4 py-2 rounded-md" id="nextBtn">Next</button>
           <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded-md" id="submitBtn" style="display:none;">Simpan Profil</button>
         </div>
       </form>
@@ -118,19 +135,28 @@ if ($isVerif == 0 && is_null($ktpUrl) && is_null($umkmLetter)) : ?>
 <style>
   #map {
     height: 300px;
-    /* Tinggi peta */
     width: 100%;
+  }
+
+  #signatureCanvas {
+    border: 2px solid #000;
+    touch-action: none;
+    cursor: crosshair;
+  }
+
+
+  #signatureOutput {
+    margin-top: 20px;
+    max-width: 100%;
   }
 </style>
 
 <div class="w-full px-6 py-6 mx-auto">
 
-<div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-6  mb-6 rounded-lg shadow-lg">
+  <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-6  mb-6 rounded-lg shadow-lg">
     <p class="text-3xl font-bold mb-2">Total Pendapatan</p>
-       <p class="text-4xl font-extrabold">Rp. <?= number_format($data['totalPendapatan'], 0, ',', '.') ?></p>
-</div>
-
-
+    <p class="text-4xl font-extrabold">Rp. <?= number_format($data['totalPendapatan'], 0, ',', '.') ?></p>
+  </div>
 
   <div class="flex flex-wrap -mx-3">
     <div class="w-full max-w-full px mb-6 sm:w-1/2 sm:flex-none xl:mb-0 xl:w-1/4">
@@ -140,7 +166,7 @@ if ($isVerif == 0 && is_null($ktpUrl) && is_null($umkmLetter)) : ?>
             <div class="flex-none w-2/3 max-w-full px-3">
               <div>
                 <p class="mb-0 font-sans text-sm font-semibold leading-normal uppercase">Total Menu</p>
-                <h5 class="mb-2 font-bold"><?=$data['totalMenu'] ?></h5>
+                <h5 class="mb-2 font-bold"><?= $data['totalMenu'] ?></h5>
               </div>
             </div>
             <div class="px-3 text-right basis-1/3">
@@ -183,7 +209,6 @@ if ($isVerif == 0 && is_null($ktpUrl) && is_null($umkmLetter)) : ?>
 <style>
   #map {
     height: 300px;
-    /* atau sesuai kebutuhan */
     width: 100%;
   }
 </style>
@@ -194,17 +219,13 @@ if ($isVerif == 0 && is_null($ktpUrl) && is_null($umkmLetter)) : ?>
   let marker;
 
   document.getElementById('profileFormModal').addEventListener('click', function() {
-    // Tampilkan modal
     document.getElementById('profileFormModal').style.display = 'flex';
-
-    // Inisialisasi peta setelah modal terbuka
     if (!map) {
       map = L.map('map').setView([-6.8737575, 109.0855475], 13);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors'
       }).addTo(map);
 
-      // Pindahkan kode event klik di sini agar peta hanya terinisialisasi satu kali
       map.on('click', function(e) {
         const {
           lat,
@@ -226,14 +247,10 @@ if ($isVerif == 0 && is_null($ktpUrl) && is_null($umkmLetter)) : ?>
           .catch(error => console.error('Error fetching address:', error));
       });
     }
-
-    // Perbarui ukuran peta setelah modal benar-benar terbuka
     setTimeout(() => {
       map.invalidateSize();
     }, 300);
   });
-
-  // Tutup modal
   document.getElementById('closeModal').addEventListener('click', function() {
     document.getElementById('profileFormModal').style.display = 'none';
   });
@@ -290,6 +307,78 @@ if ($isVerif == 0 && is_null($ktpUrl) && is_null($umkmLetter)) : ?>
 
   showStep(currentStep);
 </script>
+
+
+
+
+<script>
+  const canvas = document.getElementById("signatureCanvas");
+  const ctx = canvas.getContext("2d");
+  const errorMsg = document.getElementById("signatureError");
+  const signatureFilled = document.getElementById("signatureFilled");
+
+  let drawing = false;
+  let hasSigned = false;
+
+  canvas.addEventListener("mousedown", (e) => {
+    drawing = true;
+    ctx.beginPath();
+    ctx.moveTo(e.offsetX, e.offsetY);
+  });
+
+  canvas.addEventListener("mousemove", (e) => {
+    if (drawing) {
+      ctx.lineTo(e.offsetX, e.offsetY);
+      ctx.stroke();
+      hasSigned = true;
+      signatureFilled.value = "1";
+      errorMsg.classList.add("hidden");
+    }
+  });
+
+  canvas.addEventListener("mouseup", () => drawing = false);
+  canvas.addEventListener("mouseleave", () => drawing = false);
+
+  function clearCanvas() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    hasSigned = false;
+    signatureFilled.value = "";
+    errorMsg.classList.add("hidden");
+  }
+
+  document.getElementById("profileForm").addEventListener("submit", function(e) {
+    if (!hasSigned) {
+      e.preventDefault();
+      errorMsg.classList.remove("hidden");
+      canvas.scrollIntoView({
+        behavior: "smooth"
+      });
+    }
+  });
+</script>
+
+<script>
+  document.getElementById("profileForm").addEventListener("submit", function (e) {
+    const dataURL = canvas.toDataURL("image/png");
+    document.getElementById("signature_base64").value = dataURL;
+  });
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    document.querySelector("form").addEventListener("submit", function() {
+      Swal.fire({
+        title: 'Sedang diproses...',
+        text: 'Mohon tunggu sementara kami menyimpan data Anda',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading()
+        }
+      });
+    });
+  </script>
+
 
 <?= $this->endSection() ?>
 

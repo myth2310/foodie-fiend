@@ -7,4 +7,5 @@ writable/logs/*.log
 writable/session/*
 .env
 public/scripts/__pycache__/
-
+backend/__pycache__/
+backend/venv

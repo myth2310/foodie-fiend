@@ -7,13 +7,17 @@
 <?= $this->include('components/login_modal') ?>
 <?= $this->include('components/register_modal') ?>
 <div class="container mx-auto px-10 py-20 mt-5">
+  <div class="flex justify-end mb-4">
+    <a href="<?= previous_url() ?>" class="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-md shadow hover:bg-gray-200 transition">
+      Kembali<i class="fa-solid fa-arrow-right"></i>
+    </a>
+  </div>
   <!-- Hero Banner Start -->
   <div id="heroBanner" class="relative p-40 rounded-xl bg-gray-400 bg-blend-multiply bg-center bg-cover bg-no-repeat bg-[url('https://images.squarespace-cdn.com/content/v1/61709486e77e1d27c181981c/1695741277156-OMOA8F2CO65CT0X4IGZG/Urbanspace+Pearl_Savory+Selection+2.jpeg?format=1500w')] bg-blend-multiply before:absolute before:inset-0 before:bg-black before:opacity-50">
     <h1 class="mb-4 text-4xl font-extrabold tracking-tight leading-none text-white md:text-5xl lg:text-6xl capitalize"><?= $title ?></h1>
   </div>
   <!-- Hero Banner End -->
 
-  
   <!-- Menu Section Start -->
   <section class="mt-2 ml-0">
     <?php if (!$menus): ?>

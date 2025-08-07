@@ -11,6 +11,11 @@
 <div class="container mx-auto px-10 py-20 mt-10 mb-0">
   <section class="text-gray-400 body-font overflow-hidden">
     <div class="container py-10 mx-auto">
+      <div class="flex justify-end mb-4">
+        <a href="<?= previous_url() ?>" class="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-md shadow hover:bg-gray-200 transition">
+          Kembali<i class="fa-solid fa-arrow-right"></i>
+        </a>
+      </div>
       <div class="lg:w-4/5 mx-auto flex flex-wrap">
         <img alt="ecommerce" class="lg:w-1/2 w-full lg:h-auto h-64 object-cover object-center rounded" src="<?= $data->image_url ?>">
         <div class="lg:w-1/2 w-full lg:pl-10 lg:py-6 mt-6 lg:mt-0">
@@ -18,21 +23,16 @@
           <h1 class="text-gray-800  text-3xl title-font font-medium mb-1 capitalize"><?= $data->name ?></h1>
           <div class="flex mb-4">
             <span class="flex items-center">
-              <svg fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-4 h-4 text-yellow-300" viewBox="0 0 24 24">
-                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
-              </svg>
-              <svg fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-4 h-4 text-yellow-300" viewBox="0 0 24 24">
-                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
-              </svg>
-              <svg fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-4 h-4 text-yellow-300" viewBox="0 0 24 24">
-                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
-              </svg>
-              <svg fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-4 h-4 text-yellow-300" viewBox="0 0 24 24">
-                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
-              </svg>
-
-              <span class="ml-3"><?= count($reviews) ?> Reviews</span>
+              <?php for ($i = 1; $i <= 5; $i++): ?>
+                <svg class="w-4 h-4 <?= $i <= round($averageRating) ? 'text-yellow-300' : 'text-gray-300' ?>" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 
+                 1.18 6.88L12 17.77l-6.18 3.25L7 
+                 14.14 2 9.27l6.91-1.01L12 2z"></path>
+                </svg>
+              <?php endfor; ?>
+              <span class="ml-3"><?= $totalRating ?> Reviews</span>
             </span>
+
           </div>
           <p class="leading-relaxed"><?= $data->description ?></p>
           <div class="flex mt-6 items-center pb-5 border-b-2 border-gray-700 mb-5">
@@ -90,7 +90,7 @@
   <!-- Detail Menu Section Stop -->
 
   <!-- Review Section Start -->
-  <section class="px-30 pb-24 ">
+  <section class="px-30 ">
     <div class="container px-10 mx-auto bg-white  rounded-lg">
       <div class="flex items-center pt-8">
         <h2 class="text-2xl font-bold text-gray-900 "><i class="fa-solid fa-comment"></i> Semua ulasan</h2>
@@ -119,7 +119,7 @@
                     </span>
                   </div>
 
-                  <div class="flex mb-4">
+                  <div class="flex mb-2">
                     <!-- Ulasan user -->
                     <p class="text-gray-700"><?= $review->review ?></p>
                   </div>
@@ -134,6 +134,16 @@
     </div>
   </section>
 </div>
+
+<section>
+  <div id="menuCard" class="container mx-auto px-10 mt-0">
+    <div class="flex">
+      <h2 class="text-2xl font-semibold text-gray-800">Menu Spesial dari <?= $stores_name ?></h2>
+
+    </div>
+    <?= $this->include('components/menu_card') ?>
+  </div>
+</section>
 
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

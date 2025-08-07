@@ -8,60 +8,63 @@
 
 <section>
   <div class="container mx-auto px-10 py-20 mt-10 mb-0">
-    <div class="flex flex-wrap">
-      <form action="<?= base_url('recommendations/search') ?>" method="get" class="flex items-center space-x-2 w-full max-w-md mx-auto mb-6">
-        <input
-          type="text"
-          name="query"
-          placeholder="Cari menu favoritmu..."
-          class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300"
-          required>
-        <button
-          type="submit"
-          class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
-          Cari
-        </button>
-      </form>
-
-      <!-- Card Rating  -->
-      <div
-        id="menu-container"
-        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 p-4">
-        <?php foreach ($menus_ratings as $rating_key => $rating_data): ?>
-          <div
-            class="menu-item bg-white shadow-xl dark:shadow-dark-xl rounded-2xl overflow-hidden"
-            data-menu-name="menu rating <?= substr($rating_key, -1) ?>">
-            <a href="<?= base_url('recommendations/rating/' . substr($rating_key, -1)) ?>">
-              <div class="h-48 w-full">
-                <img src="<?= !empty($rating_data['image']) ? $rating_data['image'] : 'https://images.squarespace-cdn.com/content/v1/61709486e77e1d27c181981c/1695741276685-XWI9NVDGPAOSWY1U4C3Q/Urbanspace+Pearl_Sweets+and+Savory.jpg' ?>"
-                  alt="foto kumpulan menu"
-                  class="h-full w-full object-cover">
-              </div>
-              <div class="p-4">
-                <p class="font-sans text-sm font-semibold uppercase mb-2 dark:text-gray-900 dark:opacity-60">
-                  Menu rating <?= substr($rating_key, -1) ?>
-                </p>
-                <div class="flex items-center mb-2">
-                  <?php for ($i = 0; $i < substr($rating_key, -1); $i++): ?>
-                    <svg aria-hidden="true" class="h-5 w-5 text-yellow-300" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-                    </svg>
-                  <?php endfor; ?>
-                  <span class="ml-3 bg-yellow-200 px-2.5 py-0.5 text-xs font-semibold rounded">
-                    <?= $rating_data['count'] ?>
-                  </span>
-                </div>
-              </div>
-            </a>
-          </div>
-        <?php endforeach; ?>
-      </div>
-
+    <div class="flex justify-end mb-4">
+      <a href="<?= previous_url() ?>" class="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-md shadow hover:bg-gray-200 transition">
+        Kembali<i class="fa-solid fa-arrow-right"></i>
+      </a>
     </div>
+
+    <form action="<?= base_url('recommendations/search') ?>" method="get" class="flex items-center space-x-2 w-full max-w-md mx-auto mb-6">
+      <input
+        type="text"
+        name="query"
+        placeholder="Cari menu favoritmu..."
+        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300"
+        required>
+      <button
+        type="submit"
+        class="bg-blue-600 text-white px-2 py-2 rounded-lg hover:bg-blue-700 transition">
+        <i class="fa-solid fa-magnifying-glass"></i>
+      </button>
+    </form>
+
+    <div
+      id="menu-container"
+      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 p-4">
+      <?php foreach ($menus_ratings as $rating_key => $rating_data): ?>
+        <div
+          class="menu-item bg-white shadow-xl dark:shadow-dark-xl rounded-2xl overflow-hidden"
+          data-menu-name="menu rating <?= substr($rating_key, -1) ?>">
+          <a href="<?= base_url('recommendations/rating/' . substr($rating_key, -1)) ?>">
+            <div class="h-48 w-full">
+              <img src="<?= !empty($rating_data['image']) ? $rating_data['image'] : 'https://images.squarespace-cdn.com/content/v1/61709486e77e1d27c181981c/1695741276685-XWI9NVDGPAOSWY1U4C3Q/Urbanspace+Pearl_Sweets+and+Savory.jpg' ?>"
+                alt="foto kumpulan menu"
+                class="h-full w-full object-cover">
+            </div>
+            <div class="p-4">
+              <p class="font-sans text-sm font-semibold uppercase mb-2 dark:text-gray-900 dark:opacity-60">
+                Menu rating <?= substr($rating_key, -1) ?>
+              </p>
+              <div class="flex items-center mb-2">
+                <?php for ($i = 0; $i < substr($rating_key, -1); $i++): ?>
+                  <svg aria-hidden="true" class="h-5 w-5 text-yellow-300" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                  </svg>
+                <?php endfor; ?>
+                <span class="ml-3 bg-yellow-200 px-2.5 py-0.5 text-xs font-semibold rounded">
+                  <?= $rating_data['count'] ?>
+                </span>
+              </div>
+            </div>
+          </a>
+        </div>
+      <?php endforeach; ?>
+    </div>
+  </div>
   </div>
 </section>
 
-<!-- Main Content End -->
+
 <!-- Recommendation Start -->
 <section>
   <div id="menuCard" class="container mx-auto px-10 mt-0">
@@ -71,9 +74,9 @@
     <?= $this->include('components/menu_card') ?>
   </div>
 </section>
+
 <!-- Recommendation End -->
 <?= $this->endSection() ?>
-
 <?= $this->section('footer') ?>
 <?= $this->include('components/footer') ?>
 <?= $this->endSection() ?>

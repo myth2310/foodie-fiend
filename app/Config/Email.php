@@ -6,7 +6,7 @@ use CodeIgniter\Config\BaseConfig;
 
 class Email extends BaseConfig
 {
-    public string $fromEmail = 'no-reply@food-fiend.com';
+    public string $fromEmail = 'no-reply@foode-fiend.com';
     public string $fromName  = 'Your Application';
     public string $recipients = '';
 
@@ -16,7 +16,7 @@ class Email extends BaseConfig
     
     public string $SMTPHost = 'smtp.gmail.com';  
     public string $SMTPUser = 'achmadmiftahudin2310@gmail.com';
-    public string $SMTPPass = 'jfpmptzisxrocojw';  
+    public string $SMTPPass = 'wkepydxpkcgfpbax';  
     public int $SMTPPort = 587;  
     public int $SMTPTimeout = 5;
     public bool $SMTPKeepAlive = false;

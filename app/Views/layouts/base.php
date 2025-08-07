@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
   <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
   <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-  
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 
@@ -23,41 +23,43 @@
   <?= $this->renderSection('scripts', true); ?>
 
 
-  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+  <?php if (session()->getFlashdata('success')) : ?>
+    <script>
+      Swal.fire({
+        icon: 'success',
+        title: 'Sukses',
+        text: '<?= session()->getFlashdata('success'); ?>'
+      });
+    </script>
+  <?php endif; ?>
+
+  <?php if (session()->getFlashdata('error')) : ?>
+    <script>
+      Swal.fire({
+        icon: 'error',
+        title: 'Gagal',
+        text: '<?= session()->getFlashdata('error'); ?>'
+      });
+    </script>
+  <?php endif; ?>
+
+
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      <?php if (session()->getFlashdata('success')): ?>
-        swal({
-          title: "Sukses!",
-          text: "<?= session()->getFlashdata('success') ?>",
-          icon: "success",
-          content: {
-            element: "p",
-            attributes: {
-              style: "text-align: center;"
-            }
-          }
-        });
-      <?php elseif (session()->getFlashdata('error')): ?>
-        swal({
-          title: "Error!",
-          html: true,
-          text: "<?= session()->getFlashdata('error') ?>",
-          icon: "error",
-          content: {
-            element: "p",
-            attributes: {
-              style: "text-align: center;"
-            }
-          }
-        });
-      <?php endif; ?>
+    document.querySelector("form").addEventListener("submit", function() {
+      Swal.fire({
+        title: 'Sedang diproses...',
+        text: 'Mohon tunggu sementara kami memproses data',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading()
+        }
+      });
     });
   </script>
-
-
-
 
   <!-- jQuery -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

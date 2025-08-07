@@ -24,9 +24,9 @@
 
       <?php
       $is_verif = session()->get('is_verif');
-      $redirect_url_menu = ($is_verif == 0) ? base_url('dashboard') : base_url('dashboard/menu');
-      $redirect_url_order = ($is_verif == 0) ? base_url('dashboard') : base_url('dashboard/order');
-      $redirect_url_kurir = ($is_verif == 0) ? base_url('dashboard') : base_url('dashboard/kurir');
+      $redirect_url_menu = ($is_verif == 1) ? base_url('dashboard') : base_url('dashboard/menu');
+      $redirect_url_order = ($is_verif == 1) ? base_url('dashboard') : base_url('dashboard/order');
+      $redirect_url_kurir = ($is_verif == 1) ? base_url('dashboard') : base_url('dashboard/kurir');
       ?>
 
       <li class="mt-1.5 w-full">

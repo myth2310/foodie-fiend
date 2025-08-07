@@ -64,7 +64,7 @@ class UserController extends BaseController
         $my_order = $this->orderModel->getAllOrdersWithMenus($user_id, $orderStatus);
 
         $pager = $this->orderModel->pager;
-    
+
         $data = [
             'data' => $my_order,
             'pager' => $pager,
@@ -92,56 +92,91 @@ class UserController extends BaseController
 
     public function store()
     {
-        // Ambil data dari input
-        $name = $this->request->getPost('name');
-        $email = $this->request->getPost('email');
-        $phone = $this->request->getPost('phone');
+        $name     = $this->request->getPost('name');
+        $email    = $this->request->getPost('email');
+        $phone    = $this->request->getPost('phone');
         $password = $this->request->getPost('password');
 
-
-        $existingEmail = $this->userModel->where('email', $email)->first();
-        if ($existingEmail) {
+        if ($this->userModel->where('email', $email)->first()) {
             session()->setFlashdata('error', 'Email sudah terdaftar. Silakan gunakan email lain.');
             return redirect()->back()->withInput();
         }
 
-        $existingPhone = $this->userModel->where('phone', $phone)->first();
-        if ($existingPhone) {
+        if ($this->userModel->where('phone', $phone)->first()) {
             session()->setFlashdata('error', 'Nomor HP sudah terdaftar. Silakan gunakan nomor HP lain.');
             return redirect()->back()->withInput();
         }
 
-        $this->user->name = $name;
-        $this->user->email = $email;
-        $this->user->phone = $phone;
+        // Set data user
+        $this->user->name    = $name;
+        $this->user->email   = $email;
+        $this->user->phone   = $phone;
         $this->user->profile = 'https://res.cloudinary.com/beta7x/image/upload/v1720840088/610-6104451_image-placeholder-png-user-profile-placeholder-image-png-removebg-preview_bccniu.png';
         $this->user->setPassword($password);
 
-        $token = bin2hex(random_bytes(16));
+        $token = bin2hex(random_bytes(32));
         $this->user->verification_token = $token;
+        $this->user->is_verif = 0;
 
         $storeUser = $this->userModel->insert($this->user);
         if (!$storeUser) {
             session()->setFlashdata('error', 'Terjadi kesalahan dalam penyimpanan data pengguna.');
             return redirect()->back()->withInput()->with('errors', $this->userModel->errors());
         }
+        $verificationLink = base_url("verification/user/$token");
+        $message = "Halo $name,<br><br>
+            Terima kasih telah mendaftar.<br>
+            Silakan klik link di bawah ini untuk verifikasi akun Anda:<br><br>
+            <a href='$verificationLink'>Verifikasi Sekarang</a><br><br>
+            Jika Anda tidak merasa membuat akun, abaikan email ini.";
 
-        $data = $this->userModel->where('email', $this->user->email)->first();
+        $emailService = \Config\Services::email();
+        $emailService->setTo($email);
+        $emailService->setFrom('noreply@foodefiend.com', 'Foode Fiend');
+        $emailService->setSubject('Verifikasi Akun Anda');
+        $emailService->setMessage($message);
+        $emailService->setMailType('html');
 
-        switch ($data->role) {
-            case 'store':
-                $this->setSession($data, true);
-                break;
-            default:
-                $this->setSession($data);
-                break;
+        if (!$emailService->send()) {
+            log_message('error', 'Gagal mengirim email verifikasi: ' . $emailService->printDebugger(['headers']));
+            session()->setFlashdata('error', 'Pendaftaran berhasil, tetapi gagal mengirim email verifikasi.');
+            return redirect()->to('/');
         }
-        session()->setFlashdata('success', 'Pengguna berhasil dibuat!');
+        $data = $this->userModel->where('email', $email)->first();
+        // if ($data->role === 'store') {
+        //     $this->setSession($data, true);
+        // } else {
+        //     $this->setSession($data);
+        // }
+
+        session()->setFlashdata('success', 'Pendaftaran berhasil! Silakan cek email untuk verifikasi akun Anda.');
         return redirect()->to('/');
     }
 
 
-
+    public function verifikasiEmail($token)
+    {
+        $userModel = new \App\Models\UserModel();
+        $user = $userModel->where('verification_token', $token)->first();
+    
+        if ($user) {
+            if ($user->is_verif == 1) {
+                session()->setFlashdata('success', 'Akun Anda sudah diverifikasi sebelumnya.');
+            } else {
+                $userModel->update($user->id, [
+                    'is_verif' => 1,
+                    'verification_token' => null 
+                ]);
+                session()->setFlashdata('success', 'Verifikasi berhasil. Silakan login.');
+            }
+        } else {
+            session()->setFlashdata('error', 'Token verifikasi tidak valid atau telah digunakan.');
+        }
+    
+        return redirect()->to('/');
+    }
+    
+    
     public function edit($id)
     {
         $modelModel = new UserModel();

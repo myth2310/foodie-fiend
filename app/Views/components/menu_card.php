@@ -8,21 +8,45 @@
                 <div class="flex flex-col justify-between w-full">
                     <a href="<?= base_url('menus/' . $menu['id']) ?>" class="mb-2">
                         <p class="text-lg font-semibold text-slate-800 capitalize"><?= $menu['name'] ?? "Menu Pertama" ?></p>
-                        <h5 class="text-base tracking-tight text-slate-500 capitalize"><?= $menu['store_name'] ?? "Menu Pertama" ?></h5>
+                        <a href="<?= base_url('stores/' . $menu['store_id']) ?>">
+                            <h5 class="text-base tracking-tight text-slate-500 capitalize">
+                                <?= $menu['store_name'] ?? "Menu Pertama" ?>
+                            </h5>
+                        </a>
+
                     </a>
                     <div class="flex items-center mb-1">
-                        <?php for ($i = 1; $i <= 4; $i++): ?>
-                            <?php if ($i <= $menu['average_rating']): ?>
-                                <svg aria-hidden="true" class="h-4 w-4 text-yellow-800" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                        <?php for ($i = 1; $i <= 5; $i++): ?>
+                            <?php if (!empty($menu['average_rating']) && $i <= $menu['average_rating']): ?>
+                                <svg aria-hidden="true" class="h-4 w-4 text-yellow-500" fill="currentColor" viewBox="0 0 20 20"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 
+            1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 
+            1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 
+            1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 
+            0 00.951-.69l1.07-3.292z" />
                                 </svg>
                             <?php else: ?>
-                                <svg aria-hidden="true" class="h-4 w-4 text-yellow-200 opacity-50" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                                <svg aria-hidden="true" class="h-4 w-4 text-gray-300" fill="currentColor" viewBox="0 0 20 20"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 
+            1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 
+            1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 
+            1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 
+            0 00.951-.69l1.07-3.292z" />
                                 </svg>
                             <?php endif ?>
                         <?php endfor ?>
-                        <span class="ml-2 rounded bg-yellow-200 px-2 py-0.5 text-xs font-semibold"><?= $menu['average_rating'] ?></span>
+
+                        <?php
+                        $rating = $menu['average_rating'] ?? 0;
+                        $hasRating = !empty($rating) && $rating > 0;
+                        $ratingColor = $hasRating ? 'bg-yellow-200 text-yellow-800' : 'bg-gray-200 text-gray-500';
+                        ?>
+
+                        <span class="ml-2 rounded <?= $ratingColor ?> px-2 bg-yellow-200 text-yellow-800">
+                            <?= $hasRating ? number_format($rating, 1) : '0' ?>
+                        </span>
                     </div>
                     <p class="text-sm font-bold text-slate-900 mb-1">Rp. <?= number_format($menu['price'], 0, ',', '.') ?></p>
                     <?php if (session()->get('user_id')): ?>

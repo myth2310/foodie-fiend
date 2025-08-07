@@ -6,6 +6,7 @@ use CodeIgniter\Router\RouteCollection;
  * @var RouteCollection $routes
  */
 $routes->get('/', 'Home::index');
+$routes->get('/coba', 'Home::coba');
 
 // development checkout pages
 $routes->post('/checkout', 'OrderController::checkout');
@@ -81,7 +82,7 @@ $routes->group('/login', function ($routes) {
 });
 $routes->get('/logout', 'AuthController::logout');
 $routes->group('/verification', function ($routes) {
-    $routes->get('user/(:any)', 'UserController::verificate/$1');
+    $routes->get('user/(:any)', 'UserController::verifikasiEmail/$1');
     $routes->post('otp', 'AuthController::verifyOTP');
 });
 

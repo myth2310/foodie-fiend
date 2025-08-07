@@ -10,7 +10,7 @@
       </button>
     </div>
     <h2 class="text-2xl font-bold mb-4">Buat Akun Mitra Toko</h2>
-    <form action="/stores" class="mb-2" method="post" enctype="multipart/form-data">
+    <form id="registerForm" action="/stores" class="mb-2" method="post" enctype="multipart/form-data">
       <?= csrf_field() ?>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div class="w-full">
@@ -44,3 +44,4 @@
     </p>
   </div>
 </div>
+

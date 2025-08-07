@@ -30,15 +30,17 @@
                         <div class="mb-4">
                             <label class="font-medium">Email:</label>
                             <p><?= htmlspecialchars($umkm->email); ?></p>
-                           
+
                         </div>
 
                         <div class="mb-4">
                             <label class="font-medium">Status:</label>
-                            <?php if (htmlspecialchars($umkm->is_verif) == 1): ?>
+                            <?php if (htmlspecialchars($umkm->is_verif) == 2): ?>
                                 <p class="text-green-600">
                                     Sudah Terkonfirmasi
                                 </p>
+                            <?php elseif (htmlspecialchars($umkm->is_verif) == 1): ?>
+                                <span class="text-yellow-500">Menunggu Konfirmasi Admin</span>
                             <?php else: ?>
                                 <p class="text-red-600">
                                     Belum Terkonfirmasi
@@ -64,9 +66,46 @@
                         </div>
                         <div class="mb-4">
                             <label class="font-medium">UMKM Letter:</label>
-                            <a href="<?= $umkm->umkm_letter; ?>" target="_blank" class="text-blue-500 mt-2 inline-block ">
+                            <a href="#" onclick="openUmkmModal()" class="text-blue-500 mt-2 inline-block">
                                 Lihat Surat UMKM
                             </a>
+                            <div id="umkmModal" class="bg-white w-full max-w-md rounded shadow-lg px-4 py-6 relative font-serif border border-gray-300">
+                                <div class="bg-white w-full max-w-md rounded shadow-lg px-4 py-6 relative font-serif border border-gray-300">
+                                    <button onclick="closeUmkmModal()" class="absolute top-2 right-4 text-gray-500 hover:text-red-500 text-xl font-bold">&times;</button>
+                                    <div class="text-center mb-6">
+                                        <h1 class="text-xl font-bold underline">SURAT KETERSEDIAAN MENJADI MITRA UMKM FOOD FIEND</h1>
+                                    </div>
+                                    <div class="text-justify leading-relaxed text-gray-800 text-sm space-y-4">
+                                        <p>Yang bertanda tangan di bawah ini:</p>
+                                        <ul class="ml-6 list-disc">
+                                            <li>Nama UMKM : <strong><?= $umkm->name; ?></strong></li>
+                                            <li>Alamat : <?= $umkm->address; ?></li>
+                                            <li>Kontak : <?= $umkm->phone; ?></li>
+                                        </ul>
+
+                                        <p>Dengan ini menyatakan kesiapan kami untuk bergabung sebagai mitra resmi Food Fiend.
+                                            Kami menyatakan bahwa kami adalah mitra asli yang berkomitmen untuk bekerja sama
+                                            dalam memenuhi standar dan ketentuan yang telah ditetapkan oleh Food Fiend, serta
+                                            menjaga kepercayaan dan integritas yang diberikan kepada kami.
+                                        </p>
+
+                                        <p>Demikian surat ketersediaan ini kami buat dengan sebenar-benarnya untuk
+                                            dipergunakan sebagaimana mestinya</p>
+                                        <div class="mt-8 flex justify-start text-sm">
+                                            <div class="text-left">
+                                                <?php if (!empty($umkm->umkm_letter)) : ?>
+                                                    <img src="<?= $umkm->umkm_letter; ?>" alt="Tanda Tangan" class="h-20 mb-2 object-contain ml-auto">
+                                                <?php endif; ?>
+                                                <p><?= date('d F Y', strtotime($umkm->updated_at)); ?></p>
+                                                <p class="mt-12 font-bold underline"><?= $umkm->user_name; ?></p>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
 
@@ -138,19 +177,28 @@
 
 
 <script>
-    const map = L.map('map').setView([<?= htmlspecialchars($umkm->lat); ?>,<?= htmlspecialchars($umkm->long); ?>], 13);
+    const map = L.map('map').setView([<?= htmlspecialchars($umkm->lat); ?>, <?= htmlspecialchars($umkm->long); ?>], 13);
 
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
 
-    L.marker([<?= htmlspecialchars($umkm->lat); ?>,<?= htmlspecialchars($umkm->long); ?>]).addTo(map)
+    L.marker([<?= htmlspecialchars($umkm->lat); ?>, <?= htmlspecialchars($umkm->long); ?>]).addTo(map)
         .bindPopup('<b><?= htmlspecialchars($umkm->name); ?></b><br /><?= htmlspecialchars($umkm->address); ?>')
         .openPopup();
 </script>
 
 
+<script>
+    function openUmkmModal() {
+        document.getElementById('umkmModal').classList.remove('hidden');
+    }
+
+    function closeUmkmModal() {
+        document.getElementById('umkmModal').classList.add('hidden');
+    }
+</script>
 
 
 <?= $this->endSection() ?>

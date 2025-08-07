@@ -44,7 +44,12 @@ class AuthController extends BaseController
         $password = $this->request->getPost('password');
 
         $data = $this->userModel->where('email', $email)->first();
+
         if ($data) {
+            if ($data->is_verif == 0) {
+                $session->setFlashdata('error', 'Akun Anda belum diverifikasi. Silakan cek email Anda untuk verifikasi.');
+                return redirect()->to('/');
+            }
             $passwordHash = $data->password;
             $authenticatePassword = password_verify($password, $passwordHash);
 
@@ -54,8 +59,7 @@ class AuthController extends BaseController
                         $this->userController->setSession($data, true);
                         break;
                     case 'admin':
-                        $this->userController->setSession($data);
-                        break;
+                    case 'kurir':
                     default:
                         $this->userController->setSession($data);
                         break;
@@ -69,16 +73,19 @@ class AuthController extends BaseController
                 } else if ($data->role == 'kurir') {
                     return redirect()->to('/kurir/dashboard');
                 }
-                
+
                 return redirect()->route('home');
             } else {
                 $session->setFlashdata('error', 'Email atau password salah.');
                 return redirect()->to('/');
             }
         }
+
         $session->setFlashdata('error', 'Email atau password salah.');
         return redirect()->to('/');
     }
+
+
 
     public function logout()
     {

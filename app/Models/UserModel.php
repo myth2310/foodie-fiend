@@ -14,7 +14,7 @@ class UserModel extends Model
     protected $returnType       = UserEntity::class;
     protected $useSoftDeletes   = true;
     protected $protectFields    = true;
-    protected $allowedFields    = ['id', 'name', 'email', 'phone', 'password', 'lat', 'long', 'address', 'profile', 'role', 'is_verif', 'verification_token'];
+    protected $allowedFields    = ['id', 'name', 'email', 'phone', 'password', 'lat', 'long', 'address', 'profile', 'role', 'is_verif','is_review','verification_token'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -96,13 +96,14 @@ class UserModel extends Model
 
     public function getUmkmById($id)
     {
-        $umkm = $this->select('users.*, stores.*')
+        $umkm = $this->select('users.name as user_name, stores.*, users.*')
             ->join('stores', 'users.id = stores.user_id')
             ->where('users.id', $id)
             ->first();
-
+    
         return $umkm;
     }
+    
     public function getUserId($id)
     {
         $users = $this->select('users.*')

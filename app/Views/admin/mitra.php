@@ -9,7 +9,7 @@
 <?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" integrity="sha512-5Hs3dF2AEPkpNAR7UiOHba+lRSJNeM2ECkwxUIxC1Q/FLycGTbNapWXB4tP889k5T5Ju8fs4b1P5z/iB4nMfSQ==" crossorigin="anonymous" referrerpolicy="no-referrer" /> 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" integrity="sha512-5Hs3dF2AEPkpNAR7UiOHba+lRSJNeM2ECkwxUIxC1Q/FLycGTbNapWXB4tP889k5T5Ju8fs4b1P5z/iB4nMfSQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <div class="relative flex flex-col min-w-0 mb-6 break-words bg-white border-0 border-transparent border-solid shadow-xl rounded-2xl bg-clip-border">
     <div class="flex justify-between items-center p-6 pb-0 mb-4 border-b-0 border-b-solid rounded-t-2xl border-b-transparent">
         <h6>Daftar Mitra UMKM</h6>
@@ -32,29 +32,37 @@
                                 <?= htmlspecialchars($item->name); ?>
                             </td>
                             <td class="px-6 py-3 text-left align-middle bg-transparent border-b text-sm text-slate-700">
-                            <?= htmlspecialchars($item->address) ? htmlspecialchars($item->address) : ' <span class="text-yellow-500">Data belum ditambahkan</span>'; ?>
+                                <?= htmlspecialchars($item->address) ? htmlspecialchars($item->address) : ' <span class="text-yellow-500">Data belum ditambahkan</span>'; ?>
 
                             </td>
                             <td class="px-6 py-3 text-left align-middle bg-transparent border-b text-sm">
-                                <?php if ($item->is_verif == 1): ?>
+                                <?php if ($item->is_verif == 2): ?>
                                     <span class="text-green-500">Sudah Terkonfirmasi</span>
+                                <?php elseif ($item->is_verif == 1): ?>
+                                    <span class="text-yellow-500">Menunggu Konfirmasi Admin</span>
                                 <?php else: ?>
-                                    <span class="text-yellow-500">Menunggu Konfirmasi</span>
+                                    <span class="text-yellow-500">Menunggu Verifikasi Email</span>
                                 <?php endif; ?>
                             </td>
 
                             <td class="px-6 py-3 text-center align-middle bg-transparent border-b text-sm text-slate-700">
                                 <a href="<?= base_url('admin/dashboard/umkm/detail/' . $item->store_id); ?>" class="inline-block px-5 py-2.5 text-white bg-black rounded-lg hover:bg-gray-800">
-                                <i class="fa-solid fa-circle-exclamation"></i>&nbsp;&nbsp;Detail UMKM
+                                    <i class="fa-solid fa-circle-exclamation"></i>&nbsp;&nbsp;Detail UMKM
                                 </a>
 
-                                <?php if ($item->is_verif == 0): ?>
+                                <?php if (
+                                    $item->is_verif == 1 &&
+                                    $item->is_review == 1 &&
+                                    !empty($item->ktp_url) &&
+                                    !empty($item->umkm_letter)
+                                ): ?>
                                     <button type="button" onclick="confirmVerification('<?= $item->store_id; ?>', '<?= htmlspecialchars($item->name); ?>')" class="inline-block px-5 py-2.5 text-white bg-gradient-to-tl from-green-600 to-green-400 rounded-lg hover:-translate-y-px">
                                         <i class="fas fa-check"></i>
                                     </button>
                                 <?php endif; ?>
 
-                                <button type="button"  onclick="deleteStore('<?= $item->store_id; ?>', '<?= htmlspecialchars($item->name); ?>')" class="inline-block px-5 py-2.5 text-white bg-gradient-to-tl from-red-600 to-red-400 rounded-lg hover:-translate-y-px">
+
+                                <button type="button" onclick="deleteStore('<?= $item->store_id; ?>', '<?= htmlspecialchars($item->name); ?>')" class="inline-block px-5 py-2.5 text-white bg-gradient-to-tl from-red-600 to-red-400 rounded-lg hover:-translate-y-px">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </td>
@@ -85,6 +93,16 @@
             cancelButtonText: "Batal",
         }).then((result) => {
             if (result.isConfirmed) {
+
+                Swal.fire({
+                    title: 'Sedang diproses...',
+                    text: 'Mohon tunggu sementara kami memverifikasi data',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
                 fetch(`<?= base_url('admin/dashboard/umkm/verify'); ?>/${storeId}`, {
                         method: "POST",
                         headers: {
@@ -108,6 +126,7 @@
         });
     }
 </script>
+
 
 <script>
     function deleteStore(storeId, storeName) {

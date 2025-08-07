@@ -42,7 +42,7 @@ class StoreController extends BaseController
         $storeModel = new StoreModel();
         $stores = $storeModel->select('stores.*, users.name as user_name, users.email')
             ->join('users', 'users.id = stores.user_id')
-            ->where('users.is_verif', 1)
+            ->where('users.is_verif', 2)
             ->where('users.role', 'store')
             ->orderBy('RAND()')
             ->findAll();
@@ -89,7 +89,6 @@ class StoreController extends BaseController
         ]);
     }
 
-
     public function create()
     {
         $userModel = new UserModel();
@@ -101,6 +100,7 @@ class StoreController extends BaseController
         $db->transStart();
 
         try {
+            // Ambil data user
             $user->name = $this->request->getPost('name');
             $user->email = $this->request->getPost('email');
             $user->phone = $this->request->getPost('phone');
@@ -108,10 +108,17 @@ class StoreController extends BaseController
             $password = $this->request->getPost('password');
             $user->profile = 'https://res.cloudinary.com/beta7x/image/upload/v1720840088/610-6104451_image-placeholder-png-user-profile-placeholder-image-png-removebg-preview_bccniu.png';
 
+            // Buat token verifikasi
+            $token = bin2hex(random_bytes(32));
+            $user->verification_token = $token;
+            $user->is_verif = 0;
+
             $user->setPassword($password);
             $userModel->insert($user);
 
             $userId = $userModel->getInsertID();
+
+            // Simpan data store
             $store->generateUUID();
             $store->user_id = $userId;
             $store->name = $this->request->getPost('store_name');
@@ -126,19 +133,29 @@ class StoreController extends BaseController
             }
 
             $storeModel->save($store);
-
             $db->transComplete();
 
             if ($db->transStatus() === false) {
                 $userErrors = $userModel->errors();
                 $storeErrors = $storeModel->errors();
                 $errors = array_merge($userErrors['errors'], $storeErrors['error']);
-
                 session()->setFlashdata('error', 'Terjadi kesalahan dalam penyimpanan data.');
                 return redirect()->back()->withInput()->with('errors', $errors);
             }
 
-            session()->setFlashdata('success', 'Pengguna berhasil dibuat!');
+            // Kirim email verifikasi
+            $email = \Config\Services::email();
+            $verificationLink = base_url("verification/user/$token");
+            $message = "Halo {$user->name},<br><br>Terima kasih telah mendaftar.<br>Silakan klik link di bawah ini untuk verifikasi akun Anda:<br><br>
+            <a href='$verificationLink'>Verifikasi Sekarang</a><br><br>Jika Anda tidak merasa membuat akun, abaikan email ini.";
+
+            $email->setTo($user->email);
+            $email->setFrom('noreply@domainmu.com', 'RuangInklusi');
+            $email->setSubject('Verifikasi Akun');
+            $email->setMessage($message);
+            $email->send();
+
+            session()->setFlashdata('success', 'Pengguna berhasil dibuat! Silakan cek email untuk verifikasi.');
             return redirect()->to('/');
         } catch (Exception $err) {
             $db->transRollback();
@@ -146,7 +163,6 @@ class StoreController extends BaseController
             return redirect()->back()->with('errors', $err->getLine());
         }
     }
-
 
     public function downloadTemplateSurat()
     {
@@ -159,7 +175,6 @@ class StoreController extends BaseController
             return redirect()->back();
         }
     }
-
 
     public function update($id)
     {
@@ -205,14 +220,30 @@ class StoreController extends BaseController
                 }
             }
 
-            $umkm = $this->request->getFile('umkm_letter');
-            if ($umkm->isValid() && !$umkm->hasMoved()) {
-                $filePath = $umkm->getTempName();
+            // $umkm = $this->request->getFile('umkm_letter');
+            // if ($umkm->isValid() && !$umkm->hasMoved()) {
+            //     $filePath = $umkm->getTempName();
+            //     $uploadHelper = new CloudinaryHelper();
+            //     $uploadResult = $uploadHelper->upload($filePath);
+            //     if ($uploadResult) {
+            //         $store->umkm_letter = $uploadResult['secure_url'];
+            //     }
+            // }
+
+            $signatureBase64 = $this->request->getPost('signature_base64');
+            if ($signatureBase64) {
+                $data = explode(',', $signatureBase64);
+                $decodedData = base64_decode(end($data));
+
+                $tempFile = tempnam(sys_get_temp_dir(), 'sig') . '.png';
+                file_put_contents($tempFile, $decodedData);
+
                 $uploadHelper = new CloudinaryHelper();
-                $uploadResult = $uploadHelper->upload($filePath);
+                $uploadResult = $uploadHelper->upload($tempFile);
                 if ($uploadResult) {
                     $store->umkm_letter = $uploadResult['secure_url'];
                 }
+                unlink($tempFile);
             }
 
             $storeModel->save($store);

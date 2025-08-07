@@ -12,16 +12,13 @@
 <!-- cards -->
 <div class="w-full px-6 py-6 mx-auto">
 
-<div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-6 ml-4 mb-6 rounded-lg shadow-lg">
+  <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-6 ml-4 mb-6 rounded-lg shadow-lg">
     <p class="text-3xl font-bold mb-2">Total Pendapatan</p>
     <p class="text-4xl font-extrabold">Rp. <?= number_format($totalPendapatan, 0, ',', '.') ?></p>
-</div>
-
-
+  </div>
 
   <!-- row 1 -->
   <div class="flex flex-wrap gap-6 -mx-3">
-    <!-- card 1 -->
     <div class="w-full max-w-full px-3 mb-6 sm:w-1/2 xl:w-1/4">
       <div class="relative flex flex-col min-w-0 break-words bg-white shadow-xl rounded-2xl bg-clip-border">
         <div class="flex-auto p-4">
@@ -79,9 +76,6 @@
     </div>
   </div>
 </div>
-
-
-
 
 <?= $this->endSection() ?>
 

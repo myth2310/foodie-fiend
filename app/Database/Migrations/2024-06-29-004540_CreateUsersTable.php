@@ -64,6 +64,11 @@ class CreateUsersTable extends Migration
                 'constraint' => 1,
                 'default' => 0,
             ],
+            'is_review' => [
+                'type' => 'TINYINT',
+                'constraint' => 1,
+                'default' => 0,
+            ],
             'verification_token' => [
                 'type' => 'VARCHAR',
                 'constraint' => '255',

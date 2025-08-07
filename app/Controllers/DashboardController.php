@@ -264,6 +264,7 @@ class DashboardController extends BaseController
     public function detail($id)
     {
         $userModel = new UserModel();
+        $userModel->where('id', $id)->set(['is_review' => 1])->update();
         $data = $userModel->getUmkmById($id);
 
         $customerLat = -6.8737575;
@@ -275,7 +276,6 @@ class DashboardController extends BaseController
         $ratePerKm = 1000;
 
         $totalHarga = $distance * $ratePerKm;
-
         return view('admin/detail_mitra', [
             'umkm' => $data,
             'distance' => $distance,
@@ -298,10 +298,10 @@ class DashboardController extends BaseController
         $store = $this->userModel->find($storeId);
 
         if ($store) {
-            if ($store->is_verif == 1) {
+            if ($store->is_verif == 2) {
                 return $this->response->setJSON(['success' => false, 'message' => 'UMKM sudah terverifikasi']);
             }
-            $updated = $this->userModel->update($storeId, ['is_verif' => 1]);
+            $updated = $this->userModel->update($storeId, ['is_verif' => 2]);
 
             if ($updated) {
                 $this->sendVerificationEmail($store->email);
@@ -339,16 +339,11 @@ class DashboardController extends BaseController
         ]);
     }
 
-
-
-
-
     private function sendVerificationEmail($email)
     {
-        // Mengatur email
         $emailService = \Config\Services::email();
 
-        $emailService->setFrom('no-reply@yourdomain.com', 'Admin');
+        $emailService->setFrom('no-reply@foodefiend.com', 'Foode Fiend');
         $emailService->setTo($email);
         $emailService->setSubject('Akun UMKM Anda Telah Terverifikasi');
         $emailService->setMessage('Halo, Akun UMKM Anda telah berhasil diverifikasi. Terima kasih telah bergabung.');

@@ -90,15 +90,10 @@ class RecommendationController extends BaseController
     {
         $user_id = session()->get('user_id');
         $search_query = $this->request->getGet('query');
-    
-        // Ambil chart dan ID menu yang direkomendasikan
         $charts = $this->chartModel->getAllChartWithMenu($user_id);
         $recommended_menu_ids = $this->menuModel->getRecommendedMenuIds($user_id);
     
-        // Ambil semua menu dari database
         $all_menus = $this->menuModel->getMenusAll();
-    
-        // Filter menu berdasarkan pencarian dan rekomendasi
         $recommended_menus = [];
         $non_recommended_menus = [];
     

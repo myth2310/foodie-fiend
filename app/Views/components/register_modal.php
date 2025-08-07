@@ -27,7 +27,7 @@
       </div>
       <div class="mb-5">
         <input id="password" name="password" placeholder="Password" type="password" class="w-full p-2 border-2 text-center border-gray-300 rounded mt-1" required>
-        
+
       </div>
       <button type="submit" class="bg-yellow-500 hover:bg-yellow-600 ease-in-out duration-150 text-white font-semibold px-4 py-2 rounded w-full mt-2 mb-6">Register</button>
     </form>
@@ -37,5 +37,16 @@
   </div>
 </div>
 
-
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    document.querySelector("form").addEventListener("submit", function() {
+      Swal.fire({
+        title: 'Sedang diproses...',
+        text: 'Mohon tunggu sementara kami menyimpan data Anda',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading()
+        }
+      });
+    });
+  </script>

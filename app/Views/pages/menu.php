@@ -109,9 +109,6 @@ $categories = $data['category'];
                   </td>
                 </tr>
               <?php endif ?>
-
-
-
             </tbody>
           </table>
 

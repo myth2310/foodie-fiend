@@ -14,7 +14,7 @@ class ReviewModel extends Model
     protected $returnType       = ReviewEntity::class;
     protected $useSoftDeletes   = true;
     protected $protectFields    = true;
-    protected $allowedFields    = ['id', 'user_id', 'menu_id','order_id', 'review', 'rating'];
+    protected $allowedFields    = ['id', 'user_id', 'menu_id', 'order_id', 'review', 'rating'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -69,6 +69,13 @@ class ReviewModel extends Model
     {
         $data['data']['id'] = Uuid::uuid7()->toString();
         return $data;
+    }
+
+    public function getAverageRating($menu_id)
+    {
+        return $this->select('AVG(rating) as average, COUNT(*) as total')
+            ->where('menu_id', $menu_id)
+            ->first();
     }
 
     public function getReviewWithUser($menu_id)
